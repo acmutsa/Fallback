@@ -1,0 +1,27 @@
+{
+  "name": "db",
+  "version": "1.0.0",
+  "description": "The db package for fallback",
+  "license": "MIT",
+  "author": "acmutsa",
+  "main": "./index.ts",
+  "types": "./index.ts",
+  "scripts": {
+    "test": "echo \"Test command\"",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate",
+    "db:studio": "drizzle-kit studio"
+  },
+  "dependencies": {
+    "@libsql/client": "^0.15.10",
+    "dotenv": "^17.2.1",
+    "drizzle-orm": "^0.44.4",
+    "drizzle-zod": "^0.8.2",
+    "nanoid": "^5.1.5",
+    "zod": "^3.25.67"
+  },
+  "devDependencies": {
+    "@types/node": "20.14.11",
+    "drizzle-kit": "^0.31.4"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "name": "lambda",
+  "version": "1.0.0",
+  "description": "The lambda function that runs when invoked by the api",
+  "license": "ISC",
+  "author": "acmutsa",
+  "main": "index.ts",
+  "scripts": {
+    "test": "echo \"Hello world!\\n\""
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.152",
+    "@types/node": "20.14.11"
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.840.0",
+    "api": "workspace:*",
+    "db": "workspace:*",
+    "zod": "^3.25.67"
+  }
+}
