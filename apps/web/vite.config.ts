@@ -8,26 +8,25 @@ import path from "path";
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  resolve:{
-    alias:{
-      "@":path.resolve(__dirname, "src")
-    },
-  },
-  envDir: process.env.NODE_ENV !== "production" ? "../../" : undefined, // this may break when deploying. Def come back to this
-  plugins: [
-    // Please make sure that '@tanstack/router-plugin' is passed before '@vitejs/plugin-react'
-    tanstackRouter({
-      target: "react",
-      autoCodeSplitting: true,
-    }),
-    react(),
-    cloudflare(),
-    tailwindcss(),
-  ],
-  server:{
-    cors:false,
-    
-  }
+	resolve: {
+		alias: {
+			"@": path.resolve(__dirname, "src"),
+		},
+	},
+	envDir: process.env.NODE_ENV !== "production" ? "../../" : undefined, // this may break when deploying. Def come back to this
+	plugins: [
+		// Please make sure that '@tanstack/router-plugin' is passed before '@vitejs/plugin-react'
+		tanstackRouter({
+			target: "react",
+			autoCodeSplitting: true,
+		}),
+		react(),
+		cloudflare(),
+		tailwindcss(),
+	],
+	server: {
+		cors: false,
+	},
 });
 
 // TODO: Come back and look for a way to validate the environment variables before the app starts up and fail if they are not validated

@@ -1,0 +1,27 @@
+{
+  "version": "7",
+  "dialect": "sqlite",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "6",
+      "when": 1757879160497,
+      "tag": "0000_burly_anthem",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1757907991011,
+      "tag": "0001_rainy_star_brand",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1757908757865,
+      "tag": "0002_sleepy_gladiator",
+      "breakpoints": true
+    }
+  ]
+}

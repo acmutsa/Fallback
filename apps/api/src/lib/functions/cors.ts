@@ -1,30 +1,30 @@
-import { cors } from "hono/cors"
-import {env} from "../../env"
+import { cors } from "hono/cors";
+import { env } from "../../env";
 
 /**
  * General CORS policy for the API. Will run on every request, but others can be specified for individual routes.
  */
-export const generalCorsPolicy =  cors({
-      origin: env.FALLBACK_WEB_URL,
-      allowHeaders: [
-        "Content-Type",
-        "Authorization",
-        "Access-Control-Allow-Origin",
-      ],
-      allowMethods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-      exposeHeaders: ["Content-Length"],
-      maxAge: 600,
-      credentials: true,
-    });
-    
+export const generalCorsPolicy = cors({
+	origin: env.FALLBACK_WEB_URL,
+	allowHeaders: [
+		"Content-Type",
+		"Authorization",
+		"Access-Control-Allow-Origin",
+	],
+	allowMethods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+	exposeHeaders: ["Content-Length"],
+	maxAge: 600,
+	credentials: true,
+});
+
 /**
  * CORS policy specifically for the Better Auth routes.
  */
 export const betterAuthCorsPolicy = cors({
-  origin: env.FALLBACK_WEB_URL,
-  allowHeaders: ["Content-Type", "Authorization"],
-  allowMethods: ["POST", "GET", "OPTIONS"],
-  exposeHeaders: ["Content-Length"],
-  maxAge: 600,
-  credentials: true,
+	origin: env.FALLBACK_WEB_URL,
+	allowHeaders: ["Content-Type", "Authorization"],
+	allowMethods: ["POST", "GET", "OPTIONS"],
+	exposeHeaders: ["Content-Length"],
+	maxAge: 600,
+	credentials: true,
 });

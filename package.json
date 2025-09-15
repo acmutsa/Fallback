@@ -5,7 +5,9 @@
     "build": "turbo run build",
     "dev": "turbo run dev",
     "lint": "turbo run lint",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "prettier-watch": "onchange \"**/*\" -- prettier --write --ignore-unknown {{changed}}",
+    "format": "prettier --write .",
+    "format-check": "prettier --check .",
     "check-types": "turbo run check-types"
   },
   "devDependencies": {

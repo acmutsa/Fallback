@@ -5,7 +5,7 @@ import logHandler from "./log";
 import userhandler from "./user";
 
 const healthHandler = HonoBetterAuth().get("/", (c) => {
-  return c.json({ status: "It's alive!" }, 200);
+	return c.json({ status: "It's alive!" }, 200);
 });
 
-export {healthHandler, authHandler, backupHandler, logHandler, userhandler}
+export { healthHandler, authHandler, backupHandler, logHandler, userhandler };
