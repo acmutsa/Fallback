@@ -7,13 +7,13 @@ dotenv.config({
 });
 
 export default defineConfig({
-  schema: "./schema.ts",
-  out: "./drizzle",
-  dialect: "turso",
-  casing:"snake_case",
-  dbCredentials: {
-    url: process.env.TURSO_DATABASE_URL!,
-    authToken: process.env.TURSO_AUTH_TOKEN,
-  },
-  breakpoints: true,
+	schema: "./schema.ts",
+	out: "./drizzle",
+	dialect: "turso",
+	casing: "snake_case",
+	dbCredentials: {
+		url: process.env.TURSO_DATABASE_URL!,
+		authToken: process.env.TURSO_AUTH_TOKEN,
+	},
+	breakpoints: true,
 });
