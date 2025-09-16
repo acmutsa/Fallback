@@ -37,3 +37,7 @@ yarn-error.log*
 .DS_Store
 *.pem
 .vscode/
+
+# Matt's personal files
+docker-compose.yaml
+.pnpm-store/
