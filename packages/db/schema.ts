@@ -4,6 +4,10 @@ import {
 	text,
 	sqliteTable,
 	primaryKey,
+	integer,
+	text,
+	sqliteTable,
+	primaryKey,
 } from "drizzle-orm/sqlite-core";
 import { nanoid } from "nanoid";
 
