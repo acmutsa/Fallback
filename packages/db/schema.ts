@@ -28,7 +28,7 @@ function standardDateFactory() {
 function standardIdFactory(prefix?: string) {
 	return text("id")
 		.notNull()
-		.default(`${prefix ?? ""}${nanoid()}`);
+		.$defaultFn(() => `${prefix ?? ""}${nanoid()}`);
 }
 
 const logType = text({ enum: ["INFO", "WARNING", "ERROR"] });
