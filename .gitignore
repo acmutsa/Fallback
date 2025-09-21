@@ -38,6 +38,6 @@ yarn-error.log*
 *.pem
 .vscode/
 
-# Matt's personal files
+# Misc
 docker-compose.yaml
 .pnpm-store/
