@@ -1,5 +1,5 @@
 import { queryOptions } from "@tanstack/react-query";
-import { apiClient } from "./functions/api";
+import { apiClient } from "./api-client";
 
 export const pingServerQuery = queryOptions({
 	queryKey: ["ping"],

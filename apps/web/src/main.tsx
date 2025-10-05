@@ -5,6 +5,8 @@ import { Toaster } from "./components/ui/sonner.tsx";
 import "./styles.css";
 import reportWebVitals from "./reportWebVitals.ts";
 import { createAppRouter } from "./router.tsx";
+import { Providers } from "./providers.tsx";
+
 
 // Create a new router instance
 const router = createAppRouter();
@@ -21,10 +23,12 @@ const rootElement = document.getElementById("app");
 if (rootElement && !rootElement.innerHTML) {
 	const root = ReactDOM.createRoot(rootElement);
 	root.render(
-		<StrictMode>
-			<RouterProvider router={router} />
-			<Toaster />
-		</StrictMode>,
+		<Providers>
+			<StrictMode>
+				<RouterProvider router={router} />
+				<Toaster />
+			</StrictMode>
+		</Providers>,
 	);
 }
 

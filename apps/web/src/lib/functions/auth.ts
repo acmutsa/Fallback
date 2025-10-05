@@ -6,6 +6,7 @@ import {
 	getFirstName,
 	getRandomSignUpGreeting,
 } from "../utils";
+import { PUBLIC_ROUTES } from "shared/constants";
 
 const callbackURL = "/dashboard"; // A URL to redirect to after the user verifies their email (optional)
 
@@ -81,6 +82,18 @@ export async function signInOauth(provider: string, redirectUrl?: string) {
 			},
 		},
 	);
+}
+
+export function isPublicRoute(pathname:string){
+	return PUBLIC_ROUTES.includes(pathname);
+}
+
+export function isProtectedRoute(pathname:string){
+	return !isPublicRoute(pathname);
+}
+
+export async function getSession(){
+	return authClient.getSession();
 }
 
 export async function signOut() {

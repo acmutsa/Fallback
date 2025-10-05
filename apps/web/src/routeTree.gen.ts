@@ -8,106 +8,203 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
-import { Route as rootRouteImport } from "./routes/__root";
-import { Route as IndexRouteImport } from "./routes/index";
-import { Route as TeamIndexRouteImport } from "./routes/team/index";
-import { Route as TeamNewRouteImport } from "./routes/team/new";
-import { Route as TeamTeamIdRouteImport } from "./routes/team/$teamId";
+import { Route as rootRouteImport } from './routes/__root'
+import { Route as IndexRouteImport } from './routes/index'
+import { Route as TeamIndexRouteImport } from './routes/team/index'
+import { Route as SignUpIndexRouteImport } from './routes/sign-up/index'
+import { Route as SignInIndexRouteImport } from './routes/sign-in/index'
+import { Route as ProfileIndexRouteImport } from './routes/profile/index'
+import { Route as TeamNewRouteImport } from './routes/team/new'
+import { Route as TeamTeamIdIndexRouteImport } from './routes/team/$teamId/index'
+import { Route as TeamTeamIdJoinRouteImport } from './routes/team/$teamId/join'
 
 const IndexRoute = IndexRouteImport.update({
-	id: "/",
-	path: "/",
-	getParentRoute: () => rootRouteImport,
-} as any);
+  id: '/',
+  path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TeamIndexRoute = TeamIndexRouteImport.update({
-	id: "/team/",
-	path: "/team/",
-	getParentRoute: () => rootRouteImport,
-} as any);
+  id: '/team/',
+  path: '/team/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SignUpIndexRoute = SignUpIndexRouteImport.update({
+  id: '/sign-up/',
+  path: '/sign-up/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SignInIndexRoute = SignInIndexRouteImport.update({
+  id: '/sign-in/',
+  path: '/sign-in/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProfileIndexRoute = ProfileIndexRouteImport.update({
+  id: '/profile/',
+  path: '/profile/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TeamNewRoute = TeamNewRouteImport.update({
-	id: "/team/new",
-	path: "/team/new",
-	getParentRoute: () => rootRouteImport,
-} as any);
-const TeamTeamIdRoute = TeamTeamIdRouteImport.update({
-	id: "/team/$teamId",
-	path: "/team/$teamId",
-	getParentRoute: () => rootRouteImport,
-} as any);
+  id: '/team/new',
+  path: '/team/new',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TeamTeamIdIndexRoute = TeamTeamIdIndexRouteImport.update({
+  id: '/team/$teamId/',
+  path: '/team/$teamId/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TeamTeamIdJoinRoute = TeamTeamIdJoinRouteImport.update({
+  id: '/team/$teamId/join',
+  path: '/team/$teamId/join',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
-	"/": typeof IndexRoute;
-	"/team/$teamId": typeof TeamTeamIdRoute;
-	"/team/new": typeof TeamNewRoute;
-	"/team": typeof TeamIndexRoute;
+  '/': typeof IndexRoute
+  '/team/new': typeof TeamNewRoute
+  '/profile': typeof ProfileIndexRoute
+  '/sign-in': typeof SignInIndexRoute
+  '/sign-up': typeof SignUpIndexRoute
+  '/team': typeof TeamIndexRoute
+  '/team/$teamId/join': typeof TeamTeamIdJoinRoute
+  '/team/$teamId': typeof TeamTeamIdIndexRoute
 }
 export interface FileRoutesByTo {
-	"/": typeof IndexRoute;
-	"/team/$teamId": typeof TeamTeamIdRoute;
-	"/team/new": typeof TeamNewRoute;
-	"/team": typeof TeamIndexRoute;
+  '/': typeof IndexRoute
+  '/team/new': typeof TeamNewRoute
+  '/profile': typeof ProfileIndexRoute
+  '/sign-in': typeof SignInIndexRoute
+  '/sign-up': typeof SignUpIndexRoute
+  '/team': typeof TeamIndexRoute
+  '/team/$teamId/join': typeof TeamTeamIdJoinRoute
+  '/team/$teamId': typeof TeamTeamIdIndexRoute
 }
 export interface FileRoutesById {
-	__root__: typeof rootRouteImport;
-	"/": typeof IndexRoute;
-	"/team/$teamId": typeof TeamTeamIdRoute;
-	"/team/new": typeof TeamNewRoute;
-	"/team/": typeof TeamIndexRoute;
+  __root__: typeof rootRouteImport
+  '/': typeof IndexRoute
+  '/team/new': typeof TeamNewRoute
+  '/profile/': typeof ProfileIndexRoute
+  '/sign-in/': typeof SignInIndexRoute
+  '/sign-up/': typeof SignUpIndexRoute
+  '/team/': typeof TeamIndexRoute
+  '/team/$teamId/join': typeof TeamTeamIdJoinRoute
+  '/team/$teamId/': typeof TeamTeamIdIndexRoute
 }
 export interface FileRouteTypes {
-	fileRoutesByFullPath: FileRoutesByFullPath;
-	fullPaths: "/" | "/team/$teamId" | "/team/new" | "/team";
-	fileRoutesByTo: FileRoutesByTo;
-	to: "/" | "/team/$teamId" | "/team/new" | "/team";
-	id: "__root__" | "/" | "/team/$teamId" | "/team/new" | "/team/";
-	fileRoutesById: FileRoutesById;
+  fileRoutesByFullPath: FileRoutesByFullPath
+  fullPaths:
+    | '/'
+    | '/team/new'
+    | '/profile'
+    | '/sign-in'
+    | '/sign-up'
+    | '/team'
+    | '/team/$teamId/join'
+    | '/team/$teamId'
+  fileRoutesByTo: FileRoutesByTo
+  to:
+    | '/'
+    | '/team/new'
+    | '/profile'
+    | '/sign-in'
+    | '/sign-up'
+    | '/team'
+    | '/team/$teamId/join'
+    | '/team/$teamId'
+  id:
+    | '__root__'
+    | '/'
+    | '/team/new'
+    | '/profile/'
+    | '/sign-in/'
+    | '/sign-up/'
+    | '/team/'
+    | '/team/$teamId/join'
+    | '/team/$teamId/'
+  fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-	IndexRoute: typeof IndexRoute;
-	TeamTeamIdRoute: typeof TeamTeamIdRoute;
-	TeamNewRoute: typeof TeamNewRoute;
-	TeamIndexRoute: typeof TeamIndexRoute;
+  IndexRoute: typeof IndexRoute
+  TeamNewRoute: typeof TeamNewRoute
+  ProfileIndexRoute: typeof ProfileIndexRoute
+  SignInIndexRoute: typeof SignInIndexRoute
+  SignUpIndexRoute: typeof SignUpIndexRoute
+  TeamIndexRoute: typeof TeamIndexRoute
+  TeamTeamIdJoinRoute: typeof TeamTeamIdJoinRoute
+  TeamTeamIdIndexRoute: typeof TeamTeamIdIndexRoute
 }
 
-declare module "@tanstack/react-router" {
-	interface FileRoutesByPath {
-		"/": {
-			id: "/";
-			path: "/";
-			fullPath: "/";
-			preLoaderRoute: typeof IndexRouteImport;
-			parentRoute: typeof rootRouteImport;
-		};
-		"/team/": {
-			id: "/team/";
-			path: "/team";
-			fullPath: "/team";
-			preLoaderRoute: typeof TeamIndexRouteImport;
-			parentRoute: typeof rootRouteImport;
-		};
-		"/team/new": {
-			id: "/team/new";
-			path: "/team/new";
-			fullPath: "/team/new";
-			preLoaderRoute: typeof TeamNewRouteImport;
-			parentRoute: typeof rootRouteImport;
-		};
-		"/team/$teamId": {
-			id: "/team/$teamId";
-			path: "/team/$teamId";
-			fullPath: "/team/$teamId";
-			preLoaderRoute: typeof TeamTeamIdRouteImport;
-			parentRoute: typeof rootRouteImport;
-		};
-	}
+declare module '@tanstack/react-router' {
+  interface FileRoutesByPath {
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/team/': {
+      id: '/team/'
+      path: '/team'
+      fullPath: '/team'
+      preLoaderRoute: typeof TeamIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sign-up/': {
+      id: '/sign-up/'
+      path: '/sign-up'
+      fullPath: '/sign-up'
+      preLoaderRoute: typeof SignUpIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sign-in/': {
+      id: '/sign-in/'
+      path: '/sign-in'
+      fullPath: '/sign-in'
+      preLoaderRoute: typeof SignInIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/profile/': {
+      id: '/profile/'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof ProfileIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/team/new': {
+      id: '/team/new'
+      path: '/team/new'
+      fullPath: '/team/new'
+      preLoaderRoute: typeof TeamNewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/team/$teamId/': {
+      id: '/team/$teamId/'
+      path: '/team/$teamId'
+      fullPath: '/team/$teamId'
+      preLoaderRoute: typeof TeamTeamIdIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/team/$teamId/join': {
+      id: '/team/$teamId/join'
+      path: '/team/$teamId/join'
+      fullPath: '/team/$teamId/join'
+      preLoaderRoute: typeof TeamTeamIdJoinRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+  }
 }
 
 const rootRouteChildren: RootRouteChildren = {
-	IndexRoute: IndexRoute,
-	TeamTeamIdRoute: TeamTeamIdRoute,
-	TeamNewRoute: TeamNewRoute,
-	TeamIndexRoute: TeamIndexRoute,
-};
+  IndexRoute: IndexRoute,
+  TeamNewRoute: TeamNewRoute,
+  ProfileIndexRoute: ProfileIndexRoute,
+  SignInIndexRoute: SignInIndexRoute,
+  SignUpIndexRoute: SignUpIndexRoute,
+  TeamIndexRoute: TeamIndexRoute,
+  TeamTeamIdJoinRoute: TeamTeamIdJoinRoute,
+  TeamTeamIdIndexRoute: TeamTeamIdIndexRoute,
+}
 export const routeTree = rootRouteImport
-	._addFileChildren(rootRouteChildren)
-	._addFileTypes<FileRouteTypes>();
+  ._addFileChildren(rootRouteChildren)
+  ._addFileTypes<FileRouteTypes>()

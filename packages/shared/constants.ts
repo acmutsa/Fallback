@@ -47,3 +47,7 @@ export const GREETINGS_FUNCTIONS = {
 		(name: string) => `Welcome aboard ${name}!`,
 	],
 };
+
+export const PUBLIC_ROUTES = ["/","/sign-in", "/sign-up"];
+
+export const STANDARD_NANOID_SIZE = 12;

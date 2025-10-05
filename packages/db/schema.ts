@@ -4,12 +4,9 @@ import {
 	text,
 	sqliteTable,
 	primaryKey,
-	integer,
-	text,
-	sqliteTable,
-	primaryKey,
 } from "drizzle-orm/sqlite-core";
 import { nanoid } from "nanoid";
+import {STANDARD_NANOID_SIZE} from "shared/constants";
 
 const STANDARD_VARCHAR_LENGTH = 255;
 
@@ -28,7 +25,7 @@ function standardDateFactory() {
 function standardIdFactory(prefix?: string) {
 	return text("id")
 		.notNull()
-		.$defaultFn(() => `${prefix ?? ""}${nanoid()}`);
+		.$defaultFn(() => `${prefix ?? ""}${nanoid(STANDARD_NANOID_SIZE)}`);
 }
 
 const logType = text({ enum: ["INFO", "WARNING", "ERROR"] });

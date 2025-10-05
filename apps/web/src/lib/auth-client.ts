@@ -1,6 +1,9 @@
 import { createAuthClient } from "better-auth/react";
 
-// import {env} from "../env"
+console.log(
+	"api url for better auth client",
+	import.meta.env.VITE_FALLBACK_API_URL,
+);
 export const authClient = createAuthClient({
-	baseURL: import.meta.env.FALLBACK_PUBLIC_API_URL,
+	baseURL: import.meta.env.VITE_FALLBACK_API_URL,
 });
