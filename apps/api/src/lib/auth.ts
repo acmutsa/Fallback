@@ -9,7 +9,7 @@ export const auth = betterAuth({
 		provider: "sqlite",
 		debugLogs: true,
 	}),
-	trustedOrigins:[env.VITE_FALLBACK_WEB_URL],
+	trustedOrigins: [env.VITE_FALLBACK_WEB_URL],
 	databaseHooks: {
 		user: {
 			create: {
@@ -46,11 +46,11 @@ export const auth = betterAuth({
 				required: false,
 				input: false,
 			},
-			siteRole:{
-				type:"string",
-				defaultValue:"USER",
-				input:false,
-			}
+			siteRole: {
+				type: "string",
+				defaultValue: "USER",
+				input: false,
+			},
 		},
 	},
 	advanced: {
@@ -61,7 +61,7 @@ export const auth = betterAuth({
 		minPasswordLength: AUTH_CONFIG.emailAndPassword.minPasswordLength,
 		maxPasswordLength: AUTH_CONFIG.emailAndPassword.maxPasswordLength,
 	},
-	// TODO: Reference the following link to see if it is easier to have the social provider's returned values map to first and last name instead
+	// TODO(https://github.com/acmutsa/Fallback/issues/14): Reference the following link to see if it is easier to have the social provider's returned values map to first and last name instead
 	//  https://www.better-auth.com/docs/concepts/database#extending-core-schema:~:text=Example%3A%20Mapping%20Profile%20to%20User%20For%20firstName%20and%20lastName
 	// socialProviders: {
 	//   google: {

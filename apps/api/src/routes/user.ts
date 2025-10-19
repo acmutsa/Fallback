@@ -17,7 +17,6 @@ const userhandler = HonoBetterAuth()
 		zValidator(
 			"query",
 			z.object({
-				// TODO: Tighten up a little bit
 				userId: z.string().min(1, "User ID is required"),
 			}),
 		),

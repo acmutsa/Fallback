@@ -2,9 +2,8 @@ import type { Context, Next } from "hono";
 import { auth } from "../auth";
 
 export const MIDDLEWARE_PUBLIC_ROUTES = ["/health", "/api/auth"];
+//TODO(https://github.com/acmutsa/Fallback/issues/16): Make these function's context types safe
 
-// We need to grab the specific type of context here as we know for the middleware it will always be the same as the overall api
-// TODO: Make this type safe
 export async function setUserSessionContextMiddleware(c: Context, next: Next) {
 	const session = await auth.api.getSession({ headers: c.req.raw.headers });
 

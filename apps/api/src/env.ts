@@ -15,7 +15,7 @@ export const env = createEnv({
 		R2_ACCESS_KEY_ID: z.string(),
 		R2_SECRET_ACCESS_KEY: z.string(),
 		BETTER_AUTH_SECRET: z.string(),
-		// TODO: add these back once the oauth stuff is implemented.
+		// TODO(https://github.com/acmutsa/Fallback/issues/14): add these back once the oauth stuff is implemented.
 		// GOOGLE_CLIENT_ID: z.string(),
 		// GOOGLE_CLIENT_SECRET: z.string(),
 		// DISCORD_CLIENT_ID: z.string(),
