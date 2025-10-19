@@ -2,17 +2,20 @@ import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { db } from "db"; // your drizzle instance
 import { APP_NAME, AUTH_CONFIG } from "shared/constants";
+import { env } from "../env";
 
 export const auth = betterAuth({
 	database: drizzleAdapter(db, {
 		provider: "sqlite",
 		debugLogs: true,
 	}),
+	trustedOrigins:[env.VITE_FALLBACK_WEB_URL],
 	databaseHooks: {
 		user: {
 			create: {
 				// used in order to break up the first and last name into separate fields
 				before: async (user) => {
+					console.log("Creating user. Raw inputs are: ", user);
 					// split the name into first and last name (name object is mapped to the first name by the config)
 					const [firstName, ...rest] = user.name.split(" ");
 					const lastName = rest.join(" ");
@@ -40,22 +43,18 @@ export const auth = betterAuth({
 			},
 			lastSeen: {
 				type: "date",
-				required: true,
-				defaultValue: Date.now(),
+				required: false,
 				input: false,
 			},
-			// role: {
-			// 	type: "string",
-			// 	defaultValue: "user",
-			// 	validator: {
-			// 		input: z.enum(["user", "admin"]),
-			// 		output: z.enum(["user", "admin"]),
-			// 	},
-			// },
+			siteRole:{
+				type:"string",
+				defaultValue:"USER",
+				input:false,
+			}
 		},
 	},
 	advanced: {
-		cookiePrefix: APP_NAME,
+		cookiePrefix: APP_NAME.toLocaleLowerCase(),
 	},
 	emailAndPassword: {
 		enabled: AUTH_CONFIG.emailAndPassword.enabled,

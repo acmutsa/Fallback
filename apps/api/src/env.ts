@@ -6,7 +6,7 @@ export const env = createEnv({
 			description:
 				"Account ID for the Cloudflare account. Note that this ID should be the same one the bucket is hosted in.",
 		}),
-		FALLBACK_WEB_URL: z
+		VITE_FALLBACK_WEB_URL: z
 			.string({
 				description:
 					"The URL of the frontend. DO NOT ADD A TRAILING SLASH",

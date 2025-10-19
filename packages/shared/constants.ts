@@ -1,10 +1,13 @@
 export const APP_NAME = "Fallback";
-export const USER_PERMISSIONS = {
-	member: {
-		canView: true,
-		canEdit: false,
-		canDelete: false,
+export const PERMISSIONS_CONFIG = {
+	siteRoles:{
+
 	},
+	teamRoles:{
+		MEMBER:{
+			canRead:true,
+		}
+	}
 };
 export const AUTH_CONFIG = {
 	emailAndPassword: {

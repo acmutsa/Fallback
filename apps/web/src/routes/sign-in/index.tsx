@@ -2,17 +2,15 @@ import { createFileRoute } from '@tanstack/react-router'
 import { AuthView } from '@daveyplate/better-auth-ui'
 import {redirect} from "@tanstack/react-router"
 import { APP_NAME } from 'shared/constants';
-import { getSession } from '@/lib/functions/auth';
 
 
 export const Route = createFileRoute('/sign-in/')({
   component: RouteComponent,
-  loader: async () => getSession()
 })
 
 function RouteComponent() {
-  const authData = Route.useLoaderData()
-  if (authData.data){
+  const {auth} = Route.useRouteContext()
+  if (auth?.data){
     return redirect({
       to:"/",
     })
@@ -24,7 +22,7 @@ function RouteComponent() {
 				<h2 className='font-bold text-xl text-center'>Sign back into {APP_NAME} to pick up where you left off</h2>
 			</div>
 			<div className="flex flex-1 justify-center items-center">
-				<AuthView className="h-fit" />
+				<AuthView className="h-fit" view='SIGN_IN' />
 			</div>
 		</div>
   );

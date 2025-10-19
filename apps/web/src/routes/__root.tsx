@@ -4,16 +4,17 @@ import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 import { getSession } from "@/lib/functions/auth";
 import { redirect } from "@tanstack/react-router";
 import { isProtectedRoute } from "@/lib/functions/auth";
+import ErrorComponent from "@/components/shared/error";
 
 type RouterContext = {
 	queryClient: QueryClient;
+	auth?: Awaited<ReturnType<typeof getSession>>;
 };
 
 export const Route = createRootRouteWithContext<RouterContext>()({
-	
 	beforeLoad: async({location}) =>{
+		const auth = await getSession();
 		if (isProtectedRoute(location.pathname)) {
-			const auth = await getSession();
 			
 			if (!auth.data){
 				throw redirect({
@@ -25,12 +26,15 @@ export const Route = createRootRouteWithContext<RouterContext>()({
 				})
 			}
 		}
+		return {
+			auth
+		}
 	},
-
 	component: () => (
 		<>
 			<Outlet />
 			<TanStackRouterDevtools />
 		</>
 	),
+	errorComponent: ({ error }) => <ErrorComponent errorToLog={error} />
 })
