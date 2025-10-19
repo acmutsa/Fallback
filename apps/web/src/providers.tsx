@@ -30,6 +30,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
             SIGN_UP:"Create Account",
             SIGN_UP_DESCRIPTION:"Let's get you started with a free account.",
           }}
+					
           
           
 					// avatar={{
