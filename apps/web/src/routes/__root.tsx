@@ -5,13 +5,13 @@ import { redirect } from "@tanstack/react-router";
 import { isProtectedRoute } from "@/lib/functions/auth";
 import ErrorComponent from "@/components/shared/error";
 import type { RouterContext } from "@/lib/types";
+import { Providers } from "@/providers";
 
 
 export const Route = createRootRouteWithContext<RouterContext>()({
 	beforeLoad: async({location}) =>{
 		const auth = await getSession();
 		if (isProtectedRoute(location.pathname)) {
-			
 			if (!auth.data){
 				throw redirect({
 					to:"/sign-in",
@@ -28,7 +28,9 @@ export const Route = createRootRouteWithContext<RouterContext>()({
 	},
 	component: () => (
 		<>
-			<Outlet />
+			<Providers>
+				<Outlet />
+			</Providers>
 			<TanStackRouterDevtools />
 		</>
 	),

@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { pingServerQuery } from "@/lib/queries";
 import { useQuery } from "@tanstack/react-query";
 import { SignedIn, SignedOut, UserButton } from "@daveyplate/better-auth-ui";
+import { Link } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/")({
 	loader: ({ context: { queryClient } }) =>
@@ -45,6 +46,7 @@ function App() {
 
 			<SignedIn>
 				<UserButton />
+				<Link to="/team/$teamId" params={{ teamId: "123" }}>Go to protected route</Link>
 			</SignedIn>
 		</>
 	);

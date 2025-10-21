@@ -6,14 +6,14 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { queryClient } from "./router";
 
 export function Providers({ children }: { children: React.ReactNode }) {
-
+	const router = useRouter();
 	return (
 		<QueryClientProvider client={queryClient}>
 			<AuthQueryProvider>
 				<AuthUIProviderTanstack
 					authClient={authClient}
-					navigate={(href) => useRouter().navigate({ href })}
-					replace={(href) => useRouter().navigate({ href, replace: true })}
+					navigate={(href) => router.navigate({ href })}
+					replace={(href) => router.navigate({ href, replace: true })}
 					Link={({ href, ...props }) => <Link to={href} {...props} />}
 					persistClient={false}
 					basePath="/"

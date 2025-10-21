@@ -23,12 +23,10 @@ const rootElement = document.getElementById("app");
 if (rootElement && !rootElement.innerHTML) {
 	const root = ReactDOM.createRoot(rootElement);
 	root.render(
-		<Providers>
 			<StrictMode>
 				<RouterProvider router={router} />
 				<Toaster />
 			</StrictMode>
-		</Providers>,
 	);
 }
 
