@@ -1,13 +1,15 @@
 import { AuthUIProviderTanstack } from "@daveyplate/better-auth-ui/tanstack";
 import { AuthQueryProvider } from "@daveyplate/better-auth-tanstack";
 import { authClient } from "@/lib/auth-client";
-import { Link, useRouter } from "@tanstack/react-router";
+import { Link, useRouter,  } from "@tanstack/react-router";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { queryClient } from "./router";
+import { AUTH_CONFIG } from "shared/constants";
 
 export function Providers({ children }: { children: React.ReactNode }) {
 	const router = useRouter();
 	return (
+		// Query client is caching something it def should not be so we need to look at this later
 		<QueryClientProvider client={queryClient}>
 			<AuthQueryProvider>
 				<AuthUIProviderTanstack
@@ -15,8 +17,14 @@ export function Providers({ children }: { children: React.ReactNode }) {
 					navigate={(href) => router.navigate({ href })}
 					replace={(href) => router.navigate({ href, replace: true })}
 					Link={({ href, ...props }) => <Link to={href} {...props} />}
+					onSessionChange={() => {
+						router.invalidate();
+					}}
 					persistClient={false}
 					basePath="/"
+					account={{
+						basePath:"/"
+					}}
 					baseURL={
 						import.meta.env.VITE_FALLBACK_WEB_URL ||
 						"http://localhost:3000"
@@ -24,15 +32,24 @@ export function Providers({ children }: { children: React.ReactNode }) {
 					social={{
 						providers: ["github", "google", "discord", "linear"],
 					}}
-          localization={{
-            SIGN_IN:"Sign In",
-            SIGN_IN_DESCRIPTION:"Welcome back! Please enter your details.",
-            SIGN_UP:"Create Account",
-            SIGN_UP_DESCRIPTION:"Let's get you started with a free account.",
-          }}
-					
-          
-          
+					localization={{
+						SIGN_IN: "Sign In",
+						SIGN_IN_DESCRIPTION:
+							"Welcome back! Please enter your details.",
+						SIGN_UP: "Create Account",
+						SIGN_UP_DESCRIPTION:
+							"Let's get you started with a free account.",
+					}}
+					credentials={{
+						passwordValidation:{
+							minLength:AUTH_CONFIG.emailAndPassword.minPasswordLength,
+							maxLength:AUTH_CONFIG.emailAndPassword.maxPasswordLength
+						},
+						confirmPassword:true,
+						forgotPassword:true,
+						rememberMe:true,					
+}}
+					// TODO:(https://github.com/acmutsa/Fallback/issues/20):Enable avatar upload handling
 					// avatar={{
 					// 	upload: async (file) => {
 					// 		const formData = new FormData();

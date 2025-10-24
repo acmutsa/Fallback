@@ -5,7 +5,6 @@ import { Toaster } from "./components/ui/sonner.tsx";
 import "./styles.css";
 import reportWebVitals from "./reportWebVitals.ts";
 import { createAppRouter } from "./router.tsx";
-import { Providers } from "./providers.tsx";
 
 
 // Create a new router instance
