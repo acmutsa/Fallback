@@ -3,9 +3,9 @@ import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 import { getSession } from "@/lib/functions/auth";
 import { redirect } from "@tanstack/react-router";
 import { isProtectedRoute } from "@/lib/functions/auth";
-import ErrorComponent from "@/components/shared/error";
 import type { RouterContext } from "@/lib/types";
 import { Providers } from "@/providers";
+// import ErrorComponent from "@/components/shared/error";
 
 
 export const Route = createRootRouteWithContext<RouterContext>()({
@@ -31,8 +31,8 @@ export const Route = createRootRouteWithContext<RouterContext>()({
 			<Providers>
 				<Outlet />
 			</Providers>
-			<TanStackRouterDevtools />
+			{/* <TanStackRouterDevtools /> */}
 		</>
 	),
-	errorComponent: ({ error }) => <ErrorComponent errorToLog={error} />
+	// errorComponent: ({ error }) => <ErrorComponent errorToLog={error} />
 })

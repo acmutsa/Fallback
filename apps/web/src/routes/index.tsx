@@ -2,19 +2,19 @@ import { createFileRoute } from "@tanstack/react-router";
 import { APP_NAME } from "shared/constants";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { pingServerQuery } from "@/lib/queries";
+import { pingServerQueryClient } from "@/lib/queries";
 import { useQuery } from "@tanstack/react-query";
 import { SignedIn, SignedOut, UserButton } from "@daveyplate/better-auth-ui";
 import { Link } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/")({
 	loader: ({ context: { queryClient } }) =>
-		queryClient.ensureQueryData(pingServerQuery),
+		queryClient.ensureQueryData(pingServerQueryClient),
 	component: App,
 });
 
 function App() {
-	const { data, refetch } = useQuery(pingServerQuery);
+	const { data, refetch } = useQuery(pingServerQueryClient);
 	return (
 		<>
 			<SignedOut>

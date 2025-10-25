@@ -1,4 +1,5 @@
 export const APP_NAME = "Fallback";
+export const APP_VERSION = "0.1.0";
 export const PERMISSIONS_CONFIG = {
 	siteRoles:{
 
@@ -9,6 +10,7 @@ export const PERMISSIONS_CONFIG = {
 		}
 	}
 };
+
 export const AUTH_CONFIG = {
 	emailAndPassword: {
 		enabled: true,

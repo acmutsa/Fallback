@@ -3,6 +3,7 @@ import { createClient } from "@libsql/client/web";
 import * as schema from "./schema";
 import dotenv from "dotenv";
 
+
 dotenv.config({
 	path: "../../.env",
 	debug: true,
@@ -10,6 +11,7 @@ dotenv.config({
 
 export * from "drizzle-orm";
 export * from "./schema";
+export * from "./queries";
 
 console.log(process.env);
 

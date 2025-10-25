@@ -15,9 +15,10 @@ import { Route as SignUpIndexRouteImport } from './routes/sign-up/index'
 import { Route as SignInIndexRouteImport } from './routes/sign-in/index'
 import { Route as SettingsIndexRouteImport } from './routes/settings/index'
 import { Route as ProfileIndexRouteImport } from './routes/profile/index'
+import { Route as FeedbackIndexRouteImport } from './routes/feedback/index'
 import { Route as TeamNewRouteImport } from './routes/team/new'
+import { Route as TeamJoinRouteImport } from './routes/team/join'
 import { Route as TeamTeamIdIndexRouteImport } from './routes/team/$teamId/index'
-import { Route as TeamTeamIdJoinRouteImport } from './routes/team/$teamId/join'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -49,9 +50,19 @@ const ProfileIndexRoute = ProfileIndexRouteImport.update({
   path: '/profile/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const FeedbackIndexRoute = FeedbackIndexRouteImport.update({
+  id: '/feedback/',
+  path: '/feedback/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TeamNewRoute = TeamNewRouteImport.update({
   id: '/team/new',
   path: '/team/new',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TeamJoinRoute = TeamJoinRouteImport.update({
+  id: '/team/join',
+  path: '/team/join',
   getParentRoute: () => rootRouteImport,
 } as any)
 const TeamTeamIdIndexRoute = TeamTeamIdIndexRouteImport.update({
@@ -59,91 +70,93 @@ const TeamTeamIdIndexRoute = TeamTeamIdIndexRouteImport.update({
   path: '/team/$teamId/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const TeamTeamIdJoinRoute = TeamTeamIdJoinRouteImport.update({
-  id: '/team/$teamId/join',
-  path: '/team/$teamId/join',
-  getParentRoute: () => rootRouteImport,
-} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/team/join': typeof TeamJoinRoute
   '/team/new': typeof TeamNewRoute
+  '/feedback': typeof FeedbackIndexRoute
   '/profile': typeof ProfileIndexRoute
   '/settings': typeof SettingsIndexRoute
   '/sign-in': typeof SignInIndexRoute
   '/sign-up': typeof SignUpIndexRoute
   '/team': typeof TeamIndexRoute
-  '/team/$teamId/join': typeof TeamTeamIdJoinRoute
   '/team/$teamId': typeof TeamTeamIdIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/team/join': typeof TeamJoinRoute
   '/team/new': typeof TeamNewRoute
+  '/feedback': typeof FeedbackIndexRoute
   '/profile': typeof ProfileIndexRoute
   '/settings': typeof SettingsIndexRoute
   '/sign-in': typeof SignInIndexRoute
   '/sign-up': typeof SignUpIndexRoute
   '/team': typeof TeamIndexRoute
-  '/team/$teamId/join': typeof TeamTeamIdJoinRoute
   '/team/$teamId': typeof TeamTeamIdIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/team/join': typeof TeamJoinRoute
   '/team/new': typeof TeamNewRoute
+  '/feedback/': typeof FeedbackIndexRoute
   '/profile/': typeof ProfileIndexRoute
   '/settings/': typeof SettingsIndexRoute
   '/sign-in/': typeof SignInIndexRoute
   '/sign-up/': typeof SignUpIndexRoute
   '/team/': typeof TeamIndexRoute
-  '/team/$teamId/join': typeof TeamTeamIdJoinRoute
   '/team/$teamId/': typeof TeamTeamIdIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/team/join'
     | '/team/new'
+    | '/feedback'
     | '/profile'
     | '/settings'
     | '/sign-in'
     | '/sign-up'
     | '/team'
-    | '/team/$teamId/join'
     | '/team/$teamId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/team/join'
     | '/team/new'
+    | '/feedback'
     | '/profile'
     | '/settings'
     | '/sign-in'
     | '/sign-up'
     | '/team'
-    | '/team/$teamId/join'
     | '/team/$teamId'
   id:
     | '__root__'
     | '/'
+    | '/team/join'
     | '/team/new'
+    | '/feedback/'
     | '/profile/'
     | '/settings/'
     | '/sign-in/'
     | '/sign-up/'
     | '/team/'
-    | '/team/$teamId/join'
     | '/team/$teamId/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  TeamJoinRoute: typeof TeamJoinRoute
   TeamNewRoute: typeof TeamNewRoute
+  FeedbackIndexRoute: typeof FeedbackIndexRoute
   ProfileIndexRoute: typeof ProfileIndexRoute
   SettingsIndexRoute: typeof SettingsIndexRoute
   SignInIndexRoute: typeof SignInIndexRoute
   SignUpIndexRoute: typeof SignUpIndexRoute
   TeamIndexRoute: typeof TeamIndexRoute
-  TeamTeamIdJoinRoute: typeof TeamTeamIdJoinRoute
   TeamTeamIdIndexRoute: typeof TeamTeamIdIndexRoute
 }
 
@@ -191,11 +204,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProfileIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/feedback/': {
+      id: '/feedback/'
+      path: '/feedback'
+      fullPath: '/feedback'
+      preLoaderRoute: typeof FeedbackIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/team/new': {
       id: '/team/new'
       path: '/team/new'
       fullPath: '/team/new'
       preLoaderRoute: typeof TeamNewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/team/join': {
+      id: '/team/join'
+      path: '/team/join'
+      fullPath: '/team/join'
+      preLoaderRoute: typeof TeamJoinRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/team/$teamId/': {
@@ -205,25 +232,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TeamTeamIdIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/team/$teamId/join': {
-      id: '/team/$teamId/join'
-      path: '/team/$teamId/join'
-      fullPath: '/team/$teamId/join'
-      preLoaderRoute: typeof TeamTeamIdJoinRouteImport
-      parentRoute: typeof rootRouteImport
-    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  TeamJoinRoute: TeamJoinRoute,
   TeamNewRoute: TeamNewRoute,
+  FeedbackIndexRoute: FeedbackIndexRoute,
   ProfileIndexRoute: ProfileIndexRoute,
   SettingsIndexRoute: SettingsIndexRoute,
   SignInIndexRoute: SignInIndexRoute,
   SignUpIndexRoute: SignUpIndexRoute,
   TeamIndexRoute: TeamIndexRoute,
-  TeamTeamIdJoinRoute: TeamTeamIdJoinRoute,
   TeamTeamIdIndexRoute: TeamTeamIdIndexRoute,
 }
 export const routeTree = rootRouteImport

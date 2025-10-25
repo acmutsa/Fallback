@@ -5,9 +5,15 @@ import { Link, useRouter,  } from "@tanstack/react-router";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { queryClient } from "./router";
 import { AUTH_CONFIG } from "shared/constants";
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { AppSidebar } from "./components/shared/AppSidebar/app-sidebar";
+import { useLocation } from "@tanstack/react-router";
+import { shouldShowSidebar } from "./lib/utils";
 
 export function Providers({ children }: { children: React.ReactNode }) {
 	const router = useRouter();
+	const location = useLocation();
+	
 	return (
 		// Query client is caching something it def should not be so we need to look at this later
 		<QueryClientProvider client={queryClient}>
@@ -23,7 +29,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
 					persistClient={false}
 					basePath="/"
 					account={{
-						basePath:"/"
+						basePath: "/",
 					}}
 					baseURL={
 						import.meta.env.VITE_FALLBACK_WEB_URL ||
@@ -41,15 +47,31 @@ export function Providers({ children }: { children: React.ReactNode }) {
 							"Let's get you started with a free account.",
 					}}
 					credentials={{
-						passwordValidation:{
-							minLength:AUTH_CONFIG.emailAndPassword.minPasswordLength,
-							maxLength:AUTH_CONFIG.emailAndPassword.maxPasswordLength
+						passwordValidation: {
+							minLength:
+								AUTH_CONFIG.emailAndPassword.minPasswordLength,
+							maxLength:
+								AUTH_CONFIG.emailAndPassword.maxPasswordLength,
 						},
-						confirmPassword:true,
-						forgotPassword:true,
-						rememberMe:true,					
-}}
-					// TODO:(https://github.com/acmutsa/Fallback/issues/20):Enable avatar upload handling
+						confirmPassword: true,
+						forgotPassword: true,
+						rememberMe: true,
+					}}
+				>
+					<SidebarProvider>
+						<AppSidebar hidden={!shouldShowSidebar(location.pathname)} />
+						<>
+							<SidebarTrigger hidden={!shouldShowSidebar(location.pathname)} />
+							{children}
+						</>
+					</SidebarProvider>
+				</AuthUIProviderTanstack>
+			</AuthQueryProvider>
+		</QueryClientProvider>
+	);
+}
+
+// TODO:(https://github.com/acmutsa/Fallback/issues/20):Enable avatar upload handling
 					// avatar={{
 					// 	upload: async (file) => {
 					// 		const formData = new FormData();
@@ -72,10 +94,3 @@ export function Providers({ children }: { children: React.ReactNode }) {
 					// 	// Useful for CDN optimization (Cloudinary, Imgix, ImgProxy, etc.)
 					// 	Image: Image, // Use Next.js Image component for avatars
 					// }}
-				>
-					{children}
-				</AuthUIProviderTanstack>
-			</AuthQueryProvider>
-		</QueryClientProvider>
-	);
-}
