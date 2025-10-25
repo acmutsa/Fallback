@@ -16,18 +16,23 @@ import { Link } from "@tanstack/react-router";
 import { Folder, Forward, Trash2 } from "lucide-react";
 import { getUserTeamsQueryClient } from "@/lib/queries";
 import { queryClient } from "@/router";
-
 import { MoreHorizontal } from "lucide-react";
-export default async function NavTeamsList() {
+import { useQuery } from "@tanstack/react-query";
+
+export default function NavTeamsList() {
 	const { isMobile } = useSidebar();
-	const userTeamsResult = await queryClient.fetchQuery(
+	const { data: userTeamsResult, isFetching } = useQuery(
 		getUserTeamsQueryClient,
 	);
-	const userTeams = userTeamsResult.data;
+	const userTeams = userTeamsResult?.data;
+
+	if (isFetching) {
+		return <h1>Loading...</h1>;
+	}
 
 	console.log(userTeams);
 
-	return userTeams.map((team) => (
+	return userTeams?.map((team) => (
 		<SidebarMenuItem key={team.id}>
 			<SidebarMenuButton asChild>
 				<Link
