@@ -1,8 +1,8 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute } from "@tanstack/react-router";
 
-export const Route = createFileRoute('/team/$teamId/')({
-  component: RouteComponent,
-})
+export const Route = createFileRoute("/team/$teamId/")({
+	component: RouteComponent,
+});
 
 function RouteComponent() {
 	const { teamId } = Route.useParams();

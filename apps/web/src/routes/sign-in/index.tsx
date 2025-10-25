@@ -1,18 +1,17 @@
-import { createFileRoute } from '@tanstack/react-router'
-import { AuthView } from '@daveyplate/better-auth-ui'
-import { APP_NAME } from 'shared/constants';
-import { redirectIfSignedIn } from '@/lib/functions/auth';
+import { createFileRoute } from "@tanstack/react-router";
+import { AuthView } from "@daveyplate/better-auth-ui";
+import { APP_NAME } from "shared/constants";
+import { redirectIfSignedIn } from "@/lib/functions/auth";
 
-
-export const Route = createFileRoute('/sign-in/')({
-  component: RouteComponent,
-  beforeLoad(ctx) {
-    redirectIfSignedIn(ctx.context);
-  }
-})
+export const Route = createFileRoute("/sign-in/")({
+	component: RouteComponent,
+	beforeLoad(ctx) {
+		redirectIfSignedIn(ctx.context);
+	},
+});
 
 function RouteComponent() {
-  return (
+	return (
 		<div className="flex flex-row w-screen h-screen">
 			<div className="flex flex-col items-center justify-center w-[60%] bg-violet-500 text-white gap-y-2">
 				<h1 className="text-7xl font-black text-center ">
@@ -26,5 +25,5 @@ function RouteComponent() {
 				<AuthView className="h-fit" view="SIGN_IN" />
 			</div>
 		</div>
-  );
+	);
 }

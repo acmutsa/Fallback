@@ -18,8 +18,8 @@ export const pingServerQueryClient = queryOptions({
 export const getUserTeamsQueryClient = queryOptions({
 	queryKey: ["user", "teams"],
 	queryFn: async () => {
-		const response = await apiClient.team.$get().catch(()=>undefined);
-		if (response?.status === 200){
+		const response = await apiClient.team.$get().catch(() => undefined);
+		if (response?.status === 200) {
 			return response.json();
 		}
 
@@ -27,17 +27,18 @@ export const getUserTeamsQueryClient = queryOptions({
 	},
 });
 
-export const getUserInviteQueryClient = (inv?:string, teamId?:string) => queryOptions({
-	queryKey: ["team","join", inv, teamId],
-	queryFn: async () => {
-		if (!inv && !teamId){
-			throw new Error("Invite code or Team ID required");
-		}
-		const response = await apiClient.team.join.$post({
-			param:{
-				inv,
-				teamId
+export const getUserInviteQueryClient = (inv?: string, teamId?: string) =>
+	queryOptions({
+		queryKey: ["team", "join", inv, teamId],
+		queryFn: async () => {
+			if (!inv && !teamId) {
+				throw new Error("Invite code or Team ID required");
 			}
-		})
-	},
-});
+			const response = await apiClient.team.join.$post({
+				param: {
+					inv,
+					teamId,
+				},
+			});
+		},
+	});

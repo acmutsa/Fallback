@@ -6,6 +6,6 @@ import { getSession } from "@/lib/functions/auth";
 export type EmailSignUpType = z.infer<typeof emailSignUpSchema>;
 export type EmailSignInType = z.infer<typeof emailSignInSchema>;
 export type RouterContext = {
-  queryClient: QueryClient;
-  auth?: Awaited<ReturnType<typeof getSession>>;
+	queryClient: QueryClient;
+	auth?: Awaited<ReturnType<typeof getSession>>;
 };

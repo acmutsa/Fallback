@@ -46,7 +46,9 @@ function App() {
 
 			<SignedIn>
 				<UserButton />
-				<Link to="/team/$teamId" params={{ teamId: "123" }}>Go to protected route</Link>
+				<Link to="/team/$teamId" params={{ teamId: "123" }}>
+					Go to protected route
+				</Link>
 			</SignedIn>
 		</>
 	);

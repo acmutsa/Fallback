@@ -35,7 +35,6 @@ export const api = HonoBetterAuth()
 	.route("/api/auth/*", authHandler)
 	.route("/team", teamHandler);
 
-
 ///
 
 // cron stuff

@@ -6,7 +6,7 @@ import {
 	primaryKey,
 } from "drizzle-orm/sqlite-core";
 import { nanoid } from "nanoid";
-import {STANDARD_NANOID_SIZE} from "shared/constants";
+import { STANDARD_NANOID_SIZE } from "shared/constants";
 
 const STANDARD_VARCHAR_LENGTH = 255;
 

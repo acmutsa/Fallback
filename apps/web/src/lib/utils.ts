@@ -2,7 +2,7 @@ import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { GREETINGS_FUNCTIONS } from "shared/constants";
 
-const HIDE_SIDEBAR_PATHS = ['/sign-in','/sign-up'];
+const HIDE_SIDEBAR_PATHS = ["/sign-in", "/sign-up"];
 
 export function cn(...inputs: ClassValue[]) {
 	return twMerge(clsx(inputs));
@@ -32,6 +32,6 @@ export function getRandomSignUpGreeting(name: string): string {
 	return randomGreetingFunction(name);
 }
 
-export function shouldShowSidebar(pathname:string){
+export function shouldShowSidebar(pathname: string) {
 	return !HIDE_SIDEBAR_PATHS.includes(pathname);
 }

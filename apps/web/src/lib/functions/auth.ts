@@ -3,15 +3,15 @@ import { PUBLIC_ROUTES } from "shared/constants";
 import type { RouterContext } from "../types";
 import { redirect } from "@tanstack/react-router";
 
-export function isPublicRoute(pathname:string){
+export function isPublicRoute(pathname: string) {
 	return PUBLIC_ROUTES.includes(pathname);
 }
 
-export function isProtectedRoute(pathname:string){
+export function isProtectedRoute(pathname: string) {
 	return !isPublicRoute(pathname);
 }
 
-export async function getSession(){
+export async function getSession() {
 	return authClient.getSession();
 }
 
@@ -20,10 +20,10 @@ export async function signOut() {
 	return { data, error };
 }
 
-export function redirectIfSignedIn(ctx: RouterContext, to:string = '/') {
-	if (ctx.auth?.data){
-      throw redirect({
-        to
-      })
-    }
+export function redirectIfSignedIn(ctx: RouterContext, to: string = "/") {
+	if (ctx.auth?.data) {
+		throw redirect({
+			to,
+		});
+	}
 }

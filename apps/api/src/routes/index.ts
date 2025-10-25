@@ -9,4 +9,11 @@ const healthHandler = HonoBetterAuth().get("/", (c) => {
 	return c.json({ status: "It's alive!" }, 200);
 });
 
-export { healthHandler, authHandler, backupHandler, logHandler, userhandler , teamHandler };
+export {
+	healthHandler,
+	authHandler,
+	backupHandler,
+	logHandler,
+	userhandler,
+	teamHandler,
+};

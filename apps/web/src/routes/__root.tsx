@@ -7,24 +7,23 @@ import type { RouterContext } from "@/lib/types";
 import { Providers } from "@/providers";
 // import ErrorComponent from "@/components/shared/error";
 
-
 export const Route = createRootRouteWithContext<RouterContext>()({
-	beforeLoad: async({location}) =>{
+	beforeLoad: async ({ location }) => {
 		const auth = await getSession();
 		if (isProtectedRoute(location.pathname)) {
-			if (!auth.data){
+			if (!auth.data) {
 				throw redirect({
-					to:"/sign-in",
+					to: "/sign-in",
 					// Used to power a redirect after successful login
-					search:{
-						redirect:location.href
-					}
-				})
+					search: {
+						redirect: location.href,
+					},
+				});
 			}
 		}
 		return {
-			auth
-		}
+			auth,
+		};
 	},
 	component: () => (
 		<>
@@ -35,4 +34,4 @@ export const Route = createRootRouteWithContext<RouterContext>()({
 		</>
 	),
 	// errorComponent: ({ error }) => <ErrorComponent errorToLog={error} />
-})
+});

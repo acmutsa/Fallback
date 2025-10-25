@@ -1,14 +1,12 @@
 export const APP_NAME = "Fallback";
 export const APP_VERSION = "0.1.0";
 export const PERMISSIONS_CONFIG = {
-	siteRoles:{
-
+	siteRoles: {},
+	teamRoles: {
+		MEMBER: {
+			canRead: true,
+		},
 	},
-	teamRoles:{
-		MEMBER:{
-			canRead:true,
-		}
-	}
 };
 
 export const AUTH_CONFIG = {
@@ -53,6 +51,6 @@ export const GREETINGS_FUNCTIONS = {
 	],
 };
 
-export const PUBLIC_ROUTES = ["/","/sign-in", "/sign-up"];
+export const PUBLIC_ROUTES = ["/", "/sign-in", "/sign-up"];
 
 export const STANDARD_NANOID_SIZE = 12;
