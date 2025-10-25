@@ -3,6 +3,7 @@ import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { db } from "db"; // your drizzle instance
 import { APP_NAME, AUTH_CONFIG } from "shared/constants";
 import { env } from "../env";
+import { FieldAttribute, FieldType } from "better-auth/db";
 
 export const auth = betterAuth({
 	database: drizzleAdapter(db, {
@@ -33,24 +34,11 @@ export const auth = betterAuth({
 		},
 		// this declares the extra fields that are not in the default user schema that better auth creates, but are in the database
 		additionalFields: {
-			firstName: {
-				type: "string",
-				defaultValue: "",
-			},
-			lastName: {
-				type: "string",
-				defaultValue: "",
-			},
-			lastSeen: {
-				type: "date",
-				required: false,
-				input: false,
-			},
-			siteRole: {
-				type: "string",
-				defaultValue: "USER",
-				input: false,
-			},
+			...(AUTH_CONFIG.additionalFields as
+				| {
+						[key: string]: FieldAttribute<FieldType>;
+				  }
+				| undefined),
 		},
 	},
 	advanced: {

@@ -33,6 +33,26 @@ export const AUTH_CONFIG = {
 			icon_path: "some test idk",
 		},
 	},
+	additionalFields: {
+		firstName: {
+			type: "string",
+			defaultValue: "",
+		},
+		lastName: {
+			type: "string",
+			defaultValue: "",
+		},
+		lastSeen: {
+			type: "date",
+			required: false,
+			input: false,
+		},
+		siteRole: {
+			type: "string",
+			defaultValue: "USER",
+			input: false,
+		},
+	},
 };
 
 export const GREETINGS_FUNCTIONS = {
