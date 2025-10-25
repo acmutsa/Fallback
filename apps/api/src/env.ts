@@ -6,7 +6,7 @@ export const env = createEnv({
 			description:
 				"Account ID for the Cloudflare account. Note that this ID should be the same one the bucket is hosted in.",
 		}),
-		FALLBACK_WEB_URL: z
+		VITE_FALLBACK_WEB_URL: z
 			.string({
 				description:
 					"The URL of the frontend. DO NOT ADD A TRAILING SLASH",
@@ -15,7 +15,7 @@ export const env = createEnv({
 		R2_ACCESS_KEY_ID: z.string(),
 		R2_SECRET_ACCESS_KEY: z.string(),
 		BETTER_AUTH_SECRET: z.string(),
-		// TODO: add these back once the oauth stuff is implemented.
+		// TODO(https://github.com/acmutsa/Fallback/issues/14): add these back once the oauth stuff is implemented.
 		// GOOGLE_CLIENT_ID: z.string(),
 		// GOOGLE_CLIENT_SECRET: z.string(),
 		// DISCORD_CLIENT_ID: z.string(),

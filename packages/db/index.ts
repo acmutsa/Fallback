@@ -10,6 +10,7 @@ dotenv.config({
 
 export * from "drizzle-orm";
 export * from "./schema";
+export * from "./queries";
 
 console.log(process.env);
 

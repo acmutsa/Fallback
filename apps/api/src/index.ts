@@ -8,6 +8,7 @@ import {
 	userhandler,
 	logHandler,
 	healthHandler,
+	teamHandler,
 } from "./routes";
 import { generalCorsPolicy, betterAuthCorsPolicy } from "./lib/functions/cors";
 import { HonoBetterAuth } from "./lib/functions";
@@ -31,7 +32,8 @@ export const api = HonoBetterAuth()
 	.route("/log", logHandler)
 	.route("/backup", backupHandler)
 	.route("/user", userhandler)
-	.route("/api/auth/*", authHandler); //TODO: Ensure that this is the correct route segment to start requests from.
+	.route("/api/auth/*", authHandler)
+	.route("/team", teamHandler);
 
 ///
 

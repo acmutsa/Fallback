@@ -12,12 +12,12 @@ const userhandler = HonoBetterAuth()
 		}
 		return c.json({ user }, 200);
 	})
+	// This needs a permission check. Only admins of the site should be able to see ths endpoint
 	.get(
 		"/:userId",
 		zValidator(
 			"query",
 			z.object({
-				// TODO: Tighten up a little bit
 				userId: z.string().min(1, "User ID is required"),
 			}),
 		),

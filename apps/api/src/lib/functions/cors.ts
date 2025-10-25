@@ -5,7 +5,7 @@ import { env } from "../../env";
  * General CORS policy for the API. Will run on every request, but others can be specified for individual routes.
  */
 export const generalCorsPolicy = cors({
-	origin: env.FALLBACK_WEB_URL,
+	origin: env.VITE_FALLBACK_WEB_URL,
 	allowHeaders: [
 		"Content-Type",
 		"Authorization",
@@ -21,7 +21,7 @@ export const generalCorsPolicy = cors({
  * CORS policy specifically for the Better Auth routes.
  */
 export const betterAuthCorsPolicy = cors({
-	origin: env.FALLBACK_WEB_URL,
+	origin: env.VITE_FALLBACK_WEB_URL,
 	allowHeaders: ["Content-Type", "Authorization"],
 	allowMethods: ["POST", "GET", "OPTIONS"],
 	exposeHeaders: ["Content-Length"],

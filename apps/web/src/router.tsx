@@ -4,10 +4,10 @@ import { createRouter } from "@tanstack/react-router";
 import { setupRouterSsrQueryIntegration } from "@tanstack/react-router-ssr-query";
 import { routeTree } from "./routeTree.gen";
 
-export function createAppRouter() {
-	// Create a new query client instance
-	const queryClient = new QueryClient();
+// Create a new query client instance
+export const queryClient = new QueryClient();
 
+export function createAppRouter() {
 	const router = createRouter({
 		routeTree,
 		context: { queryClient },

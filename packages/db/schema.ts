@@ -4,12 +4,9 @@ import {
 	text,
 	sqliteTable,
 	primaryKey,
-	integer,
-	text,
-	sqliteTable,
-	primaryKey,
 } from "drizzle-orm/sqlite-core";
 import { nanoid } from "nanoid";
+import { STANDARD_NANOID_SIZE } from "shared/constants";
 
 const STANDARD_VARCHAR_LENGTH = 255;
 
@@ -28,14 +25,14 @@ function standardDateFactory() {
 function standardIdFactory(prefix?: string) {
 	return text("id")
 		.notNull()
-		.$defaultFn(() => `${prefix ?? ""}${nanoid()}`);
+		.$defaultFn(() => `${prefix ?? ""}${nanoid(STANDARD_NANOID_SIZE)}`);
 }
 
 const logType = text({ enum: ["INFO", "WARNING", "ERROR"] });
 const invocationType = text({ enum: ["MANUAL", "CRON"] });
 const databaseType = text({ enum: ["SQLITE", "POSTGRESQL"] });
 const backupResult = text({ enum: ["SUCCESS", "FAILURE", "CANCELED"] });
-const roleType = text({ enum: ["ADMIN", "MEMBER"] });
+const memberRoleType = text({ enum: ["ADMIN", "MEMBER"] });
 const siteRoleType = text({ enum: ["SUPER_ADMIN", "ADMIN", "USER"] });
 
 export const user = sqliteTable("user", {
@@ -43,8 +40,9 @@ export const user = sqliteTable("user", {
 	firstName: text("first_name", { length: 255 }).notNull(),
 	lastName: text("last_name", { length: 255 }).notNull(),
 	email: text("email").notNull().unique(),
-	pronouns: text("pronouns", { length: 255 }),
-	createdAt: standardDateFactory(),
+	createdAt: integer("created_at", { mode: "timestamp_ms" })
+		.notNull()
+		.default(sql`(current_timestamp)`),
 	emailVerified: integer("email_verified", { mode: "boolean" }).notNull(),
 	image: text("image"),
 	updatedAt: integer("updated_at", { mode: "timestamp" }).notNull(),
@@ -80,7 +78,7 @@ export const userToTeam = sqliteTable(
 		teamId: text("team_id")
 			.notNull()
 			.references(() => team.id, { onDelete: "cascade" }),
-		role: roleType.notNull().default("MEMBER"),
+		role: memberRoleType.notNull().default("MEMBER"),
 	},
 	(table) => [
 		primaryKey({ columns: [table.userId, table.teamId] }), // composite primary key

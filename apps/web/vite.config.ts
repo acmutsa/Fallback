@@ -29,5 +29,5 @@ export default defineConfig({
 	},
 });
 
-// TODO: Come back and look for a way to validate the environment variables before the app starts up and fail if they are not validated
-// TODO: Add intellisense for import.meta.env - https://vite.dev/guide/env-and-mode.html#intellisense-for-typescript
+// TODO(https://github.com/acmutsa/Fallback/issues/15): Come back and look for a way to validate the environment variables before the app starts up and fail if they are not validated
+// TODO(https://github.com/acmutsa/Fallback/issues/15): Add intellisense for import.meta.env - https://vite.dev/guide/env-and-mode.html#intellisense-for-typescript

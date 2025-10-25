@@ -1,5 +1,4 @@
 import type { ApiType } from "api";
-// import {env} from "../../env"
 import { hc } from "hono/client";
 
 export const apiClient = hc<ApiType>(
