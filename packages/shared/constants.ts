@@ -55,7 +55,6 @@ export const AUTH_CONFIG = {
 	},
 };
 
-
 export const PUBLIC_ROUTES = ["/", "/sign-in", "/sign-up", "/forgot-password"];
 
 export const STANDARD_NANOID_SIZE = 12;

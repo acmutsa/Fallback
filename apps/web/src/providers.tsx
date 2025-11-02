@@ -54,8 +54,8 @@ export function Providers({ children }: { children: React.ReactNode }) {
 						rememberMe: true,
 					}}
 				>
-						<Navbar />
-							{children}
+					<Navbar />
+					{children}
 				</AuthUIProviderTanstack>
 			</AuthQueryProvider>
 		</QueryClientProvider>

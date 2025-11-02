@@ -22,28 +22,27 @@ import { authClient } from "@/lib/auth-client";
 import { toast } from "sonner";
 import { useRouter } from "@tanstack/react-router";
 
+export default function UserButton() {
+	const { data: user, isLoading: isFetchingUser } =
+		useQuery(getUserQueryClient);
 
-
-export default function UserButton(){
-  const { data: user, isLoading:isFetchingUser } = useQuery(getUserQueryClient);
-
-  const {
+	const {
 		data: userTeamsResult,
 		isLoading: isFetchingUserTeams,
 		isError,
-  } = useQuery(getUserTeamsQueryClient);
-  const userTeams = userTeamsResult?.data;
+	} = useQuery(getUserTeamsQueryClient);
+	const userTeams = userTeamsResult?.data;
 
-  const {invalidate, navigate} = useRouter();
+	const { invalidate, navigate } = useRouter();
 
-  if (isFetchingUser){
-    return <Skeleton className="w-8 h-8 rounded-full" />
-  }
-  if (!user){
-    return null;
-  }
+	if (isFetchingUser) {
+		return <Skeleton className="w-8 h-8 rounded-full" />;
+	}
+	if (!user) {
+		return null;
+	}
 
-  return (
+	return (
 		<DropdownMenu>
 			<DropdownMenuTrigger asChild className="cursor-pointer">
 				<Avatar>
@@ -141,7 +140,7 @@ export default function UserButton(){
 							toast.error("Failed to log out. Please try again.");
 							return;
 						}
-            invalidate();
+						invalidate();
 						navigate({
 							to: "/",
 						});
@@ -151,15 +150,15 @@ export default function UserButton(){
 				</DropdownMenuItem>
 			</DropdownMenuContent>
 		</DropdownMenu>
-  );
+	);
 }
 
 function UserTeamsLoadingSkeleton() {
-  return (
-    <div className="flex flex-col gap-2 p-2">
-      {Array.from({ length: 3 }).map((_, i) => (
-        <Skeleton key={i} className="w-full h-6 rounded-md" />
-      ))}
-    </div>
-  );
+	return (
+		<div className="flex flex-col gap-2 p-2">
+			{Array.from({ length: 3 }).map((_, i) => (
+				<Skeleton key={i} className="w-full h-6 rounded-md" />
+			))}
+		</div>
+	);
 }

@@ -1,7 +1,7 @@
 import { zValidator } from "@hono/zod-validator";
 import { HonoBetterAuth } from "../lib/functions";
 import { db, eq, and, getUserTeamsQuery, userToTeam } from "db";
-import { joinTeamSchema , teamIdValidator} from "shared/zod";
+import { joinTeamSchema, teamIdValidator } from "shared/zod";
 
 const teamHandler = HonoBetterAuth()
 	.get("/", async (c) => {
@@ -45,7 +45,5 @@ const teamHandler = HonoBetterAuth()
 			);
 
 		return c.json({ message: "left_team_success" }, 200);
-	})
-	;
-
+	});
 export default teamHandler;

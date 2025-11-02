@@ -16,12 +16,11 @@ export const pingServerQueryClient = queryOptions({
 	},
 });
 
-
 export const getUserQueryClient = queryOptions({
 	queryKey: ["user"],
 	queryFn: async () => {
 		const response = await authClient.getSession();
-		
+
 		if (!response.error && response.data) {
 			return response.data.user;
 		}
@@ -41,14 +40,13 @@ export const getUserTeamsQueryClient = queryOptions({
 	},
 });
 
-
 export const leaveTeamMutationClient = (teamId: string) =>
 	mutationOptions({
 		mutationKey: ["team", teamId, "leave"],
 		mutationFn: async () => {
 			const response = await apiClient.team[":teamId"].leave.$post({
-				param:teamId,
-			})
+				param: teamId,
+			});
 			if (response?.status === 200) {
 				return response.json();
 			}
@@ -56,5 +54,3 @@ export const leaveTeamMutationClient = (teamId: string) =>
 			throw new Error("Something went wrong");
 		},
 	});
-
-
