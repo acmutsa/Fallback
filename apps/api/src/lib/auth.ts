@@ -11,7 +11,6 @@ export const auth = betterAuth({
 		debugLogs: true,
 	}),
 	trustedOrigins: [env.VITE_FALLBACK_WEB_URL],
-	trustedOrigins: [env.VITE_FALLBACK_WEB_URL],
 	databaseHooks: {
 		user: {
 			create: {

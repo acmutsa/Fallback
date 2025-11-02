@@ -1,5 +1,6 @@
-import { queryOptions } from "@tanstack/react-query";
+import { queryOptions, mutationOptions } from "@tanstack/react-query";
 import { apiClient } from "./api-client";
+import { authClient } from "./auth-client";
 
 export const pingServerQueryClient = queryOptions({
 	queryKey: ["ping"],
@@ -15,6 +16,19 @@ export const pingServerQueryClient = queryOptions({
 	},
 });
 
+
+export const getUserQueryClient = queryOptions({
+	queryKey: ["user"],
+	queryFn: async () => {
+		const response = await authClient.getSession();
+		
+		if (!response.error && response.data) {
+			return response.data.user;
+		}
+		throw new Error("Something went wrong");
+	},
+});
+
 export const getUserTeamsQueryClient = queryOptions({
 	queryKey: ["user", "teams"],
 	queryFn: async () => {
@@ -27,18 +41,20 @@ export const getUserTeamsQueryClient = queryOptions({
 	},
 });
 
-export const getUserInviteQueryClient = (inv?: string, teamId?: string) =>
-	queryOptions({
-		queryKey: ["team", "join", inv, teamId],
-		queryFn: async () => {
-			if (!inv && !teamId) {
-				throw new Error("Invite code or Team ID required");
+
+export const leaveTeamMutationClient = (teamId: string) =>
+	mutationOptions({
+		mutationKey: ["team", teamId, "leave"],
+		mutationFn: async () => {
+			const response = await apiClient.team[":teamId"].leave.$post({
+				param:teamId,
+			})
+			if (response?.status === 200) {
+				return response.json();
 			}
-			const response = await apiClient.team.join.$post({
-				param: {
-					inv,
-					teamId,
-				},
-			});
+
+			throw new Error("Something went wrong");
 		},
 	});
+
+

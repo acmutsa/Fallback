@@ -9,6 +9,7 @@ import { Providers } from "@/providers";
 
 export const Route = createRootRouteWithContext<RouterContext>()({
 	beforeLoad: async ({ location }) => {
+		console.log("Root beforeLoad fired for ", location.pathname);
 		const auth = await getSession();
 		if (isProtectedRoute(location.pathname)) {
 			if (!auth.data) {
@@ -30,7 +31,7 @@ export const Route = createRootRouteWithContext<RouterContext>()({
 			<Providers>
 				<Outlet />
 			</Providers>
-			{/* <TanStackRouterDevtools /> */}
+			<TanStackRouterDevtools />
 		</>
 	),
 	// errorComponent: ({ error }) => <ErrorComponent errorToLog={error} />
