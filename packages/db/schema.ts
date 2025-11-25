@@ -34,6 +34,7 @@ const databaseType = text({ enum: ["SQLITE", "POSTGRESQL"] });
 const backupResult = text({ enum: ["SUCCESS", "FAILURE", "CANCELED"] });
 const memberRoleType = text({ enum: ["ADMIN", "MEMBER"] });
 const siteRoleType = text({ enum: ["SUPER_ADMIN", "ADMIN", "USER"] });
+const teamJoinRequestStatusType = text({ enum: ["PENDING", "APPROVED", "REJECTED"] });
 
 export const user = sqliteTable("user", {
 	id: text("id").primaryKey(),
@@ -59,7 +60,6 @@ export const team = sqliteTable("team", {
 	name: standardVarcharFactory(),
 	createdAt: standardDateFactory(),
 	updatedAt: standardDateFactory(),
-	isprivate: integer({ mode: "boolean" }).notNull().default(true),
 });
 
 export const teamRelations = relations(team, ({ many }) => ({
@@ -113,6 +113,18 @@ export const teamInviteRelations = relations(teamInvite, ({ one }) => ({
 		references: [team.id],
 	}),
 }));
+
+export const teamJoinRequest = sqliteTable("team_join_request", {
+	id: standardIdFactory("tjr_").primaryKey(),
+	teamId: text("team_id")
+		.notNull()
+		.references(() => team.id, { onDelete: "cascade" }),
+	userId: text("user_id")
+		.notNull()
+		.references(() => user.id, { onDelete: "cascade" }),
+	createdAt: standardDateFactory(),
+	status: teamJoinRequestStatusType.notNull().default("PENDING"),
+});
 
 export const backupJob = sqliteTable("backup_job", {
 	id: standardIdFactory("job_").primaryKey(),

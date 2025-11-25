@@ -11,11 +11,11 @@ export const Route = createFileRoute("/team/join")({
 });
 
 function RouteComponent() {
-	const { inv, teamId } = Route.useSearch();
+	const { inv } = Route.useSearch();
 
 	return (
 		<div>
-			Hello "/team/join"! Invite code is {inv} and Team ID is {teamId}
+			Hello "/team/join"! Invite code is {inv}
 		</div>
 	);
 }

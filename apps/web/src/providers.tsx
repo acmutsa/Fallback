@@ -5,10 +5,12 @@ import { Link, useRouter } from "@tanstack/react-router";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { queryClient } from "./router";
 import { AUTH_CONFIG } from "shared/constants";
-import { Navbar } from "./components/shared/Navbar/navbar";
+
 
 export function Providers({ children }: { children: React.ReactNode }) {
 	const router = useRouter();
+
+
 
 	return (
 		// Query client is caching something it def should not be so we need to look at this later
@@ -54,8 +56,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
 						rememberMe: true,
 					}}
 				>
-					<Navbar />
-					{children}
+							{children}
 				</AuthUIProviderTanstack>
 			</AuthQueryProvider>
 		</QueryClientProvider>

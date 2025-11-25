@@ -47,7 +47,7 @@ export default function UserButton() {
 			<DropdownMenuTrigger asChild className="cursor-pointer">
 				<Avatar>
 					<AvatarImage src={user.image || ""} />
-					<AvatarFallback className="bg-gradient-to-tr text-slate-300 from-white to-violet-500">
+					<AvatarFallback className="bg-gradient-to-tr text-white from-slate-200 to-violet-500">
 						{getInitials(user.name)}
 					</AvatarFallback>
 				</Avatar>

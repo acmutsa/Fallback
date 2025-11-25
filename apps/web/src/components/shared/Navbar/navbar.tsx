@@ -12,12 +12,14 @@ import { SignedIn, SignedOut } from "@daveyplate/better-auth-ui";
 import { Button } from "@/components/ui/button";
 
 import UserButton from "./UserButton";
-
+import ThemeSwitcher from "./ThemeSwitcher";
+import { useTheme } from "@/lib/hooks/useTheme";
 export function Navbar() {
 	const isMobile = useIsMobile();
 	const { pathname } = useLocation();
-
+	const {theme,switchTheme} = useTheme();
 	const showNavbar = shouldShowNavbar(pathname);
+	
 	if (!showNavbar) {
 		return null;
 	}
@@ -25,25 +27,26 @@ export function Navbar() {
 	return (
 		<NavigationMenu
 			viewport={isMobile}
-			className="max-w-screen items-start block px-4 py-1 border-b"
+			className="max-w-screen items-start block px-2 py-1 border-b"
 		>
 			<SignedOut>
-				<SignedOutNavList />
+				<SignedOutNavList theme={theme} switchTheme={switchTheme} />
 			</SignedOut>
 			<SignedIn>
-				<SignedInNavList />
+				<SignedInNavList theme={theme} switchTheme={switchTheme} />
 			</SignedIn>
 		</NavigationMenu>
 	);
 }
 
-function SignedOutNavList() {
+function SignedOutNavList({theme,switchTheme}: {theme:string,switchTheme:()=>void}) {
 	return (
 		<NavigationMenuList className="flex w-full flex-wrap items-center justify-between">
 			<NavigationMenuItem className="font-bold text-md">
 				Fallback Placeholder
 			</NavigationMenuItem>
 			<div className="flex flex-row items-center justify-center gap-4">
+				<ThemeSwitcher theme={theme} switchTheme={switchTheme} />
 				<NavigationMenuItem>
 					{/* <Link to="/sign-in"> */}
 					<a href="/sign-in">
@@ -65,16 +68,20 @@ function SignedOutNavList() {
 	);
 }
 
-function SignedInNavList() {
+function SignedInNavList({theme,switchTheme}: {theme:string,switchTheme:()=>void}) {
 	return (
 		<NavigationMenuList className="flex w-full flex-wrap items-center justify-between">
 			<NavigationMenuItem className="font-black text-lg">
 				Fallback Placeholder
 			</NavigationMenuItem>
-
-			<NavigationMenuItem>
-				<UserButton />
-			</NavigationMenuItem>
+			<div className="flex flex-row items-center justify-center gap-4">
+				<NavigationMenuItem>
+					<ThemeSwitcher theme={theme} switchTheme={switchTheme} />
+				</NavigationMenuItem>
+				<NavigationMenuItem>
+					<UserButton />
+				</NavigationMenuItem>
+			</div>
 		</NavigationMenuList>
 	);
 }
