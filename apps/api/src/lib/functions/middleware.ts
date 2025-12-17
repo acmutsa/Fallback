@@ -10,6 +10,7 @@ export async function setUserSessionContextMiddleware(c: Context, next: Next) {
 	if (!session) {
 		c.set("user", null);
 		c.set("session", null);
+		c.set("teamId", null);
 		return next();
 	}
 

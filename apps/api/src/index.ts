@@ -11,15 +11,18 @@ import {
 	teamHandler,
 } from "./routes";
 import { generalCorsPolicy, betterAuthCorsPolicy } from "./lib/functions/cors";
-import { HonoBetterAuth } from "./lib/functions";
+import { HonoBetterAuth,  } from "./lib/functions";
+import { logError } from "./lib/functions/database";
 import {
 	setUserSessionContextMiddleware,
 	authenticatedMiddleware,
 } from "./lib/functions/middleware";
+import { db, log } from "db";
 
 interface Env {}
 
 // api stuff
+// TODO(https://github.com/acmutsa/Fallback/issues/26): Find a way to run logic after the response has been sent. Something like an After function that NextJS has.
 export const api = HonoBetterAuth()
 	.use(
 		"*",
@@ -33,9 +36,30 @@ export const api = HonoBetterAuth()
 	.route("/backup", backupHandler)
 	.route("/user", userhandler)
 	.route("/api/auth/*", authHandler)
-	.route("/team", teamHandler);
+	.route("/team", teamHandler)
+	.onError(async (err,c)=>{
+		const userId = c.get("user")?.id;
+		const teamId = c.get("teamId");
+		const route = c.req.path;
 
-///
+		// Log errors that are not caught by the route handlers 
+		await db.insert(log).values({
+			message:err.message,
+			logType:"ERROR",
+			userId,
+			teamId,
+			route,
+		})
+
+		return c.json({
+			error: "Internal Server Error",
+		},500);
+		
+		
+
+
+	});
+
 
 // cron stuff
 /**

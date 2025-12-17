@@ -12,6 +12,7 @@ export function HonoBetterAuth(options?: HonoOptions<BlankEnv> | undefined) {
 		Variables: {
 			user: UserType;
 			session: SessionType;
+			teamId:string | null;
 		};
 	}>({
 		...options,

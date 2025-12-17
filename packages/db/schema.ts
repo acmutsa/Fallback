@@ -105,6 +105,7 @@ export const teamInvite = sqliteTable("team_invite", {
 	createdAt: standardDateFactory(),
 	expiresAt: integer({ mode: "timestamp_ms" }).notNull(),
 	acceptedAt: integer({ mode: "timestamp_ms" }),
+	role:memberRoleType.default("MEMBER").notNull()
 });
 
 export const teamInviteRelations = relations(teamInvite, ({ one }) => ({
@@ -168,13 +169,20 @@ export const log = sqliteTable("log", {
 	logType: logType.notNull(),
 	message: standardVarcharFactory(),
 	occurredAt: standardDateFactory(),
+	route:text("route"),
+	// TOOD: I think we might want to break these out maybe? Might have a lot of null fields which feels like an anti pattern
 	teamId: text("team_id"),
+	userId:text("user_id"),
 });
 
 export const logRelations = relations(log, ({ one }) => ({
 	team: one(team, {
 		fields: [log.teamId],
 		references: [team.id],
+	}),
+	user: one(user, {
+		fields: [log.userId],
+		references: [user.id],
 	}),
 }));
 

@@ -6,7 +6,7 @@ import { isProtectedRoute } from "@/lib/functions/auth";
 import type { RouterContext } from "@/lib/types";
 import { Providers } from "@/providers";
 import { Navbar } from "@/components/shared/Navbar/navbar";
-// import ErrorComponent from "@/components/shared/error";
+import ErrorComponent from "@/components/shared/Error";
 
 export const Route = createRootRouteWithContext<RouterContext>()({
 	beforeLoad: async ({ location }) => {
@@ -32,8 +32,9 @@ export const Route = createRootRouteWithContext<RouterContext>()({
 			<Providers>
 					<Navbar />
 					<Outlet />
+					<TanStackRouterDevtools />
 			</Providers>
 		);
 	},
-	// errorComponent: ({ error }) => <ErrorComponent errorToLog={error} />
+	errorComponent: ({ error }) => <ErrorComponent errorToLog={error} />
 });

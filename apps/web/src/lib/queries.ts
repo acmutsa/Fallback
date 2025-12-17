@@ -40,6 +40,13 @@ export const getUserTeamsQueryClient = queryOptions({
 	},
 });
 
+export const joinTeamMutationclient =  (teamId:string) => mutationOptions({
+	mutationKey:["team", teamId, "join"],
+	mutationFn: async () => {
+		const response = 
+	}
+})
+
 export const leaveTeamMutationClient = (teamId: string) =>
 	mutationOptions({
 		mutationKey: ["team", teamId, "leave"],
@@ -53,4 +60,4 @@ export const leaveTeamMutationClient = (teamId: string) =>
 
 			throw new Error("Something went wrong");
 		},
-	});
+});
