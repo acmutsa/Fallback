@@ -13,4 +13,4 @@ export const joinTeamSchema = z.object({
 	inv: z.string().min(1).max(30).optional(),
 });
 
-export const teamNameValidator = z.string().min(1).max(250);
+export const teamNameValidator = z.string().min(1).max(255);

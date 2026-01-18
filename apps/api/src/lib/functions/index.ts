@@ -12,7 +12,8 @@ export function HonoBetterAuth(options?: HonoOptions<BlankEnv> | undefined) {
 		Variables: {
 			user: UserType;
 			session: SessionType;
-			teamId:string | null;
+			teamId: string | null;
+			requestId: string | null; // This can be null if we are logging stuff related to system or cron jobs 
 		};
 	}>({
 		...options,

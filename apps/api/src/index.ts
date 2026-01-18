@@ -16,8 +16,8 @@ import { logError } from "./lib/functions/database";
 import {
 	setUserSessionContextMiddleware,
 	authenticatedMiddleware,
+	afterRouteLogicMiddleware,
 } from "./lib/functions/middleware";
-import { db, log } from "db";
 
 interface Env {}
 
@@ -29,6 +29,7 @@ export const api = HonoBetterAuth()
 		generalCorsPolicy, // see if we can get rid of this one maybe later?
 		betterAuthCorsPolicy,
 		async (c, next) => setUserSessionContextMiddleware(c, next),
+		async (c, next) => afterRouteLogicMiddleware(c, next),
 		async (c, next) => authenticatedMiddleware(c, next),
 	)
 	.route("/health", healthHandler)
@@ -37,29 +38,25 @@ export const api = HonoBetterAuth()
 	.route("/user", userhandler)
 	.route("/api/auth/*", authHandler)
 	.route("/team", teamHandler)
-	.onError(async (err,c)=>{
+	.onError(async (err, c) => {
 		const userId = c.get("user")?.id;
 		const teamId = c.get("teamId");
 		const route = c.req.path;
 
-		// Log errors that are not caught by the route handlers 
-		await db.insert(log).values({
-			message:err.message,
-			logType:"ERROR",
+		// Log errors that are not caught by the route handlers
+		await logError(err.message, {
 			userId,
 			teamId,
 			route,
-		})
+		});
 
-		return c.json({
-			error: "Internal Server Error",
-		},500);
-		
-		
-
-
+		return c.json(
+			{
+				error: "Internal Server Error",
+			},
+			500,
+		);
 	});
-
 
 // cron stuff
 /**

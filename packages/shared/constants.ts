@@ -57,7 +57,6 @@ export const AUTH_CONFIG = {
 
 export const PUBLIC_ROUTES = ["/", "/sign-in", "/sign-up", "/forgot-password"];
 
-export const STANDARD_NANOID_SIZE = 12;
 export const THEME_CONFIG = {
 	accessKey: "fallback-theme",
 	dark: "dark",
@@ -72,4 +71,3 @@ export const API_ERROR_MESSAGES = {
 	notFound:"not_found",
 	notAuthorized:"unauthorized"
 }
-

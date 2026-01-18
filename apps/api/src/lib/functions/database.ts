@@ -3,7 +3,7 @@ import { UserType, LoggingOptions, LoggingType } from "../types";
 import { SQLiteRelationalQuery } from "drizzle-orm/sqlite-core/query-builders/query";
 
 /**
- *
+ * 
  */
 
 export async function getDatabaseDumpTurso(
@@ -32,7 +32,6 @@ export async function getDatabaseDumpTurso(
 /**
  * Checks the database connection by pinging it and querying for it's table count.
  * Function will take in an database information and the type to make the appropriate query.
- *
  */
 export async function pingDatabase() {}
 
@@ -68,6 +67,7 @@ export async function isUserSiteAdminOrQueryHasPermissions(
 		: false;
 }
 
+// TODO: I think all of these functions need to end up having the context object being sent into it
 export async function logError(message:string, options?:LoggingOptions){
 	await logToDb({ logType: "ERROR" }, message, options);
 }
@@ -79,7 +79,6 @@ export async function logInfo(message:string, options?:LoggingOptions){
 export async function logWarning(message:string, options?:LoggingOptions){
 	await logToDb({ logType: "WARNING" }, message, options);
 }
-
 
 export async function logToDb(loggingType:LoggingType, message:string, options?:LoggingOptions){
 	await db.insert(log).values({

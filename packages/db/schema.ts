@@ -6,14 +6,21 @@ import {
 	primaryKey,
 } from "drizzle-orm/sqlite-core";
 import { nanoid } from "nanoid";
-import { STANDARD_NANOID_SIZE } from "shared/constants";
 
+
+const STANDARD_NANOID_SIZE = 12;
 const STANDARD_VARCHAR_LENGTH = 255;
 
 function standardVarcharFactory() {
 	return text({
 		length: STANDARD_VARCHAR_LENGTH,
 	}).notNull();
+}
+
+function standardVarcharFactoryNullable() {
+	return text({
+		length: STANDARD_VARCHAR_LENGTH,
+	});
 }
 
 function standardDateFactory() {
@@ -46,7 +53,7 @@ export const user = sqliteTable("user", {
 		.default(sql`(current_timestamp)`),
 	emailVerified: integer("email_verified", { mode: "boolean" }).notNull(),
 	image: text("image"),
-	updatedAt: integer("updated_at", { mode: "timestamp" }).notNull(),
+	updatedAt: integer("updated_at", { mode: "timestamp_ms" }).notNull(),
 	lastSeen: standardDateFactory(),
 	siteRole: siteRoleType.notNull().default("USER"),
 });
@@ -72,11 +79,9 @@ export const teamRelations = relations(team, ({ many }) => ({
 export const userToTeam = sqliteTable(
 	"user_to_team",
 	{
-		userId: text("user_id")
-			.notNull()
+		userId: standardVarcharFactory()
 			.references(() => user.id, { onDelete: "cascade" }),
-		teamId: text("team_id")
-			.notNull()
+		teamId: standardVarcharFactory()
 			.references(() => team.id, { onDelete: "cascade" }),
 		role: memberRoleType.notNull().default("MEMBER"),
 	},
@@ -98,10 +103,9 @@ export const userToTeamRelations = relations(userToTeam, ({ one }) => ({
 
 export const teamInvite = sqliteTable("team_invite", {
 	id: standardIdFactory("invite_").primaryKey(),
-	teamId: text("team_id")
-		.notNull()
+	teamId: standardVarcharFactory()
 		.references(() => team.id, { onDelete: "cascade" }),
-	email: text("email").notNull(),
+	email: standardVarcharFactory().references(() => user.email, { onDelete: "cascade" }),
 	createdAt: standardDateFactory(),
 	expiresAt: integer({ mode: "timestamp_ms" }).notNull(),
 	acceptedAt: integer({ mode: "timestamp_ms" }),
@@ -117,10 +121,10 @@ export const teamInviteRelations = relations(teamInvite, ({ one }) => ({
 
 export const teamJoinRequest = sqliteTable("team_join_request", {
 	id: standardIdFactory("tjr_").primaryKey(),
-	teamId: text("team_id")
+	teamId: standardVarcharFactory()
 		.notNull()
 		.references(() => team.id, { onDelete: "cascade" }),
-	userId: text("user_id")
+	userId: standardVarcharFactory()
 		.notNull()
 		.references(() => user.id, { onDelete: "cascade" }),
 	createdAt: standardDateFactory(),
@@ -133,8 +137,7 @@ export const backupJob = sqliteTable("backup_job", {
 	authenticationData: text({ mode: "json" }).notNull(), //This type might need to be altered. We will see how nice it plays when we write our first data here.
 	databaseType: databaseType.notNull(),
 	cronString: standardVarcharFactory(),
-	teamId: text("team_id")
-		.notNull()
+	teamId: standardVarcharFactory()
 		.references(() => team.id, { onDelete: "cascade" }),
 });
 
@@ -149,8 +152,7 @@ export const backupJobRelations = relations(backupJob, ({ one, many }) => ({
 export const backupJobRun = sqliteTable("backup_job_run", {
 	id: standardIdFactory().primaryKey(),
 	invocationType: invocationType.notNull(),
-	backupJobId: text("backup_job_id")
-		.notNull()
+	backupJobId: standardVarcharFactory()
 		.references(() => backupJob.id, { onDelete: "cascade" }),
 	startedAt: standardDateFactory(),
 	completedAt: integer({ mode: "timestamp_ms" }),
@@ -164,15 +166,18 @@ export const backupJobRunRelations = relations(backupJobRun, ({ one }) => ({
 	}),
 }));
 
+// NOTE: If we want to track a user's journey as they go through a specific request, we can attatch a requestId to this log table and then filter by that when we need to.
 export const log = sqliteTable("log", {
-	id: standardIdFactory().primaryKey(),
+	id: integer("id").primaryKey(),
 	logType: logType.notNull(),
 	message: standardVarcharFactory(),
 	occurredAt: standardDateFactory(),
-	route:text("route"),
+	route: standardVarcharFactory(),
+	requestId: standardVarcharFactory(),
 	// TOOD: I think we might want to break these out maybe? Might have a lot of null fields which feels like an anti pattern
-	teamId: text("team_id"),
-	userId:text("user_id"),
+	teamId: standardVarcharFactoryNullable(),
+	userId: standardVarcharFactoryNullable(),
+	timeElapsedMs: integer("time_elapsed_ms"),
 });
 
 export const logRelations = relations(log, ({ one }) => ({
