@@ -40,19 +40,14 @@ export const getUserTeamsQueryClient = queryOptions({
 	},
 });
 
-export const joinTeamMutationclient =  (teamId:string) => mutationOptions({
-	mutationKey:["team", teamId, "join"],
-	mutationFn: async () => {
-		const response = 
-	}
-})
-
-export const leaveTeamMutationClient = (teamId: string) =>
+export const joinTeamMutationclient = (inviteCode: string) =>
 	mutationOptions({
-		mutationKey: ["team", teamId, "leave"],
+		mutationKey: ["team", inviteCode, "join"],
 		mutationFn: async () => {
-			const response = await apiClient.team[":teamId"].leave.$post({
-				param: teamId,
+			const response = await apiClient.team.join.$post({
+				query: {
+					inv: inviteCode,
+				},
 			});
 			if (response?.status === 200) {
 				return response.json();
@@ -60,4 +55,24 @@ export const leaveTeamMutationClient = (teamId: string) =>
 
 			throw new Error("Something went wrong");
 		},
-});
+	});
+
+export const leaveTeamMutationClient = (teamId: string, userId: string) =>
+	mutationOptions({
+		mutationKey: ["team", teamId, userId, "remove"],
+		mutationFn: async () => {
+			const response = await apiClient.team[":teamId"][
+				":userId"
+			].remove.$delete({
+				param: {
+					teamId,
+					userId,
+				},
+			});
+			if (response?.status === 200) {
+				return response.json();
+			}
+
+			throw new Error("Something went wrong");
+		},
+	});

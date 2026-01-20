@@ -1,6 +1,5 @@
 import { userToTeam, db, and, eq, log } from "db";
 import { UserType, LoggingOptions, LoggingType } from "../types";
-import { SQLiteRelationalQuery } from "drizzle-orm/sqlite-core/query-builders/query";
 import { type Context } from "hono";
 import { isInDevMode } from ".";
 
@@ -63,14 +62,16 @@ export async function getAdminUserForTeam(userId: string, teamId: string) {
 }
 
 // TODO: Come back and make this a generic function that can take in any sqlite query function
-export async function isUserSiteAdminOrQueryHasPermissions(
+export async function isUserSiteAdminOrQueryHasPermissions<T = unknown>(
 	user: NonNullable<UserType>,
-	query: SQLiteRelationalQuery,
+	// Accept either a Promise (already invoked query) or a function that returns a Promise
+	query: Promise<T> | (() => Promise<T>),
 ): Promise<boolean> {
 	if (isSiteAdminUser(user.siteRole)) {
 		return true;
 	}
-	const result = await query();
+
+	const result = typeof query === "function" ? await query() : await query;
 	return !!result;
 }
 

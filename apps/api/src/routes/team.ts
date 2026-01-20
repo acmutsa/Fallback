@@ -4,7 +4,6 @@ import {
 	db,
 	eq,
 	and,
-	or,
 	gte,
 	isNull,
 	getUserTeamsQuery,
