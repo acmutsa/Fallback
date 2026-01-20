@@ -7,7 +7,6 @@ import {
 } from "drizzle-orm/sqlite-core";
 import { nanoid } from "nanoid";
 
-
 const STANDARD_NANOID_SIZE = 12;
 const STANDARD_VARCHAR_LENGTH = 255;
 
@@ -41,7 +40,9 @@ const databaseType = text({ enum: ["SQLITE", "POSTGRESQL"] });
 const backupResult = text({ enum: ["SUCCESS", "FAILURE", "CANCELED"] });
 const memberRoleType = text({ enum: ["ADMIN", "MEMBER"] });
 const siteRoleType = text({ enum: ["SUPER_ADMIN", "ADMIN", "USER"] });
-const teamJoinRequestStatusType = text({ enum: ["PENDING", "APPROVED", "REJECTED"] });
+const teamJoinRequestStatusType = text({
+	enum: ["PENDING", "APPROVED", "REJECTED"],
+});
 
 export const user = sqliteTable("user", {
 	id: text("id").primaryKey(),
@@ -79,10 +80,12 @@ export const teamRelations = relations(team, ({ many }) => ({
 export const userToTeam = sqliteTable(
 	"user_to_team",
 	{
-		userId: standardVarcharFactory()
-			.references(() => user.id, { onDelete: "cascade" }),
-		teamId: standardVarcharFactory()
-			.references(() => team.id, { onDelete: "cascade" }),
+		userId: standardVarcharFactory().references(() => user.id, {
+			onDelete: "cascade",
+		}),
+		teamId: standardVarcharFactory().references(() => team.id, {
+			onDelete: "cascade",
+		}),
 		role: memberRoleType.notNull().default("MEMBER"),
 	},
 	(table) => [
@@ -103,13 +106,16 @@ export const userToTeamRelations = relations(userToTeam, ({ one }) => ({
 
 export const teamInvite = sqliteTable("team_invite", {
 	id: standardIdFactory("invite_").primaryKey(),
-	teamId: standardVarcharFactory()
-		.references(() => team.id, { onDelete: "cascade" }),
-	email: standardVarcharFactory().references(() => user.email, { onDelete: "cascade" }),
+	teamId: standardVarcharFactory().references(() => team.id, {
+		onDelete: "cascade",
+	}),
+	email: standardVarcharFactory().references(() => user.email, {
+		onDelete: "cascade",
+	}),
 	createdAt: standardDateFactory(),
 	expiresAt: integer({ mode: "timestamp_ms" }).notNull(),
 	acceptedAt: integer({ mode: "timestamp_ms" }),
-	role:memberRoleType.default("MEMBER").notNull()
+	role: memberRoleType.default("MEMBER").notNull(),
 });
 
 export const teamInviteRelations = relations(teamInvite, ({ one }) => ({
@@ -137,8 +143,9 @@ export const backupJob = sqliteTable("backup_job", {
 	authenticationData: text({ mode: "json" }).notNull(), //This type might need to be altered. We will see how nice it plays when we write our first data here.
 	databaseType: databaseType.notNull(),
 	cronString: standardVarcharFactory(),
-	teamId: standardVarcharFactory()
-		.references(() => team.id, { onDelete: "cascade" }),
+	teamId: standardVarcharFactory().references(() => team.id, {
+		onDelete: "cascade",
+	}),
 });
 
 export const backupJobRelations = relations(backupJob, ({ one, many }) => ({
@@ -152,8 +159,9 @@ export const backupJobRelations = relations(backupJob, ({ one, many }) => ({
 export const backupJobRun = sqliteTable("backup_job_run", {
 	id: standardIdFactory().primaryKey(),
 	invocationType: invocationType.notNull(),
-	backupJobId: standardVarcharFactory()
-		.references(() => backupJob.id, { onDelete: "cascade" }),
+	backupJobId: standardVarcharFactory().references(() => backupJob.id, {
+		onDelete: "cascade",
+	}),
 	startedAt: standardDateFactory(),
 	completedAt: integer({ mode: "timestamp_ms" }),
 	result: backupResult,
@@ -166,17 +174,16 @@ export const backupJobRunRelations = relations(backupJobRun, ({ one }) => ({
 	}),
 }));
 
-// NOTE: If we want to track a user's journey as they go through a specific request, we can attatch a requestId to this log table and then filter by that when we need to.
 export const log = sqliteTable("log", {
 	id: integer("id").primaryKey(),
 	logType: logType.notNull(),
 	message: standardVarcharFactory(),
 	occurredAt: standardDateFactory(),
-	route: standardVarcharFactory(),
-	requestId: standardVarcharFactory(),
-	// TOOD: I think we might want to break these out maybe? Might have a lot of null fields which feels like an anti pattern
+	// TOOD: All of these fields are nullable because not all logs have the same info. There might be a better approach.
 	teamId: standardVarcharFactoryNullable(),
 	userId: standardVarcharFactoryNullable(),
+	route: standardVarcharFactoryNullable(),
+	requestId: standardVarcharFactoryNullable(),
 	timeElapsedMs: integer("time_elapsed_ms"),
 });
 

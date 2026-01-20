@@ -3,6 +3,6 @@ import { createInsertSchema } from "drizzle-zod";
 import { log } from "db";
 
 export const logSchema = createInsertSchema(log).omit({
-  id:true,
-  occurredAt:true,
+	id: true,
+	occurredAt: true,
 });

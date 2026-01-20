@@ -27,14 +27,13 @@ export const Route = createRootRouteWithContext<RouterContext>()({
 		};
 	},
 	component: () => {
-
 		return (
 			<Providers>
-					<Navbar />
-					<Outlet />
-					<TanStackRouterDevtools />
+				<Navbar />
+				<Outlet />
+				<TanStackRouterDevtools />
 			</Providers>
 		);
 	},
-	errorComponent: ({ error }) => <ErrorComponent errorToLog={error} />
+	errorComponent: ({ error }) => <ErrorComponent errorToLog={error} />,
 });

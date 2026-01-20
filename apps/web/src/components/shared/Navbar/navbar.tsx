@@ -17,9 +17,9 @@ import { useTheme } from "@/lib/hooks/useTheme";
 export function Navbar() {
 	const isMobile = useIsMobile();
 	const { pathname } = useLocation();
-	const {theme,switchTheme} = useTheme();
+	const { theme, switchTheme } = useTheme();
 	const showNavbar = shouldShowNavbar(pathname);
-	
+
 	if (!showNavbar) {
 		return null;
 	}
@@ -39,7 +39,13 @@ export function Navbar() {
 	);
 }
 
-function SignedOutNavList({theme,switchTheme}: {theme:string,switchTheme:()=>void}) {
+function SignedOutNavList({
+	theme,
+	switchTheme,
+}: {
+	theme: string;
+	switchTheme: () => void;
+}) {
 	return (
 		<NavigationMenuList className="flex w-full flex-wrap items-center justify-between">
 			<NavigationMenuItem className="font-bold text-md">
@@ -68,7 +74,13 @@ function SignedOutNavList({theme,switchTheme}: {theme:string,switchTheme:()=>voi
 	);
 }
 
-function SignedInNavList({theme,switchTheme}: {theme:string,switchTheme:()=>void}) {
+function SignedInNavList({
+	theme,
+	switchTheme,
+}: {
+	theme: string;
+	switchTheme: () => void;
+}) {
 	return (
 		<NavigationMenuList className="flex w-full flex-wrap items-center justify-between">
 			<NavigationMenuItem className="font-black text-lg">

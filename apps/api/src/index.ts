@@ -11,7 +11,7 @@ import {
 	teamHandler,
 } from "./routes";
 import { generalCorsPolicy, betterAuthCorsPolicy } from "./lib/functions/cors";
-import { HonoBetterAuth,  } from "./lib/functions";
+import { HonoBetterAuth } from "./lib/functions";
 import { logError } from "./lib/functions/database";
 import {
 	setUserSessionContextMiddleware,
@@ -39,16 +39,8 @@ export const api = HonoBetterAuth()
 	.route("/api/auth/*", authHandler)
 	.route("/team", teamHandler)
 	.onError(async (err, c) => {
-		const userId = c.get("user")?.id;
-		const teamId = c.get("teamId");
-		const route = c.req.path;
-
 		// Log errors that are not caught by the route handlers
-		await logError(err.message, {
-			userId,
-			teamId,
-			route,
-		});
+		await logError(err.message, c);
 
 		return c.json(
 			{

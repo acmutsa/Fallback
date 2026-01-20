@@ -1,15 +1,36 @@
 import { zValidator } from "@hono/zod-validator";
 import { HonoBetterAuth } from "../lib/functions";
-import { db, eq, and, or, gte, isNull, getUserTeamsQuery, userToTeam, teamInvite, team, user as userTable } from "db";
-import { joinTeamSchema, userTeamActionSchema, teamIdValidator, teamNameValidator } from "shared/zod";
+import {
+	db,
+	eq,
+	and,
+	or,
+	gte,
+	isNull,
+	getUserTeamsQuery,
+	userToTeam,
+	teamInvite,
+	team,
+	user as userTable,
+} from "db";
+import {
+	joinTeamSchema,
+	userTeamActionSchema,
+	teamIdValidator,
+	teamNameValidator,
+} from "shared/zod";
 import { API_ERROR_MESSAGES } from "shared";
-import { leaveTeam, getAdminUserForTeam, isUserSiteAdminOrQueryHasPermissions } from "../lib/functions/database";
+import {
+	leaveTeam,
+	getAdminUserForTeam,
+	isUserSiteAdminOrQueryHasPermissions,
+} from "../lib/functions/database";
 import { isSiteAdminUser } from "../lib/functions/database";
 
 /*
-* Routes made to handle thr logic related to teams. 
-* Context of a teamId should be set when possible for the sake of logging.
-*/
+ * Routes made to handle thr logic related to teams.
+ * Context of a teamId should be set when possible for the sake of logging.
+ */
 const teamHandler = HonoBetterAuth()
 	.get("/", async (c) => {
 		const user = c.get("user");
@@ -20,12 +41,12 @@ const teamHandler = HonoBetterAuth()
 		return c.json({ message: userTeams }, 200);
 	})
 	// Retrieve all of the teams
-	.get("/admin", async (c) =>{
+	.get("/admin", async (c) => {
 		const user = c.get("user");
 		if (!user || !isSiteAdminUser(user.siteRole)) {
 			return c.json({ message: API_ERROR_MESSAGES.notAuthorized }, 401);
 		}
-		
+
 		const allTeams = await db.query.team.findMany();
 		return c.json({ message: allTeams }, 200);
 	})

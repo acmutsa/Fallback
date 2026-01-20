@@ -62,12 +62,12 @@ export const THEME_CONFIG = {
 	dark: "dark",
 	light: "light",
 	default: "light",
-}
+};
 
 export const API_ERROR_MESSAGES = {
-	noInviteCode:"no_invite_code",
-	codeNotFound:"code_not_found",
-	invalidPermissions:"invalid_permissions",
-	notFound:"not_found",
-	notAuthorized:"unauthorized"
-}
+	noInviteCode: "no_invite_code",
+	codeNotFound: "code_not_found",
+	invalidPermissions: "invalid_permissions",
+	notFound: "not_found",
+	notAuthorized: "unauthorized",
+};
