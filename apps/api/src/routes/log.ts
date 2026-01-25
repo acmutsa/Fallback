@@ -6,7 +6,11 @@ import type { LoggingType } from "../lib/types";
 import { teamIdValidator } from "shared";
 import { db, eq, log } from "db";
 import { API_ERROR_MESSAGES } from "shared";
-import { isUserSiteAdminOrQueryHasPermissions, getAdminUserForTeam, isSiteAdminUser } from "../lib/functions/database";
+import {
+	isUserSiteAdminOrQueryHasPermissions,
+	getAdminUserForTeam,
+	isSiteAdminUser,
+} from "../lib/functions/database";
 
 const logHandler = HonoBetterAuth()
 	.post("/", zValidator("form", logSchema), async (c) => {
@@ -29,15 +33,17 @@ const logHandler = HonoBetterAuth()
 			return c.json({ message: API_ERROR_MESSAGES.notAuthorized }, 401);
 		}
 
-		const hasPermissions = await isUserSiteAdminOrQueryHasPermissions(user.siteRole, getAdminUserForTeam(user.id, teamId));
+		const hasPermissions = await isUserSiteAdminOrQueryHasPermissions(
+			user.siteRole,
+			getAdminUserForTeam(user.id, teamId),
+		);
 		if (!hasPermissions) {
 			return c.json({ message: API_ERROR_MESSAGES.notAuthorized }, 401);
 		}
 		const logs = await db.query.log.findMany({
-			where:eq(log.teamId, teamId),
+			where: eq(log.teamId, teamId),
 		});
 		return c.json({ message: logs }, 200);
-
 	})
 	.get("/admin/all", async (c) => {
 		const user = c.get("user");

@@ -1,4 +1,4 @@
-// TODO(https://github.com/acmutsa/Fallback/issues/32): Come back and complete this 
+// TODO(https://github.com/acmutsa/Fallback/issues/32): Come back and complete this
 import {
 	AlertDialog,
 	AlertDialogAction,
@@ -16,7 +16,7 @@ import { leaveTeamMutationClient as _unusedForNowleaveTeamMutationClientleaveTea
 import { useMutation as _unusedForNowuseMutation } from "@tanstack/react-query";
 
 export function LeaveTeamDialog({
-	teamId:_unusedForNowTeamId,
+	teamId: _unusedForNowTeamId,
 	teamName,
 	isPrivate,
 }: {

@@ -8,266 +8,266 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
-import { Route as rootRouteImport } from './routes/__root'
-import { Route as IndexRouteImport } from './routes/index'
-import { Route as TeamIndexRouteImport } from './routes/team/index'
-import { Route as SignUpIndexRouteImport } from './routes/sign-up/index'
-import { Route as SignInIndexRouteImport } from './routes/sign-in/index'
-import { Route as SettingsIndexRouteImport } from './routes/settings/index'
-import { Route as ProfileIndexRouteImport } from './routes/profile/index'
-import { Route as ForgotPasswordIndexRouteImport } from './routes/forgot-password/index'
-import { Route as FeedbackIndexRouteImport } from './routes/feedback/index'
-import { Route as TeamNewRouteImport } from './routes/team/new'
-import { Route as TeamJoinRouteImport } from './routes/team/join'
-import { Route as TeamTeamIdIndexRouteImport } from './routes/team/$teamId/index'
+import { Route as rootRouteImport } from "./routes/__root";
+import { Route as IndexRouteImport } from "./routes/index";
+import { Route as TeamIndexRouteImport } from "./routes/team/index";
+import { Route as SignUpIndexRouteImport } from "./routes/sign-up/index";
+import { Route as SignInIndexRouteImport } from "./routes/sign-in/index";
+import { Route as SettingsIndexRouteImport } from "./routes/settings/index";
+import { Route as ProfileIndexRouteImport } from "./routes/profile/index";
+import { Route as ForgotPasswordIndexRouteImport } from "./routes/forgot-password/index";
+import { Route as FeedbackIndexRouteImport } from "./routes/feedback/index";
+import { Route as TeamNewRouteImport } from "./routes/team/new";
+import { Route as TeamJoinRouteImport } from "./routes/team/join";
+import { Route as TeamTeamIdIndexRouteImport } from "./routes/team/$teamId/index";
 
 const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => rootRouteImport,
-} as any)
+	id: "/",
+	path: "/",
+	getParentRoute: () => rootRouteImport,
+} as any);
 const TeamIndexRoute = TeamIndexRouteImport.update({
-  id: '/team/',
-  path: '/team/',
-  getParentRoute: () => rootRouteImport,
-} as any)
+	id: "/team/",
+	path: "/team/",
+	getParentRoute: () => rootRouteImport,
+} as any);
 const SignUpIndexRoute = SignUpIndexRouteImport.update({
-  id: '/sign-up/',
-  path: '/sign-up/',
-  getParentRoute: () => rootRouteImport,
-} as any)
+	id: "/sign-up/",
+	path: "/sign-up/",
+	getParentRoute: () => rootRouteImport,
+} as any);
 const SignInIndexRoute = SignInIndexRouteImport.update({
-  id: '/sign-in/',
-  path: '/sign-in/',
-  getParentRoute: () => rootRouteImport,
-} as any)
+	id: "/sign-in/",
+	path: "/sign-in/",
+	getParentRoute: () => rootRouteImport,
+} as any);
 const SettingsIndexRoute = SettingsIndexRouteImport.update({
-  id: '/settings/',
-  path: '/settings/',
-  getParentRoute: () => rootRouteImport,
-} as any)
+	id: "/settings/",
+	path: "/settings/",
+	getParentRoute: () => rootRouteImport,
+} as any);
 const ProfileIndexRoute = ProfileIndexRouteImport.update({
-  id: '/profile/',
-  path: '/profile/',
-  getParentRoute: () => rootRouteImport,
-} as any)
+	id: "/profile/",
+	path: "/profile/",
+	getParentRoute: () => rootRouteImport,
+} as any);
 const ForgotPasswordIndexRoute = ForgotPasswordIndexRouteImport.update({
-  id: '/forgot-password/',
-  path: '/forgot-password/',
-  getParentRoute: () => rootRouteImport,
-} as any)
+	id: "/forgot-password/",
+	path: "/forgot-password/",
+	getParentRoute: () => rootRouteImport,
+} as any);
 const FeedbackIndexRoute = FeedbackIndexRouteImport.update({
-  id: '/feedback/',
-  path: '/feedback/',
-  getParentRoute: () => rootRouteImport,
-} as any)
+	id: "/feedback/",
+	path: "/feedback/",
+	getParentRoute: () => rootRouteImport,
+} as any);
 const TeamNewRoute = TeamNewRouteImport.update({
-  id: '/team/new',
-  path: '/team/new',
-  getParentRoute: () => rootRouteImport,
-} as any)
+	id: "/team/new",
+	path: "/team/new",
+	getParentRoute: () => rootRouteImport,
+} as any);
 const TeamJoinRoute = TeamJoinRouteImport.update({
-  id: '/team/join',
-  path: '/team/join',
-  getParentRoute: () => rootRouteImport,
-} as any)
+	id: "/team/join",
+	path: "/team/join",
+	getParentRoute: () => rootRouteImport,
+} as any);
 const TeamTeamIdIndexRoute = TeamTeamIdIndexRouteImport.update({
-  id: '/team/$teamId/',
-  path: '/team/$teamId/',
-  getParentRoute: () => rootRouteImport,
-} as any)
+	id: "/team/$teamId/",
+	path: "/team/$teamId/",
+	getParentRoute: () => rootRouteImport,
+} as any);
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
-  '/team/join': typeof TeamJoinRoute
-  '/team/new': typeof TeamNewRoute
-  '/feedback': typeof FeedbackIndexRoute
-  '/forgot-password': typeof ForgotPasswordIndexRoute
-  '/profile': typeof ProfileIndexRoute
-  '/settings': typeof SettingsIndexRoute
-  '/sign-in': typeof SignInIndexRoute
-  '/sign-up': typeof SignUpIndexRoute
-  '/team': typeof TeamIndexRoute
-  '/team/$teamId': typeof TeamTeamIdIndexRoute
+	"/": typeof IndexRoute;
+	"/team/join": typeof TeamJoinRoute;
+	"/team/new": typeof TeamNewRoute;
+	"/feedback": typeof FeedbackIndexRoute;
+	"/forgot-password": typeof ForgotPasswordIndexRoute;
+	"/profile": typeof ProfileIndexRoute;
+	"/settings": typeof SettingsIndexRoute;
+	"/sign-in": typeof SignInIndexRoute;
+	"/sign-up": typeof SignUpIndexRoute;
+	"/team": typeof TeamIndexRoute;
+	"/team/$teamId": typeof TeamTeamIdIndexRoute;
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
-  '/team/join': typeof TeamJoinRoute
-  '/team/new': typeof TeamNewRoute
-  '/feedback': typeof FeedbackIndexRoute
-  '/forgot-password': typeof ForgotPasswordIndexRoute
-  '/profile': typeof ProfileIndexRoute
-  '/settings': typeof SettingsIndexRoute
-  '/sign-in': typeof SignInIndexRoute
-  '/sign-up': typeof SignUpIndexRoute
-  '/team': typeof TeamIndexRoute
-  '/team/$teamId': typeof TeamTeamIdIndexRoute
+	"/": typeof IndexRoute;
+	"/team/join": typeof TeamJoinRoute;
+	"/team/new": typeof TeamNewRoute;
+	"/feedback": typeof FeedbackIndexRoute;
+	"/forgot-password": typeof ForgotPasswordIndexRoute;
+	"/profile": typeof ProfileIndexRoute;
+	"/settings": typeof SettingsIndexRoute;
+	"/sign-in": typeof SignInIndexRoute;
+	"/sign-up": typeof SignUpIndexRoute;
+	"/team": typeof TeamIndexRoute;
+	"/team/$teamId": typeof TeamTeamIdIndexRoute;
 }
 export interface FileRoutesById {
-  __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
-  '/team/join': typeof TeamJoinRoute
-  '/team/new': typeof TeamNewRoute
-  '/feedback/': typeof FeedbackIndexRoute
-  '/forgot-password/': typeof ForgotPasswordIndexRoute
-  '/profile/': typeof ProfileIndexRoute
-  '/settings/': typeof SettingsIndexRoute
-  '/sign-in/': typeof SignInIndexRoute
-  '/sign-up/': typeof SignUpIndexRoute
-  '/team/': typeof TeamIndexRoute
-  '/team/$teamId/': typeof TeamTeamIdIndexRoute
+	__root__: typeof rootRouteImport;
+	"/": typeof IndexRoute;
+	"/team/join": typeof TeamJoinRoute;
+	"/team/new": typeof TeamNewRoute;
+	"/feedback/": typeof FeedbackIndexRoute;
+	"/forgot-password/": typeof ForgotPasswordIndexRoute;
+	"/profile/": typeof ProfileIndexRoute;
+	"/settings/": typeof SettingsIndexRoute;
+	"/sign-in/": typeof SignInIndexRoute;
+	"/sign-up/": typeof SignUpIndexRoute;
+	"/team/": typeof TeamIndexRoute;
+	"/team/$teamId/": typeof TeamTeamIdIndexRoute;
 }
 export interface FileRouteTypes {
-  fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths:
-    | '/'
-    | '/team/join'
-    | '/team/new'
-    | '/feedback'
-    | '/forgot-password'
-    | '/profile'
-    | '/settings'
-    | '/sign-in'
-    | '/sign-up'
-    | '/team'
-    | '/team/$teamId'
-  fileRoutesByTo: FileRoutesByTo
-  to:
-    | '/'
-    | '/team/join'
-    | '/team/new'
-    | '/feedback'
-    | '/forgot-password'
-    | '/profile'
-    | '/settings'
-    | '/sign-in'
-    | '/sign-up'
-    | '/team'
-    | '/team/$teamId'
-  id:
-    | '__root__'
-    | '/'
-    | '/team/join'
-    | '/team/new'
-    | '/feedback/'
-    | '/forgot-password/'
-    | '/profile/'
-    | '/settings/'
-    | '/sign-in/'
-    | '/sign-up/'
-    | '/team/'
-    | '/team/$teamId/'
-  fileRoutesById: FileRoutesById
+	fileRoutesByFullPath: FileRoutesByFullPath;
+	fullPaths:
+		| "/"
+		| "/team/join"
+		| "/team/new"
+		| "/feedback"
+		| "/forgot-password"
+		| "/profile"
+		| "/settings"
+		| "/sign-in"
+		| "/sign-up"
+		| "/team"
+		| "/team/$teamId";
+	fileRoutesByTo: FileRoutesByTo;
+	to:
+		| "/"
+		| "/team/join"
+		| "/team/new"
+		| "/feedback"
+		| "/forgot-password"
+		| "/profile"
+		| "/settings"
+		| "/sign-in"
+		| "/sign-up"
+		| "/team"
+		| "/team/$teamId";
+	id:
+		| "__root__"
+		| "/"
+		| "/team/join"
+		| "/team/new"
+		| "/feedback/"
+		| "/forgot-password/"
+		| "/profile/"
+		| "/settings/"
+		| "/sign-in/"
+		| "/sign-up/"
+		| "/team/"
+		| "/team/$teamId/";
+	fileRoutesById: FileRoutesById;
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
-  TeamJoinRoute: typeof TeamJoinRoute
-  TeamNewRoute: typeof TeamNewRoute
-  FeedbackIndexRoute: typeof FeedbackIndexRoute
-  ForgotPasswordIndexRoute: typeof ForgotPasswordIndexRoute
-  ProfileIndexRoute: typeof ProfileIndexRoute
-  SettingsIndexRoute: typeof SettingsIndexRoute
-  SignInIndexRoute: typeof SignInIndexRoute
-  SignUpIndexRoute: typeof SignUpIndexRoute
-  TeamIndexRoute: typeof TeamIndexRoute
-  TeamTeamIdIndexRoute: typeof TeamTeamIdIndexRoute
+	IndexRoute: typeof IndexRoute;
+	TeamJoinRoute: typeof TeamJoinRoute;
+	TeamNewRoute: typeof TeamNewRoute;
+	FeedbackIndexRoute: typeof FeedbackIndexRoute;
+	ForgotPasswordIndexRoute: typeof ForgotPasswordIndexRoute;
+	ProfileIndexRoute: typeof ProfileIndexRoute;
+	SettingsIndexRoute: typeof SettingsIndexRoute;
+	SignInIndexRoute: typeof SignInIndexRoute;
+	SignUpIndexRoute: typeof SignUpIndexRoute;
+	TeamIndexRoute: typeof TeamIndexRoute;
+	TeamTeamIdIndexRoute: typeof TeamTeamIdIndexRoute;
 }
 
-declare module '@tanstack/react-router' {
-  interface FileRoutesByPath {
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/team/': {
-      id: '/team/'
-      path: '/team'
-      fullPath: '/team'
-      preLoaderRoute: typeof TeamIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/sign-up/': {
-      id: '/sign-up/'
-      path: '/sign-up'
-      fullPath: '/sign-up'
-      preLoaderRoute: typeof SignUpIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/sign-in/': {
-      id: '/sign-in/'
-      path: '/sign-in'
-      fullPath: '/sign-in'
-      preLoaderRoute: typeof SignInIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/settings/': {
-      id: '/settings/'
-      path: '/settings'
-      fullPath: '/settings'
-      preLoaderRoute: typeof SettingsIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/profile/': {
-      id: '/profile/'
-      path: '/profile'
-      fullPath: '/profile'
-      preLoaderRoute: typeof ProfileIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/forgot-password/': {
-      id: '/forgot-password/'
-      path: '/forgot-password'
-      fullPath: '/forgot-password'
-      preLoaderRoute: typeof ForgotPasswordIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/feedback/': {
-      id: '/feedback/'
-      path: '/feedback'
-      fullPath: '/feedback'
-      preLoaderRoute: typeof FeedbackIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/team/new': {
-      id: '/team/new'
-      path: '/team/new'
-      fullPath: '/team/new'
-      preLoaderRoute: typeof TeamNewRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/team/join': {
-      id: '/team/join'
-      path: '/team/join'
-      fullPath: '/team/join'
-      preLoaderRoute: typeof TeamJoinRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/team/$teamId/': {
-      id: '/team/$teamId/'
-      path: '/team/$teamId'
-      fullPath: '/team/$teamId'
-      preLoaderRoute: typeof TeamTeamIdIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-  }
+declare module "@tanstack/react-router" {
+	interface FileRoutesByPath {
+		"/": {
+			id: "/";
+			path: "/";
+			fullPath: "/";
+			preLoaderRoute: typeof IndexRouteImport;
+			parentRoute: typeof rootRouteImport;
+		};
+		"/team/": {
+			id: "/team/";
+			path: "/team";
+			fullPath: "/team";
+			preLoaderRoute: typeof TeamIndexRouteImport;
+			parentRoute: typeof rootRouteImport;
+		};
+		"/sign-up/": {
+			id: "/sign-up/";
+			path: "/sign-up";
+			fullPath: "/sign-up";
+			preLoaderRoute: typeof SignUpIndexRouteImport;
+			parentRoute: typeof rootRouteImport;
+		};
+		"/sign-in/": {
+			id: "/sign-in/";
+			path: "/sign-in";
+			fullPath: "/sign-in";
+			preLoaderRoute: typeof SignInIndexRouteImport;
+			parentRoute: typeof rootRouteImport;
+		};
+		"/settings/": {
+			id: "/settings/";
+			path: "/settings";
+			fullPath: "/settings";
+			preLoaderRoute: typeof SettingsIndexRouteImport;
+			parentRoute: typeof rootRouteImport;
+		};
+		"/profile/": {
+			id: "/profile/";
+			path: "/profile";
+			fullPath: "/profile";
+			preLoaderRoute: typeof ProfileIndexRouteImport;
+			parentRoute: typeof rootRouteImport;
+		};
+		"/forgot-password/": {
+			id: "/forgot-password/";
+			path: "/forgot-password";
+			fullPath: "/forgot-password";
+			preLoaderRoute: typeof ForgotPasswordIndexRouteImport;
+			parentRoute: typeof rootRouteImport;
+		};
+		"/feedback/": {
+			id: "/feedback/";
+			path: "/feedback";
+			fullPath: "/feedback";
+			preLoaderRoute: typeof FeedbackIndexRouteImport;
+			parentRoute: typeof rootRouteImport;
+		};
+		"/team/new": {
+			id: "/team/new";
+			path: "/team/new";
+			fullPath: "/team/new";
+			preLoaderRoute: typeof TeamNewRouteImport;
+			parentRoute: typeof rootRouteImport;
+		};
+		"/team/join": {
+			id: "/team/join";
+			path: "/team/join";
+			fullPath: "/team/join";
+			preLoaderRoute: typeof TeamJoinRouteImport;
+			parentRoute: typeof rootRouteImport;
+		};
+		"/team/$teamId/": {
+			id: "/team/$teamId/";
+			path: "/team/$teamId";
+			fullPath: "/team/$teamId";
+			preLoaderRoute: typeof TeamTeamIdIndexRouteImport;
+			parentRoute: typeof rootRouteImport;
+		};
+	}
 }
 
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
-  TeamJoinRoute: TeamJoinRoute,
-  TeamNewRoute: TeamNewRoute,
-  FeedbackIndexRoute: FeedbackIndexRoute,
-  ForgotPasswordIndexRoute: ForgotPasswordIndexRoute,
-  ProfileIndexRoute: ProfileIndexRoute,
-  SettingsIndexRoute: SettingsIndexRoute,
-  SignInIndexRoute: SignInIndexRoute,
-  SignUpIndexRoute: SignUpIndexRoute,
-  TeamIndexRoute: TeamIndexRoute,
-  TeamTeamIdIndexRoute: TeamTeamIdIndexRoute,
-}
+	IndexRoute: IndexRoute,
+	TeamJoinRoute: TeamJoinRoute,
+	TeamNewRoute: TeamNewRoute,
+	FeedbackIndexRoute: FeedbackIndexRoute,
+	ForgotPasswordIndexRoute: ForgotPasswordIndexRoute,
+	ProfileIndexRoute: ProfileIndexRoute,
+	SettingsIndexRoute: SettingsIndexRoute,
+	SignInIndexRoute: SignInIndexRoute,
+	SignUpIndexRoute: SignUpIndexRoute,
+	TeamIndexRoute: TeamIndexRoute,
+	TeamTeamIdIndexRoute: TeamTeamIdIndexRoute,
+};
 export const routeTree = rootRouteImport
-  ._addFileChildren(rootRouteChildren)
-  ._addFileTypes<FileRouteTypes>()
+	._addFileChildren(rootRouteChildren)
+	._addFileTypes<FileRouteTypes>();
