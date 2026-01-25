@@ -2,11 +2,11 @@ import { zValidator } from "@hono/zod-validator";
 import { HonoBetterAuth } from "../lib/functions";
 import { logSchema } from "../lib/zod";
 import { logToDb } from "../lib/functions/database";
-import { LoggingType } from "../lib/types";
+import type { LoggingType } from "../lib/types";
 import { teamIdValidator } from "shared";
-import { db } from "db";
+import { db, eq, log } from "db";
 import { API_ERROR_MESSAGES } from "shared";
-import { isSiteAdminUser } from "../lib/functions/database";
+import { isUserSiteAdminOrQueryHasPermissions, getAdminUserForTeam, isSiteAdminUser } from "../lib/functions/database";
 
 const logHandler = HonoBetterAuth()
 	.post("/", zValidator("form", logSchema), async (c) => {
@@ -22,7 +22,22 @@ const logHandler = HonoBetterAuth()
 	})
 	// This route needs to be made to get logs from a team. Logs should be paginated and alllow for basic filtering on the frontend
 	.get("/:teamId", zValidator("param", teamIdValidator), async (c) => {
-		// Ensure only site admins or team admins can access these logs
+		const user = c.get("user");
+		const teamId = c.req.param("teamId");
+
+		if (!user) {
+			return c.json({ message: API_ERROR_MESSAGES.notAuthorized }, 401);
+		}
+
+		const hasPermissions = await isUserSiteAdminOrQueryHasPermissions(user.siteRole, getAdminUserForTeam(user.id, teamId));
+		if (!hasPermissions) {
+			return c.json({ message: API_ERROR_MESSAGES.notAuthorized }, 401);
+		}
+		const logs = await db.query.log.findMany({
+			where:eq(log.teamId, teamId),
+		});
+		return c.json({ message: logs }, 200);
+
 	})
 	.get("/admin/all", async (c) => {
 		const user = c.get("user");

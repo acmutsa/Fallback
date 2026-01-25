@@ -54,10 +54,11 @@ export const api = HonoBetterAuth()
 /**
  * The basic logic for running a cron job in Cloudflare Workers. Will be updated to be more specific later.
  */
+// TODO(https://github.com/acmutsa/Fallback/issues/31): These will be used later once we have the cron job functionality implemented
 const cron = async (
-	controller: ScheduledController,
-	_: Env,
-	ctx: ExecutionContext,
+	_controller: ScheduledController,
+	_env: Env,
+	_ctx: ExecutionContext,
 ) => {
 	// NOTE: controller.cron is what we will use to check what jobs need to be running
 	// ctx.waitUntil(doBackup());

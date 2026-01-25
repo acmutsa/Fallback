@@ -1,4 +1,3 @@
-import { createUpdateSchema } from "drizzle-zod";
 import z from "zod";
 
 export const teamIdValidator = z.string().min(1).max(30);

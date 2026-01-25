@@ -1,8 +1,9 @@
 import { user, session, log } from "db";
-import { Context } from "hono";
+import type { Context } from "hono";
 
 export type UserType = typeof user.$inferSelect | null;
 export type SessionType = typeof session.$inferSelect | null;
+export type SiteRoleType = typeof user.$inferSelect.siteRole;
 // Match the Variables shape declared in HonoBetterAuth
 export type ApiContextVariables = {
 	user: UserType;

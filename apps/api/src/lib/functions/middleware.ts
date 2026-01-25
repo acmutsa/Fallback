@@ -2,7 +2,7 @@ import type { Context, Next } from "hono";
 import { auth } from "../auth";
 import { logInfo } from "./database";
 import { nanoid } from "nanoid";
-import { ApiContext } from "../types";
+import type { ApiContext } from "../types";
 
 export const MIDDLEWARE_PUBLIC_ROUTES = ["/health", "/api/auth"];
 //TODO(https://github.com/acmutsa/Fallback/issues/16): Make these function's context types safe

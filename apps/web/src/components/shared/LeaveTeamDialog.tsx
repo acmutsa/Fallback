@@ -1,3 +1,4 @@
+// TODO(https://github.com/acmutsa/Fallback/issues/32): Come back and complete this 
 import {
 	AlertDialog,
 	AlertDialogAction,
@@ -11,11 +12,11 @@ import {
 } from "@/components/ui/alert-dialog";
 import { DropdownMenuItem } from "../ui/dropdown-menu";
 import { UserX } from "lucide-react";
-import { leaveTeamMutationClient } from "@/lib/queries";
-import { useMutation } from "@tanstack/react-query";
+import { leaveTeamMutationClient as _unusedForNowleaveTeamMutationClientleaveTeamMutationClient } from "@/lib/queries";
+import { useMutation as _unusedForNowuseMutation } from "@tanstack/react-query";
 
 export function LeaveTeamDialog({
-	teamId,
+	teamId:_unusedForNowTeamId,
 	teamName,
 	isPrivate,
 }: {

@@ -3,7 +3,7 @@ import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { db } from "db"; // your drizzle instance
 import { APP_NAME, AUTH_CONFIG } from "shared/constants";
 import { env } from "../env";
-import { FieldAttribute, FieldType } from "better-auth/db";
+import type { FieldAttribute, FieldType } from "better-auth/db";
 
 export const auth = betterAuth({
 	database: drizzleAdapter(db, {

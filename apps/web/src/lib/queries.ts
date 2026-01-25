@@ -31,7 +31,7 @@ export const getUserQueryClient = queryOptions({
 export const getUserTeamsQueryClient = queryOptions({
 	queryKey: ["user", "teams"],
 	queryFn: async () => {
-		const response = await apiClient.team.$get().catch(() => undefined);
+		const response = await apiClient.team.$get();
 		if (response?.status === 200) {
 			return response.json();
 		}

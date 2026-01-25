@@ -1,5 +1,5 @@
 import { userToTeam, db, and, eq, log } from "db";
-import { UserType, LoggingOptions, LoggingType } from "../types";
+import type { UserType, LoggingOptions, LoggingType, SiteRoleType } from "../types";
 import { type Context } from "hono";
 import { isInDevMode } from ".";
 
@@ -63,11 +63,11 @@ export async function getAdminUserForTeam(userId: string, teamId: string) {
 
 // TODO: Come back and make this a generic function that can take in any sqlite query function
 export async function isUserSiteAdminOrQueryHasPermissions<T = unknown>(
-	user: NonNullable<UserType>,
+	userSiteRole: SiteRoleType,
 	// Accept either a Promise (already invoked query) or a function that returns a Promise
 	query: Promise<T> | (() => Promise<T>),
 ): Promise<boolean> {
-	if (isSiteAdminUser(user.siteRole)) {
+	if (isSiteAdminUser(userSiteRole)) {
 		return true;
 	}
 

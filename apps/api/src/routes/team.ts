@@ -10,7 +10,6 @@ import {
 	userToTeam,
 	teamInvite,
 	team,
-	user as userTable,
 } from "db";
 import {
 	joinTeamSchema,
@@ -112,7 +111,7 @@ const teamHandler = HonoBetterAuth()
 			),
 		});
 		const canUserView = await isUserSiteAdminOrQueryHasPermissions(
-			user,
+			user.siteRole,
 			asyncCallback,
 		);
 
@@ -143,7 +142,7 @@ const teamHandler = HonoBetterAuth()
 		}
 
 		const canUserDelete = await isUserSiteAdminOrQueryHasPermissions(
-			user,
+			user.siteRole,
 			getAdminUserForTeam(user.id, teamId),
 		);
 
@@ -167,7 +166,7 @@ const teamHandler = HonoBetterAuth()
 		}
 
 		const canUserView = isUserSiteAdminOrQueryHasPermissions(
-			user,
+			user.siteRole,
 			getAdminUserForTeam(user.id, teamId),
 		);
 
@@ -201,7 +200,7 @@ const teamHandler = HonoBetterAuth()
 				);
 			}
 			const canUserView = await isUserSiteAdminOrQueryHasPermissions(
-				user,
+				user.siteRole,
 				getAdminUserForTeam(user.id, teamId),
 			);
 
@@ -240,7 +239,7 @@ const teamHandler = HonoBetterAuth()
 			}
 
 			const canUserUpdate = await isUserSiteAdminOrQueryHasPermissions(
-				user,
+				user.siteRole,
 				getAdminUserForTeam(user.id, teamId),
 			);
 
@@ -289,7 +288,7 @@ const teamHandler = HonoBetterAuth()
 			// If not, we know that it is a user attempting to remove another user and we need to ensure they have the right permissions for this.
 
 			const canUserRemove = await isUserSiteAdminOrQueryHasPermissions(
-				user,
+				user.siteRole,
 				getAdminUserForTeam(user.id, teamId),
 			);
 

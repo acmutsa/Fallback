@@ -31,7 +31,7 @@ export default function UserButton() {
 		isLoading: isFetchingUserTeams,
 		isError,
 	} = useQuery(getUserTeamsQueryClient);
-	const userTeams = userTeamsResult?.data;
+	const userTeams = userTeamsResult?.message;
 
 	const { invalidate, navigate } = useRouter();
 

@@ -1,4 +1,3 @@
-import z from "zod";
 import { createInsertSchema } from "drizzle-zod";
 import { log } from "db";
 
