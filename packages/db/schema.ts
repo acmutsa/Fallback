@@ -53,7 +53,7 @@ export const user = sqliteTable("user", {
 		.notNull()
 		.default(sql`(current_timestamp)`),
 	emailVerified: integer("email_verified", { mode: "boolean" }).notNull(),
-	image: text("image"), // Image URL 
+	image: text("image"), // Image URL
 	updatedAt: integer("updated_at", { mode: "timestamp_ms" }).notNull(),
 	lastSeen: standardDateFactory(),
 	siteRole: siteRoleType.notNull().default("USER"),

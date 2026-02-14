@@ -22,7 +22,10 @@ export function useTheme() {
 				currentTheme === THEME_CONFIG.light
 					? THEME_CONFIG.dark
 					: THEME_CONFIG.light;
-			document.body.classList.remove(THEME_CONFIG.light, THEME_CONFIG.dark);
+			document.body.classList.remove(
+				THEME_CONFIG.light,
+				THEME_CONFIG.dark,
+			);
 			document.body.classList.add(newTheme);
 			localStorage.setItem(THEME_CONFIG.accessKey, newTheme);
 			return newTheme;

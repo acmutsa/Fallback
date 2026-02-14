@@ -186,41 +186,34 @@ const teamHandler = HonoBetterAuth()
 
 		return c.json({ message: allTeamInfo }, 200);
 	})
-	.get(
-		"/:teamId/members",
-		zValidator("param", teamIdSchema),
-		async (c) => {
-			const teamId = c.req.param("teamId");
-			const user = c.get("user");
+	.get("/:teamId/members", zValidator("param", teamIdSchema), async (c) => {
+		const teamId = c.req.param("teamId");
+		const user = c.get("user");
 
-			if (!user) {
-				return c.json(
-					{ message: API_ERROR_MESSAGES.notAuthorized },
-					401,
-				);
-			}
-			const canUserView = await isUserSiteAdminOrQueryHasPermissions(
-				user.siteRole,
-				getAdminUserForTeam(user.id, teamId),
+		if (!user) {
+			return c.json({ message: API_ERROR_MESSAGES.notAuthorized }, 401);
+		}
+		const canUserView = await isUserSiteAdminOrQueryHasPermissions(
+			user.siteRole,
+			getAdminUserForTeam(user.id, teamId),
+		);
+
+		if (!canUserView) {
+			return c.json(
+				{ message: API_ERROR_MESSAGES.invalidPermissions },
+				401,
 			);
+		}
 
-			if (!canUserView) {
-				return c.json(
-					{ message: API_ERROR_MESSAGES.invalidPermissions },
-					401,
-				);
-			}
+		const teamMembers = await db.query.team.findMany({
+			where: eq(team.id, teamId),
+			with: {
+				members: true,
+			},
+		});
 
-			const teamMembers = await db.query.team.findMany({
-				where: eq(team.id, teamId),
-				with: {
-					members: true,
-				},
-			});
-
-			return c.json({ message: teamMembers }, 200);
-		},
-	)
+		return c.json({ message: teamMembers }, 200);
+	})
 	// TODO: I think this is wrong
 	.patch(
 		"/:teamId/update",
