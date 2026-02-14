@@ -5,22 +5,20 @@ import { nanoid } from "nanoid";
 import type { ApiContext } from "../types";
 
 export const MIDDLEWARE_PUBLIC_ROUTES = ["/health", "/api/auth"];
-//TODO(https://github.com/acmutsa/Fallback/issues/16): Make these function's context types safe
 
 export async function setUserSessionContextMiddleware(c: Context, next: Next) {
 	const session = await auth.api.getSession({ headers: c.req.raw.headers });
 	const userString = session
-		? `ID: ${session?.user.id}, Email: ${session.user.email}`
+		? `Authenticated user (id: ${session?.user.id})`
 		: "Unauthenticated User";
 
 	const requestId = nanoid();
+	c.set("requestId", requestId);
 
 	await logInfo(
 		`Middleware for request path ${c.req.path} for ${userString}`,
 		c,
 	);
-
-	c.set("requestId", requestId);
 
 	if (!session) {
 		c.set("user", null);

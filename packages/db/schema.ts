@@ -53,7 +53,7 @@ export const user = sqliteTable("user", {
 		.notNull()
 		.default(sql`(current_timestamp)`),
 	emailVerified: integer("email_verified", { mode: "boolean" }).notNull(),
-	image: text("image"),
+	image: text("image"), // Image URL 
 	updatedAt: integer("updated_at", { mode: "timestamp_ms" }).notNull(),
 	lastSeen: standardDateFactory(),
 	siteRole: siteRoleType.notNull().default("USER"),
@@ -109,9 +109,7 @@ export const teamInvite = sqliteTable("team_invite", {
 	teamId: standardVarcharFactory().references(() => team.id, {
 		onDelete: "cascade",
 	}),
-	email: standardVarcharFactory().references(() => user.email, {
-		onDelete: "cascade",
-	}),
+	email: standardVarcharFactory(),
 	createdAt: standardDateFactory(),
 	expiresAt: integer({ mode: "timestamp_ms" }).notNull(),
 	acceptedAt: integer({ mode: "timestamp_ms" }),

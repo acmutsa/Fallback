@@ -14,8 +14,8 @@ import {
 import {
 	joinTeamSchema,
 	userTeamActionSchema,
-	teamIdValidator,
-	teamNameValidator,
+	teamIdSchema,
+	teamNameSchema,
 } from "shared/zod";
 import { API_ERROR_MESSAGES } from "shared";
 import {
@@ -72,7 +72,7 @@ const teamHandler = HonoBetterAuth()
 		});
 
 		if (!inviteRequest) {
-			return c.json({ messsage: API_ERROR_MESSAGES.codeNotFound }, 400);
+			return c.json({ message: API_ERROR_MESSAGES.codeNotFound }, 400);
 		}
 
 		c.set("teamId", inviteRequest.teamId);
@@ -95,7 +95,7 @@ const teamHandler = HonoBetterAuth()
 
 		return c.json({ message: "invite_code_success" }, 200);
 	})
-	.get("/:teamId", zValidator("param", teamIdValidator), async (c) => {
+	.get("/:teamId", zValidator("param", teamIdSchema), async (c) => {
 		const teamId = c.req.param("teamId");
 		const user = c.get("user");
 
@@ -133,7 +133,7 @@ const teamHandler = HonoBetterAuth()
 		return c.json({ message: teamInfo }, 200);
 	})
 	// Not too sure if we should enhance this. Perhaps mark it for deletion instead and allow the users to recover it?
-	.delete("/:teamId", zValidator("param", teamIdValidator), async (c) => {
+	.delete("/:teamId", zValidator("param", teamIdSchema), async (c) => {
 		const user = c.get("user");
 		const teamId = c.req.param("teamId");
 
@@ -157,7 +157,7 @@ const teamHandler = HonoBetterAuth()
 
 		return c.json({ message: "Success" }, 200);
 	})
-	.get("/:teamId/admin", zValidator("param", teamIdValidator), async (c) => {
+	.get("/:teamId/admin", zValidator("param", teamIdSchema), async (c) => {
 		const teamId = c.req.param("teamId");
 		const user = c.get("user");
 
@@ -165,16 +165,16 @@ const teamHandler = HonoBetterAuth()
 			return c.json({ message: API_ERROR_MESSAGES.notAuthorized }, 401);
 		}
 
-		const canUserView = isUserSiteAdminOrQueryHasPermissions(
+		const canUserView = await isUserSiteAdminOrQueryHasPermissions(
 			user.siteRole,
 			getAdminUserForTeam(user.id, teamId),
 		);
 
 		if (!canUserView) {
-			return c.json({ message: API_ERROR_MESSAGES.notAuthorized });
+			return c.json({ message: API_ERROR_MESSAGES.notAuthorized }, 401);
 		}
 
-		const allTeamInfo = db.query.team.findFirst({
+		const allTeamInfo = await db.query.team.findFirst({
 			where: eq(team.id, teamId),
 			with: {
 				members: true,
@@ -188,7 +188,7 @@ const teamHandler = HonoBetterAuth()
 	})
 	.get(
 		"/:teamId/members",
-		zValidator("param", teamIdValidator),
+		zValidator("param", teamIdSchema),
 		async (c) => {
 			const teamId = c.req.param("teamId");
 			const user = c.get("user");
@@ -224,12 +224,12 @@ const teamHandler = HonoBetterAuth()
 	// TODO: I think this is wrong
 	.patch(
 		"/:teamId/update",
-		zValidator("param", teamIdValidator),
-		zValidator("form", teamNameValidator),
+		zValidator("param", teamIdSchema),
+		zValidator("form", teamNameSchema),
 		async (c) => {
 			const user = c.get("user");
 			const teamId = c.req.param("teamId");
-			const newTeamName = c.req.valid("form");
+			const newTeamNameSchema = c.req.valid("form");
 
 			if (!user) {
 				return c.json(
@@ -253,7 +253,7 @@ const teamHandler = HonoBetterAuth()
 			await db
 				.update(team)
 				.set({
-					name: newTeamName,
+					name: newTeamNameSchema.name,
 				})
 				.where(eq(team.id, teamId));
 
@@ -270,7 +270,7 @@ const teamHandler = HonoBetterAuth()
 
 			if (!user) {
 				return c.json(
-					{ messsage: API_ERROR_MESSAGES.notAuthorized },
+					{ message: API_ERROR_MESSAGES.notAuthorized },
 					401,
 				);
 			}

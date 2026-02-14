@@ -19,4 +19,5 @@ export type LoggingOptions = Omit<
 	typeof log.$inferInsert,
 	"id" | "occurredAt" | "logType" | "message"
 >;
-export type LoggingType = Pick<typeof log.$inferSelect, "logType">;
+// Single type representing the logType value (e.g. "INFO" | "WARNING" | "ERROR")
+export type LoggingType = (typeof log.$inferSelect)["logType"];

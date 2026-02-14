@@ -71,6 +71,13 @@
       "when": 1768166330728,
       "tag": "0009_brainy_power_man",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "6",
+      "when": 1771097455887,
+      "tag": "0010_salty_romulus",
+      "breakpoints": true
     }
   ]
 }

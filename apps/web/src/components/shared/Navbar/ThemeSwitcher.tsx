@@ -9,7 +9,13 @@ export default function ThemeSwitcher({
 	switchTheme: () => void;
 }) {
 	return (
-		<Button onClick={switchTheme} variant="ghost" size="sm">
+		<Button onClick={switchTheme} variant="ghost" size="sm" 
+		aria-label={
+				theme === THEME_CONFIG.light
+					? "Switch to dark theme"
+					: "Switch to light theme"
+			}
+			aria-pressed={theme === THEME_CONFIG.dark} >
 			{theme === THEME_CONFIG.light ? <Sun /> : <Moon />}
 		</Button>
 	);

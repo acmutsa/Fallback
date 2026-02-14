@@ -83,17 +83,17 @@ export async function isUserSiteAdminOrQueryHasPermissions<T = unknown>(
 // TODO: I think all of these functions need to end up having the context object being sent into it
 export async function logError(message: string, c?: Context) {
 	const options = getAllContextValues(c);
-	await logToDb({ logType: "ERROR" }, message, options);
+	await logToDb("ERROR", message, options);
 }
 
 export async function logInfo(message: string, c?: Context) {
 	const options = getAllContextValues(c);
-	await logToDb({ logType: "INFO" }, message, options);
+	await logToDb("INFO", message, options);
 }
 
 export async function logWarning(message: string, c?: Context) {
 	const options = getAllContextValues(c);
-	await logToDb({ logType: "WARNING" }, message, options);
+	await logToDb("WARNING", message, options);
 }
 
 export async function logToDb(
@@ -102,27 +102,24 @@ export async function logToDb(
 	options?: LoggingOptions,
 ) {
 	if (isInDevMode()) {
-		console.log(
-			`[${loggingType.logType}] - ${message} - Options: `,
-			options,
-		);
+		console.log(`[${loggingType}] - ${message} - Options: `, options);
 		return;
 	}
 	await db.insert(log).values({
 		...options,
-		logType: loggingType.logType,
+		logType: loggingType,
 		message,
 	});
 }
 
-function getAllContextValues(c?: Context) {
+function getAllContextValues(c?: Context): LoggingOptions | undefined {
 	if (!c) {
 		return undefined;
 	}
+	const user = c.get("user") as UserType;
 	return {
 		route: c.req.path,
-		user: c.get("user"),
-		session: c.get("session"),
+		userId: user?.id || null,
 		teamId: c.get("teamId"),
 		requestId: c.get("requestId"),
 	};

@@ -7,19 +7,26 @@ export function useTheme() {
 	useEffect(() => {
 		const storedTheme = localStorage.getItem(THEME_CONFIG.accessKey);
 		if (storedTheme) {
-			document.body.classList = storedTheme;
+			document.body.classList.remove(
+				THEME_CONFIG.light,
+				THEME_CONFIG.dark,
+			);
+			document.body.classList.add(storedTheme);
 			setTheme(storedTheme);
 		}
 	}, []);
 
 	function switchTheme() {
-		const newTheme =
-			theme === THEME_CONFIG.light
-				? THEME_CONFIG.dark
-				: THEME_CONFIG.light;
-		document.body.classList = newTheme;
-		setTheme(newTheme);
-		localStorage.setItem(THEME_CONFIG.accessKey, newTheme);
+		setTheme((currentTheme) => {
+			const newTheme =
+				currentTheme === THEME_CONFIG.light
+					? THEME_CONFIG.dark
+					: THEME_CONFIG.light;
+			document.body.classList.remove(THEME_CONFIG.light, THEME_CONFIG.dark);
+			document.body.classList.add(newTheme);
+			localStorage.setItem(THEME_CONFIG.accessKey, newTheme);
+			return newTheme;
+		});
 	}
 
 	return { theme, switchTheme };
