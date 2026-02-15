@@ -17,7 +17,6 @@ const logHandler = HonoBetterAuth()
 		const logData = c.req.valid("form");
 
 		const { message, logType, ...optionals } = logData;
-		// TODO: Come back and make this less ugly please.
 		await logToDb(logType as LoggingType, message, {
 			...optionals,
 		});

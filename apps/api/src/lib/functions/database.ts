@@ -101,11 +101,16 @@ export async function logToDb(
 		console.log(`[${loggingType}] - ${message} - Options: `, options);
 		return;
 	}
-	await db.insert(log).values({
-		...options,
-		logType: loggingType,
-		message,
-	});
+	try {
+		await db.insert(log).values({
+			...options,
+			logType: loggingType,
+			message,
+		});
+	} catch (e) {
+		// Silently fail if logging to the db fails.
+		console.error("Failed to log to database: ", e);
+	}
 }
 
 function getAllContextValues(c?: Context): LoggingOptions | undefined {

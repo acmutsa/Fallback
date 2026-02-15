@@ -139,7 +139,10 @@ const teamHandler = HonoBetterAuth()
 			});
 		} catch (e) {
 			if (e instanceof DatabaseError) {
-				if (e.code === "23505") {
+				if (
+					e.code === "SQLITE_CONSTRAINT_PRIMARYKEY" ||
+					e.code === "SQLITE_CONSTRAINT_UNIQUE"
+				) {
 					await logWarning(
 						`User with ID ${user.id} is already a member of team with ID ${inviteRequest.teamId}. Transaction has been rolled back.`,
 						c,
@@ -150,6 +153,11 @@ const teamHandler = HonoBetterAuth()
 					);
 				}
 			}
+			await logError(
+				`Error occurred while user with ID ${user.id} was attempting to join team with ID ${inviteRequest.teamId}. Transaction has been rolled back. Error details: ${e}`,
+				c,
+			);
+			throw e;
 		}
 
 		const teamInfo = await db.query.team.findFirst({
