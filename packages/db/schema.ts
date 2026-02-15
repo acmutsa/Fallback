@@ -44,6 +44,7 @@ const teamJoinRequestStatusType = text({
 	enum: ["PENDING", "APPROVED", "REJECTED"],
 });
 
+// User Table - Partially generated based on Better Auth requirements. Modify with extreme caution.
 export const user = sqliteTable("user", {
 	id: text("id").primaryKey(),
 	firstName: text("first_name", { length: 255 }).notNull(),
@@ -177,7 +178,7 @@ export const log = sqliteTable("log", {
 	logType: logType.notNull(),
 	message: standardVarcharFactory(),
 	occurredAt: standardDateFactory(),
-	// TOOD: All of these fields are nullable because not all logs have the same info. There might be a better approach.
+	// TODO: All of these fields are nullable because not all logs have the same info. There might be a better approach.
 	teamId: standardVarcharFactoryNullable(),
 	userId: standardVarcharFactoryNullable(),
 	route: standardVarcharFactoryNullable(),

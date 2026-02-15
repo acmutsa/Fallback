@@ -1,10 +1,6 @@
 import { userToTeam, db, and, eq, log } from "db";
-import type {
-	UserType,
-	LoggingOptions,
-	LoggingType,
-	SiteRoleType,
-} from "../types";
+import type { UserType, SiteRoleType } from "db/types";
+import type { LoggingOptions, LoggingType } from "../types";
 import { type Context } from "hono";
 import { isInDevMode } from ".";
 

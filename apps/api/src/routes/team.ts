@@ -1,16 +1,17 @@
+// TODO(https://github.com/acmutsa/Fallback/issues/35): Come back and finish team routes
 import { zValidator } from "@hono/zod-validator";
 import { HonoBetterAuth } from "../lib/functions";
 import {
 	db,
 	eq,
 	and,
-	gte,
 	isNull,
 	getUserTeamsQuery,
 	userToTeam,
 	teamInvite,
 	team,
 } from "db";
+import { DatabaseError } from "db/types";
 import {
 	joinTeamSchema,
 	userTeamActionSchema,
@@ -22,8 +23,11 @@ import {
 	leaveTeam,
 	getAdminUserForTeam,
 	isUserSiteAdminOrQueryHasPermissions,
+	logError,
+	logWarning,
 } from "../lib/functions/database";
 import { isSiteAdminUser } from "../lib/functions/database";
+import { isPast } from "date-fns";
 
 /*
  * Routes made to handle thr logic related to teams.
@@ -48,55 +52,8 @@ const teamHandler = HonoBetterAuth()
 		const allTeams = await db.query.team.findMany();
 		return c.json({ message: allTeams }, 200);
 	})
-	.post("/join", zValidator("query", joinTeamSchema), async (c) => {
-		const inv = c.req.query("inv");
-		const user = c.get("user");
-
-		if (!user) {
-			return c.json({ message: API_ERROR_MESSAGES.notAuthorized }, 401);
-		}
-
-		if (!inv) {
-			return c.json({ message: API_ERROR_MESSAGES.noInviteCode }, 400);
-		}
-
-		const compDate = new Date(Date.now());
-
-		const inviteRequest = await db.query.teamInvite.findFirst({
-			where: and(
-				eq(teamInvite.id, inv),
-				eq(teamInvite.email, user.email),
-				isNull(teamInvite.acceptedAt),
-				gte(teamInvite.expiresAt, compDate),
-			),
-		});
-
-		if (!inviteRequest) {
-			return c.json({ message: API_ERROR_MESSAGES.codeNotFound }, 400);
-		}
-
-		c.set("teamId", inviteRequest.teamId);
-
-		await db.transaction(async (tx) => {
-			await tx.insert(userToTeam).values({
-				teamId: inviteRequest.teamId,
-				userId: user.id,
-				role: inviteRequest.role,
-			});
-
-			// TODO: Look and see if we can do this after the function has been sent
-			await tx
-				.update(teamInvite)
-				.set({
-					acceptedAt: compDate,
-				})
-				.where(eq(teamInvite.id, inv));
-		});
-
-		return c.json({ message: "invite_code_success" }, 200);
-	})
 	.get("/:teamId", zValidator("param", teamIdSchema), async (c) => {
-		const teamId = c.req.param("teamId");
+		const teamId = c.req.valid("param").teamId;
 		const user = c.get("user");
 
 		c.set("teamId", teamId);
@@ -132,10 +89,86 @@ const teamHandler = HonoBetterAuth()
 
 		return c.json({ message: teamInfo }, 200);
 	})
+	.post("/join", zValidator("query", joinTeamSchema), async (c) => {
+		const inv = c.req.valid("query").inv;
+		const user = c.get("user");
+
+		if (!user) {
+			return c.json({ message: API_ERROR_MESSAGES.notAuthorized }, 401);
+		}
+
+		if (!inv) {
+			return c.json({ message: API_ERROR_MESSAGES.noInviteCode }, 400);
+		}
+
+		const compDate = new Date(Date.now());
+
+		const inviteRequest = await db.query.teamInvite.findFirst({
+			where: and(
+				eq(teamInvite.id, inv),
+				eq(teamInvite.email, user.email),
+				isNull(teamInvite.acceptedAt),
+			),
+		});
+
+		if (!inviteRequest) {
+			return c.json({ message: API_ERROR_MESSAGES.codeNotFound }, 400);
+		}
+
+		// Check if the invite has expired
+		if (inviteRequest.expiresAt && isPast(inviteRequest.expiresAt)) {
+			return c.json({ message: API_ERROR_MESSAGES.codeExpired }, 400);
+		}
+
+		c.set("teamId", inviteRequest.teamId);
+
+		try {
+			await db.transaction(async (tx) => {
+				await tx.insert(userToTeam).values({
+					teamId: inviteRequest.teamId,
+					userId: user.id,
+					role: inviteRequest.role,
+				});
+
+				await tx
+					.update(teamInvite)
+					.set({
+						acceptedAt: compDate,
+					})
+					.where(eq(teamInvite.id, inv));
+			});
+		} catch (e) {
+			if (e instanceof DatabaseError) {
+				if (e.code === "23505") {
+					await logWarning(
+						`User with ID ${user.id} is already a member of team with ID ${inviteRequest.teamId}. Transaction has been rolled back.`,
+						c,
+					);
+					return c.json(
+						{ message: API_ERROR_MESSAGES.alreadyMember },
+						400,
+					);
+				}
+			}
+		}
+
+		const teamInfo = await db.query.team.findFirst({
+			where: eq(team.id, inviteRequest.teamId),
+		});
+		if (!teamInfo) {
+			await logError(
+				`Team with ID ${inviteRequest.teamId} not found after accepting invite. This should not happen and indicates a critial issue. Please investigate immediately.`,
+				c,
+			);
+			return c.json({ message: API_ERROR_MESSAGES.notFound }, 500);
+		}
+
+		return c.json({ message: teamInfo }, 200);
+	})
 	// Not too sure if we should enhance this. Perhaps mark it for deletion instead and allow the users to recover it?
 	.delete("/:teamId", zValidator("param", teamIdSchema), async (c) => {
 		const user = c.get("user");
-		const teamId = c.req.param("teamId");
+		const teamId = c.req.valid("param").teamId;
 
 		if (!user) {
 			return c.json({ message: API_ERROR_MESSAGES.notAuthorized }, 401);
@@ -158,7 +191,7 @@ const teamHandler = HonoBetterAuth()
 		return c.json({ message: "Success" }, 200);
 	})
 	.get("/:teamId/admin", zValidator("param", teamIdSchema), async (c) => {
-		const teamId = c.req.param("teamId");
+		const teamId = c.req.valid("param").teamId;
 		const user = c.get("user");
 
 		if (!user) {
@@ -184,10 +217,14 @@ const teamHandler = HonoBetterAuth()
 			},
 		});
 
+		if (!allTeamInfo) {
+			return c.json({ message: API_ERROR_MESSAGES.notFound }, 404);
+		}
+
 		return c.json({ message: allTeamInfo }, 200);
 	})
 	.get("/:teamId/members", zValidator("param", teamIdSchema), async (c) => {
-		const teamId = c.req.param("teamId");
+		const teamId = c.req.valid("param").teamId;
 		const user = c.get("user");
 
 		if (!user) {
@@ -205,12 +242,16 @@ const teamHandler = HonoBetterAuth()
 			);
 		}
 
-		const teamMembers = await db.query.team.findMany({
+		const teamMembers = await db.query.team.findFirst({
 			where: eq(team.id, teamId),
 			with: {
 				members: true,
 			},
 		});
+
+		if (!teamMembers) {
+			return c.json({ message: API_ERROR_MESSAGES.notFound }, 404);
+		}
 
 		return c.json({ message: teamMembers }, 200);
 	})
@@ -221,7 +262,7 @@ const teamHandler = HonoBetterAuth()
 		zValidator("form", teamNameSchema),
 		async (c) => {
 			const user = c.get("user");
-			const teamId = c.req.param("teamId");
+			const teamId = c.req.valid("param").teamId;
 			const newTeamNameSchema = c.req.valid("form");
 
 			if (!user) {
@@ -257,8 +298,8 @@ const teamHandler = HonoBetterAuth()
 		"/:teamId/:userId/remove",
 		zValidator("param", userTeamActionSchema),
 		async (c) => {
-			const teamId = c.req.param("teamId");
-			const userIdToRemove = c.req.param("userId");
+			const teamId = c.req.valid("param").teamId;
+			const userIdToRemove = c.req.valid("param").userId;
 			const user = c.get("user");
 
 			if (!user) {

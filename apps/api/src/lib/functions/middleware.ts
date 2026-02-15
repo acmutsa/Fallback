@@ -53,6 +53,7 @@ export async function authenticatedMiddleware(c: ApiContext, next: Next) {
  * Middleware to handle logging the request and results of request afterwards. Context object is apparently stateful
  */
 export async function afterRouteLogicMiddleware(c: ApiContext, next: Next) {
+	// TODO(https://github.com/acmutsa/Fallback/issues/26): Come back and finish logging function
 	console.log("context before is: ", c.get("teamId"));
 	await next();
 	console.log("context after is: ", c.get("teamId"));

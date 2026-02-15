@@ -11,9 +11,10 @@ const backupHandler = HonoBetterAuth().post(
 		}),
 	),
 	async (c) => {
+		const backupId = c.req.valid("param").backupId;
 		return c.json(
 			{
-				message: `Backup endpoint hit for backup ID: ${c.req.param("backupId")}`,
+				message: `Backup endpoint hit for backup ID: ${backupId}`,
 			},
 			200,
 		);

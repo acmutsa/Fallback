@@ -22,7 +22,7 @@ const userhandler = HonoBetterAuth()
 			}),
 		),
 		async (c) => {
-			const userId = c.req.param("userId");
+			const userId = c.req.valid("param").userId;
 			const requestedUser = await db.query.user.findFirst({
 				where: eq(user.id, userId),
 			});

@@ -67,7 +67,9 @@ export const THEME_CONFIG = {
 export const API_ERROR_MESSAGES = {
 	noInviteCode: "no_invite_code",
 	codeNotFound: "code_not_found",
+	codeExpired: "code_expired",
 	invalidPermissions: "invalid_permissions",
 	notFound: "not_found",
 	notAuthorized: "unauthorized",
+	alreadyMember: "already_member",
 };

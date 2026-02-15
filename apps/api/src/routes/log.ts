@@ -27,7 +27,7 @@ const logHandler = HonoBetterAuth()
 	// This route needs to be made to get logs from a team. Logs should be paginated and alllow for basic filtering on the frontend
 	.get("/:teamId", zValidator("param", teamIdSchema), async (c) => {
 		const user = c.get("user");
-		const teamId = c.req.param("teamId");
+		const teamId = c.req.valid("param").teamId;
 
 		if (!user) {
 			return c.json({ message: API_ERROR_MESSAGES.notAuthorized }, 401);
