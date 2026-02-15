@@ -52,43 +52,6 @@ const teamHandler = HonoBetterAuth()
 		const allTeams = await db.query.team.findMany();
 		return c.json({ message: allTeams }, 200);
 	})
-	.get("/:teamId", zValidator("param", teamIdSchema), async (c) => {
-		const teamId = c.req.valid("param").teamId;
-		const user = c.get("user");
-
-		c.set("teamId", teamId);
-
-		if (!user) {
-			return c.json({ message: API_ERROR_MESSAGES.notAuthorized }, 401);
-		}
-		const asyncCallback = db.query.userToTeam.findFirst({
-			where: and(
-				eq(userToTeam.teamId, teamId),
-				eq(userToTeam.userId, user.id),
-			),
-		});
-		const canUserView = await isUserSiteAdminOrQueryHasPermissions(
-			user.siteRole,
-			asyncCallback,
-		);
-
-		if (!canUserView) {
-			return c.json(
-				{ message: API_ERROR_MESSAGES.invalidPermissions },
-				401,
-			);
-		}
-
-		const teamInfo = await db.query.team.findFirst({
-			where: eq(team.id, teamId),
-		});
-
-		if (!teamInfo) {
-			return c.json({ message: API_ERROR_MESSAGES.notFound }, 404);
-		}
-
-		return c.json({ message: teamInfo }, 200);
-	})
 	.post("/join", zValidator("query", joinTeamSchema), async (c) => {
 		const inv = c.req.valid("query").inv;
 		const user = c.get("user");
@@ -165,10 +128,47 @@ const teamHandler = HonoBetterAuth()
 		});
 		if (!teamInfo) {
 			await logError(
-				`Team with ID ${inviteRequest.teamId} not found after accepting invite. This should not happen and indicates a critial issue. Please investigate immediately.`,
+				`Team with ID ${inviteRequest.teamId} not found after accepting invite. This should not happen and indicates a critical issue. Please investigate immediately.`,
 				c,
 			);
 			return c.json({ message: API_ERROR_MESSAGES.notFound }, 500);
+		}
+
+		return c.json({ message: teamInfo }, 200);
+	})
+	.get("/:teamId", zValidator("param", teamIdSchema), async (c) => {
+		const teamId = c.req.valid("param").teamId;
+		const user = c.get("user");
+
+		c.set("teamId", teamId);
+
+		if (!user) {
+			return c.json({ message: API_ERROR_MESSAGES.notAuthorized }, 401);
+		}
+		const asyncCallback = db.query.userToTeam.findFirst({
+			where: and(
+				eq(userToTeam.teamId, teamId),
+				eq(userToTeam.userId, user.id),
+			),
+		});
+		const canUserView = await isUserSiteAdminOrQueryHasPermissions(
+			user.siteRole,
+			asyncCallback,
+		);
+
+		if (!canUserView) {
+			return c.json(
+				{ message: API_ERROR_MESSAGES.invalidPermissions },
+				401,
+			);
+		}
+
+		const teamInfo = await db.query.team.findFirst({
+			where: eq(team.id, teamId),
+		});
+
+		if (!teamInfo) {
+			return c.json({ message: API_ERROR_MESSAGES.notFound }, 404);
 		}
 
 		return c.json({ message: teamInfo }, 200);

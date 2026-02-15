@@ -12,6 +12,7 @@ import {
 	isSiteAdminUser,
 } from "../lib/functions/database";
 
+// TODO(https://github.com/acmutsa/Fallback/issues/36): We need to allow authenticated users to log client errors, but we should rethink this a bit to add extra protections against abuse.
 const logHandler = HonoBetterAuth()
 	.post("/", zValidator("form", logSchema), async (c) => {
 		const logData = c.req.valid("form");
@@ -22,6 +23,14 @@ const logHandler = HonoBetterAuth()
 		});
 
 		return c.json({ message: "Log endpoint hit" }, 200);
+	})
+	.get("/admin/all", async (c) => {
+		const user = c.get("user");
+		if (!user || !isSiteAdminUser(user.siteRole)) {
+			return c.json({ message: API_ERROR_MESSAGES.notAuthorized }, 401);
+		}
+		const allLogs = await db.query.log.findMany();
+		return c.json({ message: allLogs }, 200);
 	})
 	// This route needs to be made to get logs from a team. Logs should be paginated and alllow for basic filtering on the frontend
 	.get("/:teamId", zValidator("param", teamIdSchema), async (c) => {
@@ -43,13 +52,5 @@ const logHandler = HonoBetterAuth()
 			where: eq(log.teamId, teamId),
 		});
 		return c.json({ message: logs }, 200);
-	})
-	.get("/admin/all", async (c) => {
-		const user = c.get("user");
-		if (!user || !isSiteAdminUser(user.siteRole)) {
-			return c.json({ message: API_ERROR_MESSAGES.notAuthorized }, 401);
-		}
-		const allLogs = await db.query.log.findMany();
-		return c.json({ message: allLogs }, 200);
 	});
 export default logHandler;
