@@ -27,7 +27,14 @@ const logHandler = HonoBetterAuth()
 	.get("/admin/all", async (c) => {
 		const user = c.get("user");
 		if (!user || !isSiteAdminUser(user.siteRole)) {
-			return c.json({ message: API_ERROR_MESSAGES.NOT_AUTHORIZED }, 401);
+			return c.json(
+				{
+					message:
+						"You are not authorized to access this endpoint. Only site admins can access all logs.",
+					code: API_ERROR_MESSAGES.NOT_AUTHORIZED,
+				},
+				403,
+			);
 		}
 		const allLogs = await db.query.log.findMany();
 		return c.json({ message: allLogs }, 200);
@@ -38,7 +45,13 @@ const logHandler = HonoBetterAuth()
 		const teamId = c.req.valid("param").teamId;
 
 		if (!user) {
-			return c.json({ message: API_ERROR_MESSAGES.NOT_AUTHORIZED }, 401);
+			return c.json(
+				{
+					message: "You are not authorized to access this endpoint.",
+					code: API_ERROR_MESSAGES.NOT_AUTHORIZED,
+				},
+				401,
+			);
 		}
 
 		const hasPermissions = await isUserSiteAdminOrQueryHasPermissions(
@@ -46,7 +59,14 @@ const logHandler = HonoBetterAuth()
 			getAdminUserForTeam(user.id, teamId),
 		);
 		if (!hasPermissions) {
-			return c.json({ message: API_ERROR_MESSAGES.NOT_AUTHORIZED }, 401);
+			return c.json(
+				{
+					message:
+						"You are not authorized to access this endpoint. Only site admins can access all logs.",
+					code: API_ERROR_MESSAGES.NOT_AUTHORIZED,
+				},
+				403,
+			);
 		}
 		const logs = await db.query.log.findMany({
 			where: eq(log.teamId, teamId),

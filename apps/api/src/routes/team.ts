@@ -27,6 +27,7 @@ import {
 } from "../lib/functions/database";
 import { isSiteAdminUser } from "../lib/functions/database";
 import { isPast } from "date-fns";
+import { te } from "date-fns/locale";
 
 /*
  * Routes made to handle the logic related to teams.
@@ -36,31 +37,55 @@ const teamHandler = HonoBetterAuth()
 	.get("/", async (c) => {
 		const user = c.get("user");
 		if (!user) {
-			return c.json({ message: API_ERROR_MESSAGES.NOT_AUTHORIZED }, 401);
+			return c.json(
+				{
+					message: "Please log in.",
+					code: API_ERROR_MESSAGES.NOT_AUTHENTICATED,
+				},
+				401,
+			);
 		}
 		const userTeams = await getUserTeamsQuery(user.id);
-		return c.json({ message: userTeams }, 200);
+		return c.json({ data: userTeams }, 200);
 	})
 	// Retrieve all of the teams
 	.get("/admin", async (c) => {
 		const user = c.get("user");
 		if (!user || !isSiteAdminUser(user.siteRole)) {
-			return c.json({ message: API_ERROR_MESSAGES.NOT_AUTHORIZED }, 401);
+			return c.json(
+				{
+					message: "You are not authorized to access this endpoint.",
+					code: API_ERROR_MESSAGES.NOT_AUTHORIZED,
+				},
+				403,
+			);
 		}
 
 		const allTeams = await db.query.team.findMany();
-		return c.json({ message: allTeams }, 200);
+		return c.json({ data: allTeams }, 200);
 	})
 	.post("/join", zValidator("query", joinTeamSchema), async (c) => {
 		const inv = c.req.valid("query").inv;
 		const user = c.get("user");
 
 		if (!user) {
-			return c.json({ message: API_ERROR_MESSAGES.NOT_AUTHORIZED }, 401);
+			return c.json(
+				{
+					message: "Please log in.",
+					code: API_ERROR_MESSAGES.NOT_AUTHENTICATED,
+				},
+				401,
+			);
 		}
 
 		if (!inv) {
-			return c.json({ message: API_ERROR_MESSAGES.NO_INVITE_CODE }, 400);
+			return c.json(
+				{
+					message: "Invite code is required to join a team.",
+					code: API_ERROR_MESSAGES.NO_INVITE_CODE,
+				},
+				400,
+			);
 		}
 		const inviteRequest = await db.query.teamInvite.findFirst({
 			where: and(
@@ -70,15 +95,33 @@ const teamHandler = HonoBetterAuth()
 		});
 
 		if (!inviteRequest) {
-			return c.json({ message: API_ERROR_MESSAGES.CODE_NOT_FOUND }, 400);
+			return c.json(
+				{
+					message: "Invite code not found for this email.",
+					code: API_ERROR_MESSAGES.CODE_NOT_FOUND,
+				},
+				400,
+			);
 		}
 
 		if (inviteRequest.acceptedAt) {
-			return c.json({ message: API_ERROR_MESSAGES.ALREADY_MEMBER }, 400);
+			return c.json(
+				{
+					message: "User is already a member of this team.",
+					code: API_ERROR_MESSAGES.ALREADY_MEMBER,
+				},
+				400,
+			);
 		}
 		// Check if the invite has expired
 		if (inviteRequest.expiresAt && isPast(inviteRequest.expiresAt)) {
-			return c.json({ message: API_ERROR_MESSAGES.CODE_EXPIRED }, 400);
+			return c.json(
+				{
+					message: "Invite code has expired.",
+					code: API_ERROR_MESSAGES.CODE_EXPIRED,
+				},
+				400,
+			);
 		}
 
 		c.set("teamId", inviteRequest.teamId);
@@ -106,7 +149,10 @@ const teamHandler = HonoBetterAuth()
 					c,
 				);
 				return c.json(
-					{ message: API_ERROR_MESSAGES.ALREADY_MEMBER },
+					{
+						message: "User is already a member of this team.",
+						code: API_ERROR_MESSAGES.ALREADY_MEMBER,
+					},
 					400,
 				);
 			}
@@ -114,7 +160,14 @@ const teamHandler = HonoBetterAuth()
 				`Error occurred while user with ID ${user.id} was attempting to join team with ID ${inviteRequest.teamId}. Transaction has been rolled back. Error details: ${e}`,
 				c,
 			);
-			return c.json({ message: API_ERROR_MESSAGES.GENERIC_ERROR }, 500);
+			return c.json(
+				{
+					message:
+						"An error occurred while attempting to join the team. Please try again later.",
+					code: API_ERROR_MESSAGES.GENERIC_ERROR,
+				},
+				500,
+			);
 		}
 
 		const teamInfo = await db.query.team.findFirst({
@@ -125,10 +178,17 @@ const teamHandler = HonoBetterAuth()
 				`Team with ID ${inviteRequest.teamId} not found after accepting invite. This should not happen and indicates a critical issue. Please investigate immediately.`,
 				c,
 			);
-			return c.json({ message: API_ERROR_MESSAGES.NOT_FOUND }, 500);
+			return c.json(
+				{
+					message:
+						"Team not found after accepting invite. Please contact support.",
+					code: API_ERROR_MESSAGES.NOT_FOUND,
+				},
+				500,
+			);
 		}
 
-		return c.json({ message: teamInfo }, 200);
+		return c.json({ data: teamInfo }, 200);
 	})
 	.get("/:teamId", zValidator("param", teamIdSchema), async (c) => {
 		const teamId = c.req.valid("param").teamId;
@@ -137,7 +197,13 @@ const teamHandler = HonoBetterAuth()
 		c.set("teamId", teamId);
 
 		if (!user) {
-			return c.json({ message: API_ERROR_MESSAGES.NOT_AUTHORIZED }, 401);
+			return c.json(
+				{
+					message: "Please log in.",
+					code: API_ERROR_MESSAGES.NOT_AUTHENTICATED,
+				},
+				401,
+			);
 		}
 		const asyncCallback = db.query.userToTeam.findFirst({
 			where: and(
@@ -152,8 +218,12 @@ const teamHandler = HonoBetterAuth()
 
 		if (!canUserView) {
 			return c.json(
-				{ message: API_ERROR_MESSAGES.INVALID_PERMISSIONS },
-				401,
+				{
+					message:
+						"You cannot view this team. Please contact your administrator if you believe this is an error.",
+					code: API_ERROR_MESSAGES.NOT_AUTHORIZED,
+				},
+				403,
 			);
 		}
 
@@ -162,10 +232,16 @@ const teamHandler = HonoBetterAuth()
 		});
 
 		if (!teamInfo) {
-			return c.json({ message: API_ERROR_MESSAGES.NOT_FOUND }, 404);
+			return c.json(
+				{
+					message: "Team not found.",
+					code: API_ERROR_MESSAGES.NOT_FOUND,
+				},
+				404,
+			);
 		}
 
-		return c.json({ message: teamInfo }, 200);
+		return c.json({ data: teamInfo }, 200);
 	})
 	// Not too sure if we should enhance this. Perhaps mark it for deletion instead and allow the users to recover it?
 	.delete("/:teamId", zValidator("param", teamIdSchema), async (c) => {
@@ -173,7 +249,13 @@ const teamHandler = HonoBetterAuth()
 		const teamId = c.req.valid("param").teamId;
 
 		if (!user) {
-			return c.json({ message: API_ERROR_MESSAGES.NOT_AUTHORIZED }, 401);
+			return c.json(
+				{
+					message: "Please log in.",
+					code: API_ERROR_MESSAGES.NOT_AUTHENTICATED,
+				},
+				401,
+			);
 		}
 
 		const canUserDelete = await isUserSiteAdminOrQueryHasPermissions(
@@ -183,23 +265,47 @@ const teamHandler = HonoBetterAuth()
 
 		if (!canUserDelete) {
 			return c.json(
-				{ message: API_ERROR_MESSAGES.INVALID_PERMISSIONS },
+				{
+					message:
+						"You cannot delete this team. Please contact your administrator if you believe this is an error.",
+					code: API_ERROR_MESSAGES.NOT_AUTHORIZED,
+				},
 				401,
 			);
 		}
 
-		await db.delete(team).where(eq(team.id, teamId));
+		const deletedTeamData = await db
+			.delete(team)
+			.where(eq(team.id, teamId))
+			.returning();
 
-		return c.json({ message: "Success" }, 200);
+		if (deletedTeamData.length === 0) {
+			return c.json(
+				{
+					message: "Team not found.",
+					code: API_ERROR_MESSAGES.NOT_FOUND,
+				},
+				404,
+			);
+		}
+
+		return c.json({ data: deletedTeamData[0] }, 200);
 	})
 	.get("/:teamId/admin", zValidator("param", teamIdSchema), async (c) => {
 		const teamId = c.req.valid("param").teamId;
 		const user = c.get("user");
 
 		if (!user) {
-			return c.json({ message: API_ERROR_MESSAGES.NOT_AUTHORIZED }, 401);
+			return c.json(
+				{
+					message: "Please log in.",
+					code: API_ERROR_MESSAGES.NOT_AUTHENTICATED,
+				},
+				401,
+			);
 		}
 
+		// Either team or site admins can view so we need to check.
 		const canUserView = await isUserSiteAdminOrQueryHasPermissions(
 			user.siteRole,
 			getAdminUserForTeam(user.id, teamId),
@@ -207,7 +313,11 @@ const teamHandler = HonoBetterAuth()
 
 		if (!canUserView) {
 			return c.json(
-				{ message: API_ERROR_MESSAGES.INVALID_PERMISSIONS },
+				{
+					message:
+						"You cannot view this team. Please contact your administrator if you believe this is an error.",
+					code: API_ERROR_MESSAGES.NOT_AUTHORIZED,
+				},
 				401,
 			);
 		}
@@ -223,17 +333,29 @@ const teamHandler = HonoBetterAuth()
 		});
 
 		if (!allTeamInfo) {
-			return c.json({ message: API_ERROR_MESSAGES.NOT_FOUND }, 404);
+			return c.json(
+				{
+					message: "Team not found.",
+					code: API_ERROR_MESSAGES.NOT_FOUND,
+				},
+				404,
+			);
 		}
 
-		return c.json({ message: allTeamInfo }, 200);
+		return c.json({ data: allTeamInfo }, 200);
 	})
 	.get("/:teamId/members", zValidator("param", teamIdSchema), async (c) => {
 		const teamId = c.req.valid("param").teamId;
 		const user = c.get("user");
 
 		if (!user) {
-			return c.json({ message: API_ERROR_MESSAGES.NOT_AUTHORIZED }, 401);
+			return c.json(
+				{
+					message: "Please log in.",
+					code: API_ERROR_MESSAGES.NOT_AUTHENTICATED,
+				},
+				401,
+			);
 		}
 		const canUserView = await isUserSiteAdminOrQueryHasPermissions(
 			user.siteRole,
@@ -242,7 +364,11 @@ const teamHandler = HonoBetterAuth()
 
 		if (!canUserView) {
 			return c.json(
-				{ message: API_ERROR_MESSAGES.INVALID_PERMISSIONS },
+				{
+					message:
+						"You cannot view this team's members. Please contact your administrator if you believe this is an error.",
+					code: API_ERROR_MESSAGES.NOT_AUTHORIZED,
+				},
 				401,
 			);
 		}
@@ -255,10 +381,16 @@ const teamHandler = HonoBetterAuth()
 		});
 
 		if (!teamMembers) {
-			return c.json({ message: API_ERROR_MESSAGES.NOT_FOUND }, 404);
+			return c.json(
+				{
+					message: "Team not found.",
+					code: API_ERROR_MESSAGES.NOT_FOUND,
+				},
+				404,
+			);
 		}
 
-		return c.json({ message: teamMembers }, 200);
+		return c.json({ data: teamMembers }, 200);
 	})
 	.patch(
 		"/:teamId/update",
@@ -271,7 +403,10 @@ const teamHandler = HonoBetterAuth()
 
 			if (!user) {
 				return c.json(
-					{ message: API_ERROR_MESSAGES.NOT_AUTHORIZED },
+					{
+						message: "Please log in.",
+						code: API_ERROR_MESSAGES.NOT_AUTHENTICATED,
+					},
 					401,
 				);
 			}
@@ -283,19 +418,34 @@ const teamHandler = HonoBetterAuth()
 
 			if (!canUserUpdate) {
 				return c.json(
-					{ message: API_ERROR_MESSAGES.INVALID_PERMISSIONS },
+					{
+						message:
+							"You cannot update this team. Please contact your administrator if you believe this is an error.",
+						code: API_ERROR_MESSAGES.NOT_AUTHORIZED,
+					},
 					401,
 				);
 			}
 
-			await db
+			const newTeamData = await db
 				.update(team)
 				.set({
 					name: newTeamNameSchema.name,
 				})
-				.where(eq(team.id, teamId));
+				.where(eq(team.id, teamId))
+				.returning();
 
-			return c.json({ message: "Success" }, 200);
+			if (newTeamData.length === 0) {
+				return c.json(
+					{
+						message: "Team not found.",
+						code: API_ERROR_MESSAGES.NOT_FOUND,
+					},
+					404,
+				);
+			}
+
+			return c.json({ data: newTeamData[0] }, 200);
 		},
 	)
 	.delete(
@@ -308,39 +458,44 @@ const teamHandler = HonoBetterAuth()
 
 			if (!user) {
 				return c.json(
-					{ message: API_ERROR_MESSAGES.NOT_AUTHORIZED },
+					{
+						message: "Please log in.",
+						code: API_ERROR_MESSAGES.NOT_AUTHENTICATED,
+					},
 					401,
 				);
 			}
 
-			// If the user is attempting to remove themselves, we will allow this.
-			if (userIdToRemove === user.id) {
-				await leaveTeam(user.id, teamId);
-
-				return c.json(
-					{ message: "Successfully removed from team." },
-					200,
-				);
-			}
-
-			// If not, we know that it is a user attempting to remove another user and we need to ensure they have the right permissions for this.
+			// Users can remove themselves at any time.
+			const isUserAttemptingToRemoveThemselves =
+				userIdToRemove === user.id;
 
 			const canUserRemove = await isUserSiteAdminOrQueryHasPermissions(
 				user.siteRole,
 				getAdminUserForTeam(user.id, teamId),
 			);
 
-			if (!canUserRemove) {
+			if (isUserAttemptingToRemoveThemselves || canUserRemove) {
+				const teamIdUserRemovedFrom = await leaveTeam(
+					userIdToRemove,
+					teamId,
+				);
+				if (teamIdUserRemovedFrom.length === 0) {
+					return c.json(
+						{
+							message: "Team or user not found.",
+							code: API_ERROR_MESSAGES.NOT_FOUND,
+						},
+						404,
+					);
+				}
+				return c.json({ data: teamIdUserRemovedFrom[0] }, 200);
+			} else {
 				return c.json(
-					{ message: API_ERROR_MESSAGES.INVALID_PERMISSIONS },
-					401,
+					{ message: API_ERROR_MESSAGES.NOT_AUTHORIZED },
+					403,
 				);
 			}
-
-			// Lastly, if they are good, we can finally remove the user
-			await leaveTeam(userIdToRemove, teamId);
-
-			return c.json({ message: "Success" }, 200);
 		},
 	);
 export default teamHandler;

@@ -45,11 +45,12 @@ export function isSiteAdminUser(
 }
 
 export async function leaveTeam(userId: string, teamId: string) {
-	await db
+	return db
 		.delete(userToTeam)
 		.where(
 			and(eq(userToTeam.userId, userId), eq(userToTeam.teamId, teamId)),
-		);
+		)
+		.returning({ teamId: userToTeam.teamId });
 }
 
 export async function getAdminUserForTeam(userId: string, teamId: string) {
