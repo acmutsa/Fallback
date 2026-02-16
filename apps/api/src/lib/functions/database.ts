@@ -62,7 +62,6 @@ export async function getAdminUserForTeam(userId: string, teamId: string) {
 	});
 }
 
-// TODO: Come back and make this a generic function that can take in any sqlite query function
 export async function isUserSiteAdminOrQueryHasPermissions<T = unknown>(
 	userSiteRole: SiteRoleType,
 	// Accept either a Promise (already invoked query) or a function that returns a Promise
@@ -76,7 +75,6 @@ export async function isUserSiteAdminOrQueryHasPermissions<T = unknown>(
 	return !!result;
 }
 
-// TODO: I think all of these functions need to end up having the context object being sent into it
 export async function logError(message: string, c?: Context) {
 	const options = getAllContextValues(c);
 	await logToDb("ERROR", message, options);

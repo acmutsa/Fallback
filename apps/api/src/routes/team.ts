@@ -261,7 +261,6 @@ const teamHandler = HonoBetterAuth()
 
 		return c.json({ message: teamMembers }, 200);
 	})
-	// TODO: I think this is wrong
 	.patch(
 		"/:teamId/update",
 		zValidator("param", teamIdSchema),
