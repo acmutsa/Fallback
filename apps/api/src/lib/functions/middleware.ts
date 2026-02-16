@@ -3,6 +3,7 @@ import { auth } from "../auth";
 import { logInfo } from "./database";
 import { nanoid } from "nanoid";
 import type { ApiContext } from "../types";
+import { API_ERROR_MESSAGES } from "shared";
 
 export const MIDDLEWARE_PUBLIC_ROUTES = ["/health", "/api/auth"];
 
@@ -44,7 +45,7 @@ export async function authenticatedMiddleware(c: ApiContext, next: Next) {
 	const session = c.get("session");
 	if (!(user && session)) {
 		await logInfo(`Unauthorized access attempt to ${c.req.path}`, c);
-		return c.json({ error: "Unauthorized" }, 401);
+		return c.json({ error: API_ERROR_MESSAGES.notAuthorized }, 401);
 	}
 	return next();
 }

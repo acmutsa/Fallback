@@ -125,3 +125,29 @@ function getAllContextValues(c?: Context): LoggingOptions | undefined {
 		requestId: c.get("requestId"),
 	};
 }
+
+/**
+ * Safely extract an error code string from an unknown thrown value from a db error.
+ * Returns the code as a string when present, otherwise null.
+ *
+ * This function can handle it being passed as either a number or string and will convert if need be
+ */
+export function maybeGetDbErrorCode(e: unknown): string | null {
+	if (e == null) return null;
+	if (typeof e === "object") {
+		console.log("Error object keys: ", Object.keys(e));
+		const anyE = e as Record<string, unknown>;
+
+		const errorCauseKey = anyE["cause"];
+		if (errorCauseKey && typeof errorCauseKey === "object") {
+			const codeKey = (errorCauseKey as Record<string, unknown>)["code"];
+			if (typeof codeKey === "string") {
+				return codeKey;
+			} else if (typeof codeKey === "number") {
+				return codeKey.toString();
+			}
+		}
+	}
+
+	return null;
+}

@@ -72,4 +72,5 @@ export const API_ERROR_MESSAGES = {
 	notFound: "not_found",
 	notAuthorized: "unauthorized",
 	alreadyMember: "already_member",
+	genericError: "generic_error",
 };

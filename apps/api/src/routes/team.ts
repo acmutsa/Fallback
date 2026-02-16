@@ -11,7 +11,6 @@ import {
 	teamInvite,
 	team,
 } from "db";
-import { DatabaseError } from "db/types";
 import {
 	joinTeamSchema,
 	userTeamActionSchema,
@@ -25,12 +24,13 @@ import {
 	isUserSiteAdminOrQueryHasPermissions,
 	logError,
 	logWarning,
+	maybeGetDbErrorCode,
 } from "../lib/functions/database";
 import { isSiteAdminUser } from "../lib/functions/database";
 import { isPast } from "date-fns";
 
 /*
- * Routes made to handle thr logic related to teams.
+ * Routes made to handle the logic related to teams.
  * Context of a teamId should be set when possible for the sake of logging.
  */
 const teamHandler = HonoBetterAuth()
@@ -63,9 +63,6 @@ const teamHandler = HonoBetterAuth()
 		if (!inv) {
 			return c.json({ message: API_ERROR_MESSAGES.noInviteCode }, 400);
 		}
-
-		const compDate = new Date(Date.now());
-
 		const inviteRequest = await db.query.teamInvite.findFirst({
 			where: and(
 				eq(teamInvite.id, inv),
@@ -77,6 +74,8 @@ const teamHandler = HonoBetterAuth()
 		if (!inviteRequest) {
 			return c.json({ message: API_ERROR_MESSAGES.codeNotFound }, 400);
 		}
+
+		console.log("Invite request expires at: ", inviteRequest.expiresAt);
 
 		// Check if the invite has expired
 		if (inviteRequest.expiresAt && isPast(inviteRequest.expiresAt)) {
@@ -96,31 +95,27 @@ const teamHandler = HonoBetterAuth()
 				await tx
 					.update(teamInvite)
 					.set({
-						acceptedAt: compDate,
+						acceptedAt: new Date(),
 					})
 					.where(eq(teamInvite.id, inv));
 			});
 		} catch (e) {
-			if (e instanceof DatabaseError) {
-				if (
-					e.code === "SQLITE_CONSTRAINT_PRIMARYKEY" ||
-					e.code === "SQLITE_CONSTRAINT_UNIQUE"
-				) {
-					await logWarning(
-						`User with ID ${user.id} is already a member of team with ID ${inviteRequest.teamId}. Transaction has been rolled back.`,
-						c,
-					);
-					return c.json(
-						{ message: API_ERROR_MESSAGES.alreadyMember },
-						400,
-					);
-				}
+			const errorCode = maybeGetDbErrorCode(e);
+			if (errorCode === "SQLITE_CONSTRAINT") {
+				await logWarning(
+					`User with ID ${user.id} is already a member of team with ID ${inviteRequest.teamId}. Transaction has been rolled back.`,
+					c,
+				);
+				return c.json(
+					{ message: API_ERROR_MESSAGES.alreadyMember },
+					400,
+				);
 			}
 			await logError(
 				`Error occurred while user with ID ${user.id} was attempting to join team with ID ${inviteRequest.teamId}. Transaction has been rolled back. Error details: ${e}`,
 				c,
 			);
-			throw e;
+			return c.json({ message: API_ERROR_MESSAGES.genericError }, 500);
 		}
 
 		const teamInfo = await db.query.team.findFirst({
@@ -212,7 +207,10 @@ const teamHandler = HonoBetterAuth()
 		);
 
 		if (!canUserView) {
-			return c.json({ message: API_ERROR_MESSAGES.notAuthorized }, 401);
+			return c.json(
+				{ message: API_ERROR_MESSAGES.invalidPermissions },
+				401,
+			);
 		}
 
 		const allTeamInfo = await db.query.team.findFirst({

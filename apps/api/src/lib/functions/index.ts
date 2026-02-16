@@ -15,6 +15,7 @@ export function HonoBetterAuth(options?: HonoOptions<BlankEnv> | undefined) {
 	});
 }
 
+// TODO(https://github.com/acmutsa/Fallback/issues/38): Come back and find out what proper value needs to be here
 export function isInDevMode() {
 	return process.env.NODE_ENV === "development";
 }
