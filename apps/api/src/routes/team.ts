@@ -5,7 +5,6 @@ import {
 	db,
 	eq,
 	and,
-	isNull,
 	getUserTeamsQuery,
 	userToTeam,
 	teamInvite,
@@ -37,7 +36,7 @@ const teamHandler = HonoBetterAuth()
 	.get("/", async (c) => {
 		const user = c.get("user");
 		if (!user) {
-			return c.json({ message: API_ERROR_MESSAGES.notAuthorized }, 401);
+			return c.json({ message: API_ERROR_MESSAGES.NOT_AUTHORIZED }, 401);
 		}
 		const userTeams = await getUserTeamsQuery(user.id);
 		return c.json({ message: userTeams }, 200);
@@ -46,7 +45,7 @@ const teamHandler = HonoBetterAuth()
 	.get("/admin", async (c) => {
 		const user = c.get("user");
 		if (!user || !isSiteAdminUser(user.siteRole)) {
-			return c.json({ message: API_ERROR_MESSAGES.notAuthorized }, 401);
+			return c.json({ message: API_ERROR_MESSAGES.NOT_AUTHORIZED }, 401);
 		}
 
 		const allTeams = await db.query.team.findMany();
@@ -57,11 +56,11 @@ const teamHandler = HonoBetterAuth()
 		const user = c.get("user");
 
 		if (!user) {
-			return c.json({ message: API_ERROR_MESSAGES.notAuthorized }, 401);
+			return c.json({ message: API_ERROR_MESSAGES.NOT_AUTHORIZED }, 401);
 		}
 
 		if (!inv) {
-			return c.json({ message: API_ERROR_MESSAGES.noInviteCode }, 400);
+			return c.json({ message: API_ERROR_MESSAGES.NO_INVITE_CODE }, 400);
 		}
 		const inviteRequest = await db.query.teamInvite.findFirst({
 			where: and(
@@ -71,15 +70,15 @@ const teamHandler = HonoBetterAuth()
 		});
 
 		if (!inviteRequest) {
-			return c.json({ message: API_ERROR_MESSAGES.codeNotFound }, 400);
+			return c.json({ message: API_ERROR_MESSAGES.CODE_NOT_FOUND }, 400);
 		}
 
 		if (inviteRequest.acceptedAt) {
-			return c.json({ message: API_ERROR_MESSAGES.alreadyMember }, 400);
+			return c.json({ message: API_ERROR_MESSAGES.ALREADY_MEMBER }, 400);
 		}
 		// Check if the invite has expired
 		if (inviteRequest.expiresAt && isPast(inviteRequest.expiresAt)) {
-			return c.json({ message: API_ERROR_MESSAGES.codeExpired }, 400);
+			return c.json({ message: API_ERROR_MESSAGES.CODE_EXPIRED }, 400);
 		}
 
 		c.set("teamId", inviteRequest.teamId);
@@ -107,7 +106,7 @@ const teamHandler = HonoBetterAuth()
 					c,
 				);
 				return c.json(
-					{ message: API_ERROR_MESSAGES.alreadyMember },
+					{ message: API_ERROR_MESSAGES.ALREADY_MEMBER },
 					400,
 				);
 			}
@@ -115,7 +114,7 @@ const teamHandler = HonoBetterAuth()
 				`Error occurred while user with ID ${user.id} was attempting to join team with ID ${inviteRequest.teamId}. Transaction has been rolled back. Error details: ${e}`,
 				c,
 			);
-			return c.json({ message: API_ERROR_MESSAGES.genericError }, 500);
+			return c.json({ message: API_ERROR_MESSAGES.GENERIC_ERROR }, 500);
 		}
 
 		const teamInfo = await db.query.team.findFirst({
@@ -126,7 +125,7 @@ const teamHandler = HonoBetterAuth()
 				`Team with ID ${inviteRequest.teamId} not found after accepting invite. This should not happen and indicates a critical issue. Please investigate immediately.`,
 				c,
 			);
-			return c.json({ message: API_ERROR_MESSAGES.notFound }, 500);
+			return c.json({ message: API_ERROR_MESSAGES.NOT_FOUND }, 500);
 		}
 
 		return c.json({ message: teamInfo }, 200);
@@ -138,7 +137,7 @@ const teamHandler = HonoBetterAuth()
 		c.set("teamId", teamId);
 
 		if (!user) {
-			return c.json({ message: API_ERROR_MESSAGES.notAuthorized }, 401);
+			return c.json({ message: API_ERROR_MESSAGES.NOT_AUTHORIZED }, 401);
 		}
 		const asyncCallback = db.query.userToTeam.findFirst({
 			where: and(
@@ -153,7 +152,7 @@ const teamHandler = HonoBetterAuth()
 
 		if (!canUserView) {
 			return c.json(
-				{ message: API_ERROR_MESSAGES.invalidPermissions },
+				{ message: API_ERROR_MESSAGES.INVALID_PERMISSIONS },
 				401,
 			);
 		}
@@ -163,7 +162,7 @@ const teamHandler = HonoBetterAuth()
 		});
 
 		if (!teamInfo) {
-			return c.json({ message: API_ERROR_MESSAGES.notFound }, 404);
+			return c.json({ message: API_ERROR_MESSAGES.NOT_FOUND }, 404);
 		}
 
 		return c.json({ message: teamInfo }, 200);
@@ -174,7 +173,7 @@ const teamHandler = HonoBetterAuth()
 		const teamId = c.req.valid("param").teamId;
 
 		if (!user) {
-			return c.json({ message: API_ERROR_MESSAGES.notAuthorized }, 401);
+			return c.json({ message: API_ERROR_MESSAGES.NOT_AUTHORIZED }, 401);
 		}
 
 		const canUserDelete = await isUserSiteAdminOrQueryHasPermissions(
@@ -184,7 +183,7 @@ const teamHandler = HonoBetterAuth()
 
 		if (!canUserDelete) {
 			return c.json(
-				{ message: API_ERROR_MESSAGES.invalidPermissions },
+				{ message: API_ERROR_MESSAGES.INVALID_PERMISSIONS },
 				401,
 			);
 		}
@@ -198,7 +197,7 @@ const teamHandler = HonoBetterAuth()
 		const user = c.get("user");
 
 		if (!user) {
-			return c.json({ message: API_ERROR_MESSAGES.notAuthorized }, 401);
+			return c.json({ message: API_ERROR_MESSAGES.NOT_AUTHORIZED }, 401);
 		}
 
 		const canUserView = await isUserSiteAdminOrQueryHasPermissions(
@@ -208,7 +207,7 @@ const teamHandler = HonoBetterAuth()
 
 		if (!canUserView) {
 			return c.json(
-				{ message: API_ERROR_MESSAGES.invalidPermissions },
+				{ message: API_ERROR_MESSAGES.INVALID_PERMISSIONS },
 				401,
 			);
 		}
@@ -224,7 +223,7 @@ const teamHandler = HonoBetterAuth()
 		});
 
 		if (!allTeamInfo) {
-			return c.json({ message: API_ERROR_MESSAGES.notFound }, 404);
+			return c.json({ message: API_ERROR_MESSAGES.NOT_FOUND }, 404);
 		}
 
 		return c.json({ message: allTeamInfo }, 200);
@@ -234,7 +233,7 @@ const teamHandler = HonoBetterAuth()
 		const user = c.get("user");
 
 		if (!user) {
-			return c.json({ message: API_ERROR_MESSAGES.notAuthorized }, 401);
+			return c.json({ message: API_ERROR_MESSAGES.NOT_AUTHORIZED }, 401);
 		}
 		const canUserView = await isUserSiteAdminOrQueryHasPermissions(
 			user.siteRole,
@@ -243,7 +242,7 @@ const teamHandler = HonoBetterAuth()
 
 		if (!canUserView) {
 			return c.json(
-				{ message: API_ERROR_MESSAGES.invalidPermissions },
+				{ message: API_ERROR_MESSAGES.INVALID_PERMISSIONS },
 				401,
 			);
 		}
@@ -256,7 +255,7 @@ const teamHandler = HonoBetterAuth()
 		});
 
 		if (!teamMembers) {
-			return c.json({ message: API_ERROR_MESSAGES.notFound }, 404);
+			return c.json({ message: API_ERROR_MESSAGES.NOT_FOUND }, 404);
 		}
 
 		return c.json({ message: teamMembers }, 200);
@@ -272,7 +271,7 @@ const teamHandler = HonoBetterAuth()
 
 			if (!user) {
 				return c.json(
-					{ message: API_ERROR_MESSAGES.notAuthorized },
+					{ message: API_ERROR_MESSAGES.NOT_AUTHORIZED },
 					401,
 				);
 			}
@@ -284,7 +283,7 @@ const teamHandler = HonoBetterAuth()
 
 			if (!canUserUpdate) {
 				return c.json(
-					{ message: API_ERROR_MESSAGES.invalidPermissions },
+					{ message: API_ERROR_MESSAGES.INVALID_PERMISSIONS },
 					401,
 				);
 			}
@@ -309,7 +308,7 @@ const teamHandler = HonoBetterAuth()
 
 			if (!user) {
 				return c.json(
-					{ message: API_ERROR_MESSAGES.notAuthorized },
+					{ message: API_ERROR_MESSAGES.NOT_AUTHORIZED },
 					401,
 				);
 			}
@@ -333,7 +332,7 @@ const teamHandler = HonoBetterAuth()
 
 			if (!canUserRemove) {
 				return c.json(
-					{ message: API_ERROR_MESSAGES.invalidPermissions },
+					{ message: API_ERROR_MESSAGES.INVALID_PERMISSIONS },
 					401,
 				);
 			}

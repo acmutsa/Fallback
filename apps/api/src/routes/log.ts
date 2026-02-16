@@ -27,7 +27,7 @@ const logHandler = HonoBetterAuth()
 	.get("/admin/all", async (c) => {
 		const user = c.get("user");
 		if (!user || !isSiteAdminUser(user.siteRole)) {
-			return c.json({ message: API_ERROR_MESSAGES.notAuthorized }, 401);
+			return c.json({ message: API_ERROR_MESSAGES.NOT_AUTHORIZED }, 401);
 		}
 		const allLogs = await db.query.log.findMany();
 		return c.json({ message: allLogs }, 200);
@@ -38,7 +38,7 @@ const logHandler = HonoBetterAuth()
 		const teamId = c.req.valid("param").teamId;
 
 		if (!user) {
-			return c.json({ message: API_ERROR_MESSAGES.notAuthorized }, 401);
+			return c.json({ message: API_ERROR_MESSAGES.NOT_AUTHORIZED }, 401);
 		}
 
 		const hasPermissions = await isUserSiteAdminOrQueryHasPermissions(
@@ -46,7 +46,7 @@ const logHandler = HonoBetterAuth()
 			getAdminUserForTeam(user.id, teamId),
 		);
 		if (!hasPermissions) {
-			return c.json({ message: API_ERROR_MESSAGES.notAuthorized }, 401);
+			return c.json({ message: API_ERROR_MESSAGES.NOT_AUTHORIZED }, 401);
 		}
 		const logs = await db.query.log.findMany({
 			where: eq(log.teamId, teamId),
