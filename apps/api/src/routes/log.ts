@@ -48,7 +48,7 @@ const logHandler = HonoBetterAuth()
 			return c.json(
 				{
 					message: "You are not authorized to access this endpoint.",
-					code: API_ERROR_MESSAGES.NOT_AUTHORIZED,
+					code: API_ERROR_MESSAGES.NOT_AUTHENTICATED,
 				},
 				401,
 			);

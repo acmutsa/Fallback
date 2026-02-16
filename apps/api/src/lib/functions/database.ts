@@ -62,7 +62,7 @@ export async function getAdminUserForTeam(userId: string, teamId: string) {
 		),
 	});
 }
-
+// TODO: This function is lowkey pivotal so we should ensure it is WAI.
 export async function isUserSiteAdminOrQueryHasPermissions<T = unknown>(
 	userSiteRole: SiteRoleType,
 	// Accept either a Promise (already invoked query) or a function that returns a Promise
