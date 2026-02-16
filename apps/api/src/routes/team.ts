@@ -67,7 +67,6 @@ const teamHandler = HonoBetterAuth()
 			where: and(
 				eq(teamInvite.id, inv),
 				eq(teamInvite.email, user.email),
-				isNull(teamInvite.acceptedAt),
 			),
 		});
 
@@ -75,8 +74,9 @@ const teamHandler = HonoBetterAuth()
 			return c.json({ message: API_ERROR_MESSAGES.codeNotFound }, 400);
 		}
 
-		console.log("Invite request expires at: ", inviteRequest.expiresAt);
-
+		if (inviteRequest.acceptedAt) {
+			return c.json({ message: API_ERROR_MESSAGES.alreadyMember }, 400);
+		}
 		// Check if the invite has expired
 		if (inviteRequest.expiresAt && isPast(inviteRequest.expiresAt)) {
 			return c.json({ message: API_ERROR_MESSAGES.codeExpired }, 400);

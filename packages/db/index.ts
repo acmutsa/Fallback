@@ -11,8 +11,6 @@ export * from "drizzle-orm";
 export * from "./schema";
 export * from "./queries";
 
-console.log(process.env);
-
 const client = createClient({
 	url: process.env.TURSO_DATABASE_URL!,
 	authToken: process.env.TURSO_AUTH_TOKEN!,

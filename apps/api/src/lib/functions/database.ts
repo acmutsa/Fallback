@@ -135,7 +135,6 @@ function getAllContextValues(c?: Context): LoggingOptions | undefined {
 export function maybeGetDbErrorCode(e: unknown): string | null {
 	if (e == null) return null;
 	if (typeof e === "object") {
-		console.log("Error object keys: ", Object.keys(e));
 		const anyE = e as Record<string, unknown>;
 
 		const errorCauseKey = anyE["cause"];

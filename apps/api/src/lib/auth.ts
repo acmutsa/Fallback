@@ -16,7 +16,6 @@ export const auth = betterAuth({
 			create: {
 				// used in order to break up the first and last name into separate fields
 				before: async (user) => {
-					console.log("Creating user. Raw inputs are: ", user);
 					// split the name into first and last name (name object is mapped to the first name by the config)
 					const [firstName, ...rest] = user.name.split(" ");
 					const lastName = rest.join(" ");
