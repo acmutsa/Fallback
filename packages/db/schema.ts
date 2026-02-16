@@ -178,7 +178,7 @@ export const log = sqliteTable("log", {
 	logType: logType.notNull(),
 	message: standardVarcharFactory(),
 	occurredAt: standardDateFactory(),
-	// TODO: All of these fields are nullable because not all logs have the same info. There might be a better approach.
+	// TODO(https://github.com/acmutsa/Fallback/issues/39): All of these fields are nullable because not all logs have the same info. There might be a better approach.
 	teamId: standardVarcharFactoryNullable(),
 	userId: standardVarcharFactoryNullable(),
 	route: standardVarcharFactoryNullable(),
