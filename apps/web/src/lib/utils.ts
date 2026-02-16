@@ -1,8 +1,7 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
-import { GREETINGS_FUNCTIONS } from "shared/constants";
 
-const HIDE_SIDEBAR_PATHS = ["/sign-in", "/sign-up"];
+const HIDE_SIDEBAR_PATHS = ["/sign-in", "/sign-up", "/forgot-password"];
 
 export function cn(...inputs: ClassValue[]) {
 	return twMerge(clsx(inputs));
@@ -18,20 +17,13 @@ export function getFirstName(fullName: string): string {
 	return names.length > 0 ? names[0] : fullName;
 }
 
-export function getRandomSignInGreeting(name: string): string {
-	const randomGreetingFunction = getRandomArrayItem<
-		(typeof GREETINGS_FUNCTIONS.onSignIn)[number]
-	>(GREETINGS_FUNCTIONS.onSignIn)!;
-	return randomGreetingFunction(name);
+export function getInitials(fullName: string): string {
+	const names = fullName.split(" ");
+	if (names.length === 0) return "";
+	if (names.length === 1) return names[0][0].toUpperCase();
+	return names[0][0].toUpperCase() + names[names.length - 1][0].toUpperCase();
 }
 
-export function getRandomSignUpGreeting(name: string): string {
-	const randomGreetingFunction = getRandomArrayItem<
-		(typeof GREETINGS_FUNCTIONS.onSignUp)[number]
-	>(GREETINGS_FUNCTIONS.onSignUp)!;
-	return randomGreetingFunction(name);
-}
-
-export function shouldShowSidebar(pathname: string) {
+export function shouldShowNavbar(pathname: string) {
 	return !HIDE_SIDEBAR_PATHS.includes(pathname);
 }

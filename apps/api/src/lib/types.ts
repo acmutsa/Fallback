@@ -1,4 +1,21 @@
-import { auth } from "../lib/auth";
+import { log } from "db";
+import { SessionType, UserType } from "db/types";
+import type { Context } from "hono";
 
-export type UserType = typeof auth.$Infer.Session.user | null;
-export type SessionType = typeof auth.$Infer.Session.session | null;
+// Match the Variables shape declared in HonoBetterAuth
+export type ApiContextVariables = {
+	user: UserType;
+	session: SessionType;
+	teamId: string | null;
+	requestId: string | null;
+};
+export type ApiContext = Context<{
+	Variables: ApiContextVariables;
+}>;
+
+export type LoggingOptions = Omit<
+	typeof log.$inferInsert,
+	"id" | "occurredAt" | "logType" | "message"
+>;
+// Single type representing the logType value (e.g. "INFO" | "WARNING" | "ERROR")
+export type LoggingType = (typeof log.$inferSelect)["logType"];

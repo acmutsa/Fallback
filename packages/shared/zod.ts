@@ -1,7 +1,18 @@
 import z from "zod";
 
-// Teams can allow for their teams to not require a code. In this case, an invite code is not required and we can have the server validate if this is acceptable
+export const teamIdSchema = z.object({
+	teamId: z.string().min(1).max(30),
+});
+
+export const userTeamActionSchema = z.object({
+	...teamIdSchema.shape,
+	userId: z.string().min(1).max(30),
+});
+
 export const joinTeamSchema = z.object({
 	inv: z.string().min(1).max(30).optional(),
-	teamId: z.string().min(1).max(30).optional(),
+});
+
+export const teamNameSchema = z.object({
+	name: z.string().min(1).max(255),
 });

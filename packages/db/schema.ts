@@ -6,14 +6,20 @@ import {
 	primaryKey,
 } from "drizzle-orm/sqlite-core";
 import { nanoid } from "nanoid";
-import { STANDARD_NANOID_SIZE } from "shared/constants";
 
+const STANDARD_NANOID_SIZE = 12;
 const STANDARD_VARCHAR_LENGTH = 255;
 
 function standardVarcharFactory() {
 	return text({
 		length: STANDARD_VARCHAR_LENGTH,
 	}).notNull();
+}
+
+function standardVarcharFactoryNullable() {
+	return text({
+		length: STANDARD_VARCHAR_LENGTH,
+	});
 }
 
 function standardDateFactory() {
@@ -34,7 +40,11 @@ const databaseType = text({ enum: ["SQLITE", "POSTGRESQL"] });
 const backupResult = text({ enum: ["SUCCESS", "FAILURE", "CANCELED"] });
 const memberRoleType = text({ enum: ["ADMIN", "MEMBER"] });
 const siteRoleType = text({ enum: ["SUPER_ADMIN", "ADMIN", "USER"] });
+const teamJoinRequestStatusType = text({
+	enum: ["PENDING", "APPROVED", "REJECTED"],
+});
 
+// User Table - Partially generated based on Better Auth requirements. Modify with extreme caution.
 export const user = sqliteTable("user", {
 	id: text("id").primaryKey(),
 	firstName: text("first_name", { length: 255 }).notNull(),
@@ -44,8 +54,8 @@ export const user = sqliteTable("user", {
 		.notNull()
 		.default(sql`(current_timestamp)`),
 	emailVerified: integer("email_verified", { mode: "boolean" }).notNull(),
-	image: text("image"),
-	updatedAt: integer("updated_at", { mode: "timestamp" }).notNull(),
+	image: text("image"), // Image URL
+	updatedAt: integer("updated_at", { mode: "timestamp_ms" }).notNull(),
 	lastSeen: standardDateFactory(),
 	siteRole: siteRoleType.notNull().default("USER"),
 });
@@ -59,7 +69,6 @@ export const team = sqliteTable("team", {
 	name: standardVarcharFactory(),
 	createdAt: standardDateFactory(),
 	updatedAt: standardDateFactory(),
-	isprivate: integer({ mode: "boolean" }).notNull().default(true),
 });
 
 export const teamRelations = relations(team, ({ many }) => ({
@@ -72,12 +81,12 @@ export const teamRelations = relations(team, ({ many }) => ({
 export const userToTeam = sqliteTable(
 	"user_to_team",
 	{
-		userId: text("user_id")
-			.notNull()
-			.references(() => user.id, { onDelete: "cascade" }),
-		teamId: text("team_id")
-			.notNull()
-			.references(() => team.id, { onDelete: "cascade" }),
+		userId: standardVarcharFactory().references(() => user.id, {
+			onDelete: "cascade",
+		}),
+		teamId: standardVarcharFactory().references(() => team.id, {
+			onDelete: "cascade",
+		}),
 		role: memberRoleType.notNull().default("MEMBER"),
 	},
 	(table) => [
@@ -98,13 +107,14 @@ export const userToTeamRelations = relations(userToTeam, ({ one }) => ({
 
 export const teamInvite = sqliteTable("team_invite", {
 	id: standardIdFactory("invite_").primaryKey(),
-	teamId: text("team_id")
-		.notNull()
-		.references(() => team.id, { onDelete: "cascade" }),
-	email: text("email").notNull(),
+	teamId: standardVarcharFactory().references(() => team.id, {
+		onDelete: "cascade",
+	}),
+	email: standardVarcharFactory(),
 	createdAt: standardDateFactory(),
 	expiresAt: integer({ mode: "timestamp_ms" }).notNull(),
 	acceptedAt: integer({ mode: "timestamp_ms" }),
+	role: memberRoleType.default("MEMBER").notNull(),
 });
 
 export const teamInviteRelations = relations(teamInvite, ({ one }) => ({
@@ -114,15 +124,27 @@ export const teamInviteRelations = relations(teamInvite, ({ one }) => ({
 	}),
 }));
 
+export const teamJoinRequest = sqliteTable("team_join_request", {
+	id: standardIdFactory("tjr_").primaryKey(),
+	teamId: standardVarcharFactory()
+		.notNull()
+		.references(() => team.id, { onDelete: "cascade" }),
+	userId: standardVarcharFactory()
+		.notNull()
+		.references(() => user.id, { onDelete: "cascade" }),
+	createdAt: standardDateFactory(),
+	status: teamJoinRequestStatusType.notNull().default("PENDING"),
+});
+
 export const backupJob = sqliteTable("backup_job", {
 	id: standardIdFactory("job_").primaryKey(),
 	name: standardVarcharFactory(),
 	authenticationData: text({ mode: "json" }).notNull(), //This type might need to be altered. We will see how nice it plays when we write our first data here.
 	databaseType: databaseType.notNull(),
 	cronString: standardVarcharFactory(),
-	teamId: text("team_id")
-		.notNull()
-		.references(() => team.id, { onDelete: "cascade" }),
+	teamId: standardVarcharFactory().references(() => team.id, {
+		onDelete: "cascade",
+	}),
 });
 
 export const backupJobRelations = relations(backupJob, ({ one, many }) => ({
@@ -136,9 +158,9 @@ export const backupJobRelations = relations(backupJob, ({ one, many }) => ({
 export const backupJobRun = sqliteTable("backup_job_run", {
 	id: standardIdFactory().primaryKey(),
 	invocationType: invocationType.notNull(),
-	backupJobId: text("backup_job_id")
-		.notNull()
-		.references(() => backupJob.id, { onDelete: "cascade" }),
+	backupJobId: standardVarcharFactory().references(() => backupJob.id, {
+		onDelete: "cascade",
+	}),
 	startedAt: standardDateFactory(),
 	completedAt: integer({ mode: "timestamp_ms" }),
 	result: backupResult,
@@ -152,17 +174,26 @@ export const backupJobRunRelations = relations(backupJobRun, ({ one }) => ({
 }));
 
 export const log = sqliteTable("log", {
-	id: standardIdFactory().primaryKey(),
+	id: integer("id").primaryKey(),
 	logType: logType.notNull(),
 	message: standardVarcharFactory(),
 	occurredAt: standardDateFactory(),
-	teamId: text("team_id"),
+	// TODO(https://github.com/acmutsa/Fallback/issues/39): All of these fields are nullable because not all logs have the same info. There might be a better approach.
+	teamId: standardVarcharFactoryNullable(),
+	userId: standardVarcharFactoryNullable(),
+	route: standardVarcharFactoryNullable(),
+	requestId: standardVarcharFactoryNullable(),
+	timeElapsedMs: integer("time_elapsed_ms"),
 });
 
 export const logRelations = relations(log, ({ one }) => ({
 	team: one(team, {
 		fields: [log.teamId],
 		references: [team.id],
+	}),
+	user: one(user, {
+		fields: [log.userId],
+		references: [user.id],
 	}),
 }));
 

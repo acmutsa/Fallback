@@ -3,6 +3,7 @@ import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { db } from "db"; // your drizzle instance
 import { APP_NAME, AUTH_CONFIG } from "shared/constants";
 import { env } from "../env";
+import type { FieldAttribute, FieldType } from "better-auth/db";
 
 export const auth = betterAuth({
 	database: drizzleAdapter(db, {
@@ -15,7 +16,6 @@ export const auth = betterAuth({
 			create: {
 				// used in order to break up the first and last name into separate fields
 				before: async (user) => {
-					console.log("Creating user. Raw inputs are: ", user);
 					// split the name into first and last name (name object is mapped to the first name by the config)
 					const [firstName, ...rest] = user.name.split(" ");
 					const lastName = rest.join(" ");
@@ -33,24 +33,11 @@ export const auth = betterAuth({
 		},
 		// this declares the extra fields that are not in the default user schema that better auth creates, but are in the database
 		additionalFields: {
-			firstName: {
-				type: "string",
-				defaultValue: "",
-			},
-			lastName: {
-				type: "string",
-				defaultValue: "",
-			},
-			lastSeen: {
-				type: "date",
-				required: false,
-				input: false,
-			},
-			siteRole: {
-				type: "string",
-				defaultValue: "USER",
-				input: false,
-			},
+			...(AUTH_CONFIG.additionalFields as
+				| {
+						[key: string]: FieldAttribute<FieldType>;
+				  }
+				| undefined),
 		},
 	},
 	advanced: {

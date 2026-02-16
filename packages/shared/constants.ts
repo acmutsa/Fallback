@@ -33,24 +33,44 @@ export const AUTH_CONFIG = {
 			icon_path: "some test idk",
 		},
 	},
+	additionalFields: {
+		firstName: {
+			type: "string",
+			defaultValue: "",
+		},
+		lastName: {
+			type: "string",
+			defaultValue: "",
+		},
+		lastSeen: {
+			type: "date",
+			required: false,
+			input: false,
+		},
+		siteRole: {
+			type: "string",
+			defaultValue: "USER",
+			input: false,
+		},
+	},
 };
 
-export const GREETINGS_FUNCTIONS = {
-	onSignIn: [
-		(name: string) => `Welcome back, ${name}!`,
-		(name: string) => `Hello again, ${name}!`,
-		(name: string) => `Good to see you again, ${name}!`,
-		(name: string) => `Hey ${name}, welcome back!`,
-		(name: string) => `Hi ${name}, glad you're back!`,
-	],
-	onSignUp: [
-		(name: string) => `Welcome to the platform, ${name}!`,
-		(name: string) => `Hi ${name}, we're glad to have you here!`,
-		(name: string) => `Hello ${name}, thanks for joining us!`,
-		(name: string) => `Welcome aboard ${name}!`,
-	],
+export const PUBLIC_ROUTES = ["/", "/sign-in", "/sign-up", "/forgot-password"];
+
+export const THEME_CONFIG = {
+	accessKey: "fallback-theme",
+	dark: "dark",
+	light: "light",
+	default: "light",
 };
 
-export const PUBLIC_ROUTES = ["/", "/sign-in", "/sign-up"];
-
-export const STANDARD_NANOID_SIZE = 12;
+export const API_ERROR_MESSAGES = {
+	noInviteCode: "no_invite_code",
+	codeNotFound: "code_not_found",
+	codeExpired: "code_expired",
+	invalidPermissions: "invalid_permissions",
+	notFound: "not_found",
+	notAuthorized: "unauthorized",
+	alreadyMember: "already_member",
+	genericError: "generic_error",
+};

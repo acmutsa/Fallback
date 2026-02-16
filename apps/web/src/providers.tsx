@@ -5,14 +5,9 @@ import { Link, useRouter } from "@tanstack/react-router";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { queryClient } from "./router";
 import { AUTH_CONFIG } from "shared/constants";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { AppSidebar } from "./components/shared/AppSidebar/app-sidebar";
-import { useLocation } from "@tanstack/react-router";
-import { shouldShowSidebar } from "./lib/utils";
 
 export function Providers({ children }: { children: React.ReactNode }) {
 	const router = useRouter();
-	const location = useLocation();
 
 	return (
 		// Query client is caching something it def should not be so we need to look at this later
@@ -58,17 +53,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
 						rememberMe: true,
 					}}
 				>
-					<SidebarProvider>
-						<AppSidebar
-							hidden={!shouldShowSidebar(location.pathname)}
-						/>
-						<>
-							<SidebarTrigger
-								hidden={!shouldShowSidebar(location.pathname)}
-							/>
-							{children}
-						</>
-					</SidebarProvider>
+					{children}
 				</AuthUIProviderTanstack>
 			</AuthQueryProvider>
 		</QueryClientProvider>

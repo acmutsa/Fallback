@@ -15,6 +15,7 @@ import { Route as SignUpIndexRouteImport } from './routes/sign-up/index'
 import { Route as SignInIndexRouteImport } from './routes/sign-in/index'
 import { Route as SettingsIndexRouteImport } from './routes/settings/index'
 import { Route as ProfileIndexRouteImport } from './routes/profile/index'
+import { Route as ForgotPasswordIndexRouteImport } from './routes/forgot-password/index'
 import { Route as FeedbackIndexRouteImport } from './routes/feedback/index'
 import { Route as TeamNewRouteImport } from './routes/team/new'
 import { Route as TeamJoinRouteImport } from './routes/team/join'
@@ -50,6 +51,11 @@ const ProfileIndexRoute = ProfileIndexRouteImport.update({
   path: '/profile/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ForgotPasswordIndexRoute = ForgotPasswordIndexRouteImport.update({
+  id: '/forgot-password/',
+  path: '/forgot-password/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const FeedbackIndexRoute = FeedbackIndexRouteImport.update({
   id: '/feedback/',
   path: '/feedback/',
@@ -76,6 +82,7 @@ export interface FileRoutesByFullPath {
   '/team/join': typeof TeamJoinRoute
   '/team/new': typeof TeamNewRoute
   '/feedback': typeof FeedbackIndexRoute
+  '/forgot-password': typeof ForgotPasswordIndexRoute
   '/profile': typeof ProfileIndexRoute
   '/settings': typeof SettingsIndexRoute
   '/sign-in': typeof SignInIndexRoute
@@ -88,6 +95,7 @@ export interface FileRoutesByTo {
   '/team/join': typeof TeamJoinRoute
   '/team/new': typeof TeamNewRoute
   '/feedback': typeof FeedbackIndexRoute
+  '/forgot-password': typeof ForgotPasswordIndexRoute
   '/profile': typeof ProfileIndexRoute
   '/settings': typeof SettingsIndexRoute
   '/sign-in': typeof SignInIndexRoute
@@ -101,6 +109,7 @@ export interface FileRoutesById {
   '/team/join': typeof TeamJoinRoute
   '/team/new': typeof TeamNewRoute
   '/feedback/': typeof FeedbackIndexRoute
+  '/forgot-password/': typeof ForgotPasswordIndexRoute
   '/profile/': typeof ProfileIndexRoute
   '/settings/': typeof SettingsIndexRoute
   '/sign-in/': typeof SignInIndexRoute
@@ -115,6 +124,7 @@ export interface FileRouteTypes {
     | '/team/join'
     | '/team/new'
     | '/feedback'
+    | '/forgot-password'
     | '/profile'
     | '/settings'
     | '/sign-in'
@@ -127,6 +137,7 @@ export interface FileRouteTypes {
     | '/team/join'
     | '/team/new'
     | '/feedback'
+    | '/forgot-password'
     | '/profile'
     | '/settings'
     | '/sign-in'
@@ -139,6 +150,7 @@ export interface FileRouteTypes {
     | '/team/join'
     | '/team/new'
     | '/feedback/'
+    | '/forgot-password/'
     | '/profile/'
     | '/settings/'
     | '/sign-in/'
@@ -152,6 +164,7 @@ export interface RootRouteChildren {
   TeamJoinRoute: typeof TeamJoinRoute
   TeamNewRoute: typeof TeamNewRoute
   FeedbackIndexRoute: typeof FeedbackIndexRoute
+  ForgotPasswordIndexRoute: typeof ForgotPasswordIndexRoute
   ProfileIndexRoute: typeof ProfileIndexRoute
   SettingsIndexRoute: typeof SettingsIndexRoute
   SignInIndexRoute: typeof SignInIndexRoute
@@ -204,6 +217,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProfileIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/forgot-password/': {
+      id: '/forgot-password/'
+      path: '/forgot-password'
+      fullPath: '/forgot-password'
+      preLoaderRoute: typeof ForgotPasswordIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/feedback/': {
       id: '/feedback/'
       path: '/feedback'
@@ -240,6 +260,7 @@ const rootRouteChildren: RootRouteChildren = {
   TeamJoinRoute: TeamJoinRoute,
   TeamNewRoute: TeamNewRoute,
   FeedbackIndexRoute: FeedbackIndexRoute,
+  ForgotPasswordIndexRoute: ForgotPasswordIndexRoute,
   ProfileIndexRoute: ProfileIndexRoute,
   SettingsIndexRoute: SettingsIndexRoute,
   SignInIndexRoute: SignInIndexRoute,

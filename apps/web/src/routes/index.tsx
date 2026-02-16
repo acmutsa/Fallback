@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { pingServerQueryClient } from "@/lib/queries";
 import { useQuery } from "@tanstack/react-query";
-import { SignedIn, SignedOut, UserButton } from "@daveyplate/better-auth-ui";
+import { SignedIn, SignedOut } from "@daveyplate/better-auth-ui";
 import { Link } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/")({
@@ -40,12 +40,10 @@ function App() {
 					>
 						Ping server
 					</Button>
-					<UserButton />
 				</div>
 			</SignedOut>
 
 			<SignedIn>
-				<UserButton />
 				<Link to="/team/$teamId" params={{ teamId: "123" }}>
 					Go to protected route
 				</Link>

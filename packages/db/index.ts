@@ -5,14 +5,11 @@ import dotenv from "dotenv";
 
 dotenv.config({
 	path: "../../.env",
-	debug: true,
 });
 
 export * from "drizzle-orm";
 export * from "./schema";
 export * from "./queries";
-
-console.log(process.env);
 
 const client = createClient({
 	url: process.env.TURSO_DATABASE_URL!,
