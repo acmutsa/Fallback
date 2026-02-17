@@ -65,12 +65,12 @@ export const THEME_CONFIG = {
 };
 
 export const API_ERROR_MESSAGES = {
-	noInviteCode: "no_invite_code",
-	codeNotFound: "code_not_found",
-	codeExpired: "code_expired",
-	invalidPermissions: "invalid_permissions",
-	notFound: "not_found",
-	notAuthorized: "unauthorized",
-	alreadyMember: "already_member",
-	genericError: "generic_error",
+	NO_INVITE_CODE: "NO_INVITE_CODE",
+	CODE_NOT_FOUND: "CODE_NOT_FOUND",
+	CODE_EXPIRED: "CODE_EXPIRED",
+	NOT_FOUND: "NOT_FOUND",
+	NOT_AUTHORIZED: "NOT_AUTHORIZED",
+	ALREADY_MEMBER: "ALREADY_MEMBER",
+	GENERIC_ERROR: "GENERIC_ERROR",
+	NOT_AUTHENTICATED: "NOT_AUTHENTICATED",
 };

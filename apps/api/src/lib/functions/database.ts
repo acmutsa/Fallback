@@ -45,11 +45,12 @@ export function isSiteAdminUser(
 }
 
 export async function leaveTeam(userId: string, teamId: string) {
-	await db
+	return db
 		.delete(userToTeam)
 		.where(
 			and(eq(userToTeam.userId, userId), eq(userToTeam.teamId, teamId)),
-		);
+		)
+		.returning({ teamId: userToTeam.teamId });
 }
 
 export async function getAdminUserForTeam(userId: string, teamId: string) {
@@ -61,7 +62,7 @@ export async function getAdminUserForTeam(userId: string, teamId: string) {
 		),
 	});
 }
-
+// TODO: This function is lowkey pivotal so we should ensure it is WAI.
 export async function isUserSiteAdminOrQueryHasPermissions<T = unknown>(
 	userSiteRole: SiteRoleType,
 	// Accept either a Promise (already invoked query) or a function that returns a Promise

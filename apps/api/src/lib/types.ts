@@ -1,5 +1,5 @@
 import { log } from "db";
-import { SessionType, UserType } from "db/types";
+import type { SessionType, UserType } from "db/types";
 import type { Context } from "hono";
 
 // Match the Variables shape declared in HonoBetterAuth

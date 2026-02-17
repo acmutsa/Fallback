@@ -27,10 +27,17 @@ const logHandler = HonoBetterAuth()
 	.get("/admin/all", async (c) => {
 		const user = c.get("user");
 		if (!user || !isSiteAdminUser(user.siteRole)) {
-			return c.json({ message: API_ERROR_MESSAGES.notAuthorized }, 401);
+			return c.json(
+				{
+					message:
+						"You are not authorized to access this endpoint. Only site admins can access all logs.",
+					code: API_ERROR_MESSAGES.NOT_AUTHORIZED,
+				},
+				403,
+			);
 		}
 		const allLogs = await db.query.log.findMany();
-		return c.json({ message: allLogs }, 200);
+		return c.json({ data: allLogs }, 200);
 	})
 	// This route needs to be made to get logs from a team. Logs should be paginated and alllow for basic filtering on the frontend
 	.get("/:teamId", zValidator("param", teamIdSchema), async (c) => {
@@ -38,7 +45,13 @@ const logHandler = HonoBetterAuth()
 		const teamId = c.req.valid("param").teamId;
 
 		if (!user) {
-			return c.json({ message: API_ERROR_MESSAGES.notAuthorized }, 401);
+			return c.json(
+				{
+					message: "Please log in.",
+					code: API_ERROR_MESSAGES.NOT_AUTHENTICATED,
+				},
+				401,
+			);
 		}
 
 		const hasPermissions = await isUserSiteAdminOrQueryHasPermissions(
@@ -46,11 +59,18 @@ const logHandler = HonoBetterAuth()
 			getAdminUserForTeam(user.id, teamId),
 		);
 		if (!hasPermissions) {
-			return c.json({ message: API_ERROR_MESSAGES.notAuthorized }, 401);
+			return c.json(
+				{
+					message:
+						"You are not authorized to access this endpoint. Only admins can access team logs.",
+					code: API_ERROR_MESSAGES.NOT_AUTHORIZED,
+				},
+				403,
+			);
 		}
 		const logs = await db.query.log.findMany({
 			where: eq(log.teamId, teamId),
 		});
-		return c.json({ message: logs }, 200);
+		return c.json({ data: logs }, 200);
 	});
 export default logHandler;

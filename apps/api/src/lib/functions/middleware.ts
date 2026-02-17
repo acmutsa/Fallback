@@ -16,10 +16,7 @@ export async function setUserSessionContextMiddleware(c: Context, next: Next) {
 	const requestId = nanoid();
 	c.set("requestId", requestId);
 
-	await logInfo(
-		`Middleware for request path ${c.req.path} for ${userString}`,
-		c,
-	);
+	logInfo(`Middleware for request path ${c.req.path} for ${userString}`, c);
 
 	if (!session) {
 		c.set("user", null);
@@ -44,8 +41,14 @@ export async function authenticatedMiddleware(c: ApiContext, next: Next) {
 	const user = c.get("user");
 	const session = c.get("session");
 	if (!(user && session)) {
-		await logInfo(`Unauthorized access attempt to ${c.req.path}`, c);
-		return c.json({ error: API_ERROR_MESSAGES.notAuthorized }, 401);
+		logInfo(`Unauthorized access attempt to ${c.req.path}`, c);
+		return c.json(
+			{
+				message: "Please log in.",
+				code: API_ERROR_MESSAGES.NOT_AUTHENTICATED,
+			},
+			401,
+		);
 	}
 	return next();
 }
