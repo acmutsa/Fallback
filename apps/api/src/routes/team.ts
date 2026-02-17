@@ -27,7 +27,6 @@ import {
 } from "../lib/functions/database";
 import { isSiteAdminUser } from "../lib/functions/database";
 import { isPast } from "date-fns";
-import { te } from "date-fns/locale";
 
 /*
  * Routes made to handle the logic related to teams.
@@ -46,7 +45,17 @@ const teamHandler = HonoBetterAuth()
 			);
 		}
 		const userTeams = await getUserTeamsQuery(user.id);
-		return c.json({ data: userTeams }, 200);
+		return c.json({ message: userTeams }, 200);
+	})
+	// Retrieve all of the teams
+	.get("/admin", async (c) => {
+		const user = c.get("user");
+		if (!user || !isSiteAdminUser(user.siteRole)) {
+			return c.json({ message:"Please log in.", code: API_ERROR_MESSAGES.NOT_AUTHENTICATED }, 401);
+		}
+
+		const allTeams = await db.query.team.findMany();
+		return c.json({ message: allTeams }, 200);
 	})
 	// Retrieve all of the teams
 	.get("/admin", async (c) => {
