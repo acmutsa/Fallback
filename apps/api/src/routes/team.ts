@@ -333,7 +333,7 @@ const teamHandler = HonoBetterAuth()
 						"You cannot view this team. Please contact your administrator if you believe this is an error.",
 					code: API_ERROR_MESSAGES.NOT_AUTHORIZED,
 				},
-				401,
+				403,
 			);
 		}
 
@@ -384,7 +384,7 @@ const teamHandler = HonoBetterAuth()
 						"You cannot view this team's members. Please contact your administrator if you believe this is an error.",
 					code: API_ERROR_MESSAGES.NOT_AUTHORIZED,
 				},
-				401,
+				403,
 			);
 		}
 
@@ -438,7 +438,7 @@ const teamHandler = HonoBetterAuth()
 							"You cannot update this team. Please contact your administrator if you believe this is an error.",
 						code: API_ERROR_MESSAGES.NOT_AUTHORIZED,
 					},
-					401,
+					403,
 				);
 			}
 
@@ -507,7 +507,11 @@ const teamHandler = HonoBetterAuth()
 				return c.json({ data: teamIdUserRemovedFrom[0] }, 200);
 			} else {
 				return c.json(
-					{ message: API_ERROR_MESSAGES.NOT_AUTHORIZED },
+					{
+						message:
+							"You cannot remove this user from the team. Please contact your administrator if you believe this is an error.",
+						code: API_ERROR_MESSAGES.NOT_AUTHORIZED,
+					},
 					403,
 				);
 			}
