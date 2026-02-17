@@ -18,7 +18,12 @@ export function getFirstName(fullName: string): string {
 }
 
 export function getInitials(fullName: string): string {
-	const names = fullName.split(" ");
+	// Filter out empty strings from whitespace splitting
+	const names = fullName
+		.trim()
+		.split(/\s+/)
+		.filter((name) => name.length > 0);
+
 	if (names.length === 0) return "";
 	if (names.length === 1) return names[0][0].toUpperCase();
 	return names[0][0].toUpperCase() + names[names.length - 1][0].toUpperCase();

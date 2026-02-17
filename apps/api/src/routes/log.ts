@@ -62,7 +62,7 @@ const logHandler = HonoBetterAuth()
 			return c.json(
 				{
 					message:
-						"You are not authorized to access this endpoint. Only site admins can access all logs.",
+						"You are not authorized to access this endpoint. Only admins can access team logs.",
 					code: API_ERROR_MESSAGES.NOT_AUTHORIZED,
 				},
 				403,

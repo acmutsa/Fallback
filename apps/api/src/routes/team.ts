@@ -45,7 +45,7 @@ const teamHandler = HonoBetterAuth()
 			);
 		}
 		const userTeams = await getUserTeamsQuery(user.id);
-		return c.json({ message: userTeams }, 200);
+		return c.json({ data: userTeams }, 200);
 	})
 	// Retrieve all of the teams
 	.get("/admin", async (c) => {
@@ -61,24 +61,9 @@ const teamHandler = HonoBetterAuth()
 		}
 
 		const allTeams = await db.query.team.findMany();
-		return c.json({ message: allTeams }, 200);
-	})
-	// Retrieve all of the teams
-	.get("/admin", async (c) => {
-		const user = c.get("user");
-		if (!user || !isSiteAdminUser(user.siteRole)) {
-			return c.json(
-				{
-					message: "You are not authorized to access this endpoint.",
-					code: API_ERROR_MESSAGES.NOT_AUTHORIZED,
-				},
-				403,
-			);
-		}
-
-		const allTeams = await db.query.team.findMany();
 		return c.json({ data: allTeams }, 200);
 	})
+	// Retrieve all of the teams
 	.post("/join", zValidator("query", joinTeamSchema), async (c) => {
 		const inv = c.req.valid("query").inv;
 		const user = c.get("user");

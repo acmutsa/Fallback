@@ -18,6 +18,7 @@ import {
 	authenticatedMiddleware,
 	afterRouteLogicMiddleware,
 } from "./lib/functions/middleware";
+import { API_ERROR_MESSAGES } from "shared";
 
 interface Env {}
 
@@ -44,7 +45,8 @@ export const api = HonoBetterAuth()
 
 		return c.json(
 			{
-				error: "Internal Server Error",
+				message: "An unexpected error occurred.",
+				code: API_ERROR_MESSAGES.GENERIC_ERROR,
 			},
 			500,
 		);

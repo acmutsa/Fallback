@@ -45,7 +45,13 @@ export async function authenticatedMiddleware(c: ApiContext, next: Next) {
 	const session = c.get("session");
 	if (!(user && session)) {
 		logInfo(`Unauthorized access attempt to ${c.req.path}`, c);
-		return c.json({ error: API_ERROR_MESSAGES.NOT_AUTHORIZED }, 401);
+		return c.json(
+			{
+				message: "Please log in.",
+				code: API_ERROR_MESSAGES.NOT_AUTHENTICATED,
+			},
+			401,
+		);
 	}
 	return next();
 }

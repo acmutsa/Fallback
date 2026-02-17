@@ -136,6 +136,8 @@ export const teamJoinRequest = sqliteTable("team_join_request", {
 	status: teamJoinRequestStatusType.notNull().default("PENDING"),
 });
 
+// TODO(https://github.com/acmutsa/Fallback/issues/35): Come back and add team join requests
+
 export const backupJob = sqliteTable("backup_job", {
 	id: standardIdFactory("job_").primaryKey(),
 	name: standardVarcharFactory(),
