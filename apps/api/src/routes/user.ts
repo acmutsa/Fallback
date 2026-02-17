@@ -31,7 +31,7 @@ const userhandler = HonoBetterAuth()
 		),
 		async (c) => {
 			const maybeAdminUser = c.get("user");
-			if (!maybeAdminUser || !isSiteAdminUser(maybeAdminUser.siteRole)) {
+			if (!(maybeAdminUser && isSiteAdminUser(maybeAdminUser.siteRole))) {
 				return c.json(
 					{
 						message:
