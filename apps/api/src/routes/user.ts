@@ -54,7 +54,7 @@ const userhandler = HonoBetterAuth()
 					404,
 				);
 			}
-			return c.json({ user: requestedUser }, 200);
+			return c.json({ data: requestedUser }, 200);
 		},
 	);
 
