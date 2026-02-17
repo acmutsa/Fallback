@@ -37,7 +37,7 @@ const logHandler = HonoBetterAuth()
 			);
 		}
 		const allLogs = await db.query.log.findMany();
-		return c.json({ message: allLogs }, 200);
+		return c.json({ data: allLogs }, 200);
 	})
 	// This route needs to be made to get logs from a team. Logs should be paginated and alllow for basic filtering on the frontend
 	.get("/:teamId", zValidator("param", teamIdSchema), async (c) => {
@@ -71,6 +71,6 @@ const logHandler = HonoBetterAuth()
 		const logs = await db.query.log.findMany({
 			where: eq(log.teamId, teamId),
 		});
-		return c.json({ message: logs }, 200);
+		return c.json({ data: logs }, 200);
 	});
 export default logHandler;

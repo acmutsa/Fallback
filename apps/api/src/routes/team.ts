@@ -159,7 +159,7 @@ const teamHandler = HonoBetterAuth()
 		} catch (e) {
 			const errorCode = maybeGetDbErrorCode(e);
 			if (errorCode === "SQLITE_CONSTRAINT") {
-				await logWarning(
+				logWarning(
 					`User with ID ${user.id} is already a member of team with ID ${inviteRequest.teamId}. Transaction has been rolled back.`,
 					c,
 				);
@@ -171,7 +171,7 @@ const teamHandler = HonoBetterAuth()
 					400,
 				);
 			}
-			await logError(
+			logError(
 				`Error occurred while user with ID ${user.id} was attempting to join team with ID ${inviteRequest.teamId}. Transaction has been rolled back. Error details: ${e}`,
 				c,
 			);
@@ -189,7 +189,7 @@ const teamHandler = HonoBetterAuth()
 			where: eq(team.id, inviteRequest.teamId),
 		});
 		if (!teamInfo) {
-			await logError(
+			logError(
 				`Team with ID ${inviteRequest.teamId} not found after accepting invite. This should not happen and indicates a critical issue. Please investigate immediately.`,
 				c,
 			);
