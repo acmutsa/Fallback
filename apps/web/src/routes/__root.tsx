@@ -6,7 +6,7 @@ import { isProtectedRoute } from "@/lib/functions/auth";
 import type { RouterContext } from "@/lib/types";
 import { Providers } from "@/providers";
 import { Navbar } from "@/components/shared/Navbar/navbar";
-import ErrorComponent from "@/components/shared/Error_TMP";
+import ErrorComponent from "@/components/shared/ErrorFallback";
 
 export const Route = createRootRouteWithContext<RouterContext>()({
 	beforeLoad: async ({ location }) => {
