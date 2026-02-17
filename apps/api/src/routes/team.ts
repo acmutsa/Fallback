@@ -51,7 +51,13 @@ const teamHandler = HonoBetterAuth()
 	.get("/admin", async (c) => {
 		const user = c.get("user");
 		if (!user || !isSiteAdminUser(user.siteRole)) {
-			return c.json({ message:"Please log in.", code: API_ERROR_MESSAGES.NOT_AUTHENTICATED }, 401);
+			return c.json(
+				{
+					message: "Please log in.",
+					code: API_ERROR_MESSAGES.NOT_AUTHENTICATED,
+				},
+				401,
+			);
 		}
 
 		const allTeams = await db.query.team.findMany();

@@ -4,7 +4,6 @@ import type { LoggingOptions, LoggingType } from "../types";
 import { type Context } from "hono";
 import { isInDevMode } from ".";
 
-
 /**
  * Fetches a database dump from a Turso database instance.
  * @param databseName The name of the database.
