@@ -63,7 +63,6 @@ const teamHandler = HonoBetterAuth()
 		const allTeams = await db.query.team.findMany();
 		return c.json({ data: allTeams }, 200);
 	})
-	// Retrieve all of the teams
 	.post("/join", zValidator("query", joinTeamSchema), async (c) => {
 		const inv = c.req.valid("query").inv;
 		const user = c.get("user");
