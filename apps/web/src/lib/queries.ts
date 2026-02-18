@@ -44,7 +44,9 @@ export const joinTeamMutationclient = (inviteCode: string) =>
 	mutationOptions({
 		mutationKey: ["team", inviteCode, "join"],
 		mutationFn: async () => {
-			const response = await apiClient.team.invites[":inviteId"].accept.$post({
+			const response = await apiClient.team.invites[
+				":inviteId"
+			].accept.$post({
 				param: {
 					inviteId: inviteCode,
 				},

@@ -6,10 +6,13 @@ import { joinTeamSchema as joinTeamSchemaZod } from "shared/zod";
  * This route will allow users to join a team via an invite code or through the team ID. Team ID is only allowed if the team does not require an invite code.
  */
 
-const joinTeamSchemaInviteOption = joinTeamSchemaZod.pick({ inviteId: true }).partial();
+const joinTeamSchemaInviteOption = joinTeamSchemaZod
+	.pick({ inviteId: true })
+	.partial();
 export const Route = createFileRoute("/team/join")({
 	component: RouteComponent,
-	validateSearch: (searchParams) => joinTeamSchemaInviteOption.parse(searchParams),
+	validateSearch: (searchParams) =>
+		joinTeamSchemaInviteOption.parse(searchParams),
 });
 
 function RouteComponent() {
