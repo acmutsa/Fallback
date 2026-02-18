@@ -715,6 +715,17 @@ const teamHandler = HonoBetterAuth()
 					400,
 				);
 			}
+			else if (joinRequest.status === "RESCINDED") {
+				return c.json(
+					{
+						message:
+							"Join request has already been rescinded.",
+						code: API_ERROR_MESSAGES.REJECTED,
+					},
+					400,
+				);
+			}
+
 
 			const rescindedRequest = await db
 				.update(teamJoinRequest)
