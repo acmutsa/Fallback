@@ -74,6 +74,7 @@ export const team = sqliteTable("team", {
 export const teamRelations = relations(team, ({ many }) => ({
 	members: many(userToTeam),
 	invites: many(teamInvite),
+	joinRequests: many(teamJoinRequest),
 	logs: many(log),
 	backupJobs: many(backupJob),
 }));

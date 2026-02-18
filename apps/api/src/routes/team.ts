@@ -30,6 +30,7 @@ import {
 	findTeamUserFacing,
 	getJoinTeamRequest,
 	getJoinTeamRequestAdmin,
+	findTeam,
 } from "../lib/functions/database";
 import { isSiteAdminUser } from "../lib/functions/database";
 import { isPast } from "date-fns";
@@ -370,7 +371,7 @@ const teamHandler = HonoBetterAuth()
 			);
 		}
 
-		const doesTeamExist = await findTeamUserFacing(teamId);
+		const doesTeamExist = await findTeam(teamId);
 
 		if (!doesTeamExist) {
 			return c.json(
@@ -693,17 +694,6 @@ const teamHandler = HonoBetterAuth()
 						code: API_ERROR_MESSAGES.NOT_FOUND,
 					},
 					404,
-				);
-			}
-
-			if (joinRequest.userId !== user.id) {
-				return c.json(
-					{
-						message:
-							"This request does not belong to you and therefore cannot be rescinded. Please contact your administrator if you believe this is an error.",
-						code: API_ERROR_MESSAGES.NOT_AUTHORIZED,
-					},
-					403,
 				);
 			}
 
