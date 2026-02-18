@@ -370,6 +370,18 @@ const teamHandler = HonoBetterAuth()
 			);
 		}
 
+		const doesTeamExist = await findTeamUserFacing(teamId);
+
+		if (!doesTeamExist) {
+			return c.json(
+				{
+					message: "Team not found.",
+					code: API_ERROR_MESSAGES.NOT_FOUND,
+				},
+				404,
+			);
+		}
+
 		const existingRequest = await db.query.teamJoinRequest.findFirst({
 			where: and(
 				eq(teamJoinRequest.teamId, teamId),
