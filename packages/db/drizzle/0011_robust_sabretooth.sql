@@ -1,0 +1,1 @@
+ALTER TABLE `user_to_team` ADD `joined_on` integer DEFAULT (current_timestamp) NOT NULL;
