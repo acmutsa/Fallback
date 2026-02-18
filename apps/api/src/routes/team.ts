@@ -29,6 +29,7 @@ import {
 	maybeGetDbErrorCode,
 	findTeamUserFacing,
 	getJoinTeamRequest,
+	getJoinTeamRequestAdmin,
 } from "../lib/functions/database";
 import { isSiteAdminUser } from "../lib/functions/database";
 import { isPast } from "date-fns";
@@ -448,9 +449,8 @@ const teamHandler = HonoBetterAuth()
 				);
 			}
 
-			const joinRequest = await getJoinTeamRequest(
+			const joinRequest = await getJoinTeamRequestAdmin(
 				requestId,
-				user.id,
 				teamId,
 			);
 
@@ -586,9 +586,8 @@ const teamHandler = HonoBetterAuth()
 				);
 			}
 
-			const joinRequest = await getJoinTeamRequest(
+			const joinRequest = await getJoinTeamRequestAdmin(
 				requestId,
-				user.id,
 				teamId,
 			);
 
@@ -714,18 +713,15 @@ const teamHandler = HonoBetterAuth()
 					},
 					400,
 				);
-			}
-			else if (joinRequest.status === "RESCINDED") {
+			} else if (joinRequest.status === "RESCINDED") {
 				return c.json(
 					{
-						message:
-							"Join request has already been rescinded.",
+						message: "Join request has already been rescinded.",
 						code: API_ERROR_MESSAGES.REJECTED,
 					},
 					400,
 				);
 			}
-
 
 			const rescindedRequest = await db
 				.update(teamJoinRequest)

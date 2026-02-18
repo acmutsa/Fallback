@@ -125,7 +125,6 @@ export const teamInviteRelations = relations(teamInvite, ({ one }) => ({
 	}),
 }));
 
-// Team join and team invite use different pattenrs to track status. We should decide one or the other.
 export const teamJoinRequest = sqliteTable("team_join_request", {
 	id: standardIdFactory("tjr_").primaryKey(),
 	teamId: standardVarcharFactory()

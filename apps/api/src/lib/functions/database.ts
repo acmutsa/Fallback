@@ -93,6 +93,18 @@ export async function getJoinTeamRequest(
 	});
 }
 
+export async function getJoinTeamRequestAdmin(
+	requestId: string,
+	teamId: string,
+) {
+	return db.query.teamJoinRequest.findFirst({
+		where: and(
+			eq(teamJoinRequest.id, requestId),
+			eq(teamJoinRequest.teamId, teamId),
+		),
+	});
+}
+
 // TODO: This function is lowkey pivotal so we should ensure it is WAI.
 export async function isUserSiteAdminOrQueryHasPermissions<T = unknown>(
 	userSiteRole: SiteRoleType,
