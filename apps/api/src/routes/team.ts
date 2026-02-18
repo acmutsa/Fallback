@@ -108,8 +108,8 @@ const teamHandler = HonoBetterAuth()
 			if (invite.acceptedAt) {
 				return c.json(
 					{
-						message: "User is already a member of this team.",
-						code: API_ERROR_MESSAGES.ALREADY_MEMBER,
+						message: "Invite code has already been used.",
+						code: API_ERROR_MESSAGES.INVITE_CODE_USED,
 					},
 					400,
 				);
@@ -481,7 +481,7 @@ const teamHandler = HonoBetterAuth()
 				return c.json(
 					{
 						message: "Join request has already been approved.",
-						code: API_ERROR_MESSAGES.ALREADY_MEMBER,
+						code: API_ERROR_MESSAGES.ALREADY_APPROVED,
 					},
 					400,
 				);
@@ -497,7 +497,7 @@ const teamHandler = HonoBetterAuth()
 				return c.json(
 					{
 						message: "Join request has been rescinded by the user.",
-						code: API_ERROR_MESSAGES.REJECTED,
+						code: API_ERROR_MESSAGES.RESCINDED,
 					},
 					400,
 				);
@@ -522,7 +522,7 @@ const teamHandler = HonoBetterAuth()
 				const errorCode = maybeGetDbErrorCode(e);
 				if (errorCode === "SQLITE_CONSTRAINT") {
 					logWarning(
-						`User with ID ${user.id} is already a member of team with ID ${joinRequest.teamId}. Transaction has been rolled back.`,
+						`User with ID ${joinRequest.userId} is already a member of team with ID ${joinRequest.teamId}. Transaction has been rolled back.`,
 						c,
 					);
 					return c.json(
@@ -534,7 +534,7 @@ const teamHandler = HonoBetterAuth()
 					);
 				}
 				logError(
-					`Error occurred while user with ID ${user.id} was attempting to accept join request for team with ID ${joinRequest.teamId}. Transaction has been rolled back. Error details: ${e}`,
+					`Error occurred while user with ID ${joinRequest.userId} was attempting to accept join request for team with ID ${joinRequest.teamId}. Transaction has been rolled back. Error details: ${e}`,
 					c,
 				);
 				return c.json(
