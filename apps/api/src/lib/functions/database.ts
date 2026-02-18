@@ -1,4 +1,4 @@
-import { userToTeam, db, and, eq, log } from "db";
+import { userToTeam, db, and, eq, log, team, teamJoinRequest } from "db";
 import type { UserType, SiteRoleType } from "db/types";
 import type { LoggingOptions, LoggingType } from "../types";
 import { type Context } from "hono";
@@ -44,6 +44,22 @@ export function isSiteAdminUser(
 	return ["ADMIN", "SUPER_ADMIN"].some((role) => role === permissionEnum);
 }
 
+export async function findTeam(teamId: string) {
+	return db.query.team.findFirst({
+		where: eq(team.id, teamId),
+	});
+}
+
+export async function findTeamUserFacing(teamId: string) {
+	return db.query.team.findFirst({
+		columns: {
+			id: true,
+			name: true,
+		},
+		where: eq(team.id, teamId),
+	});
+}
+
 export async function leaveTeam(userId: string, teamId: string) {
 	return db
 		.delete(userToTeam)
@@ -62,6 +78,21 @@ export async function getAdminUserForTeam(userId: string, teamId: string) {
 		),
 	});
 }
+
+export async function getJoinTeamRequest(
+	requestId: string,
+	userId: string,
+	teamId: string,
+) {
+	return db.query.teamJoinRequest.findFirst({
+		where: and(
+			eq(teamJoinRequest.id, requestId),
+			eq(teamJoinRequest.userId, userId),
+			eq(teamJoinRequest.teamId, teamId),
+		),
+	});
+}
+
 // TODO: This function is lowkey pivotal so we should ensure it is WAI.
 export async function isUserSiteAdminOrQueryHasPermissions<T = unknown>(
 	userSiteRole: SiteRoleType,
