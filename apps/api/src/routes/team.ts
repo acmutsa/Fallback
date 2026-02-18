@@ -355,7 +355,7 @@ const teamHandler = HonoBetterAuth()
 
 		return c.json({ data: joinRequests }, 200);
 	})
-	.post("/teamId/requests", zValidator("param", teamIdSchema), async (c) => {
+	.post("/:teamId/requests", zValidator("param", teamIdSchema), async (c) => {
 		const teamId = c.req.valid("param").teamId;
 		const user = c.get("user");
 
@@ -432,7 +432,10 @@ const teamHandler = HonoBetterAuth()
 				);
 			}
 
-			const canUserApprove = await getAdminUserForTeam(user.id, teamId);
+			const canUserApprove = await isUserSiteAdminOrQueryHasPermissions(
+				user.siteRole,
+				getAdminUserForTeam(user.id, teamId),
+			);
 
 			if (!canUserApprove) {
 				return c.json(
@@ -567,7 +570,10 @@ const teamHandler = HonoBetterAuth()
 				);
 			}
 
-			const canUserReject = await getAdminUserForTeam(user.id, teamId);
+			const canUserReject = await isUserSiteAdminOrQueryHasPermissions(
+				user.siteRole,
+				getAdminUserForTeam(user.id, teamId),
+			);
 
 			if (!canUserReject) {
 				return c.json(
@@ -647,7 +653,7 @@ const teamHandler = HonoBetterAuth()
 		},
 	)
 	.post(
-		":/teamId/requests/:requestId/rescind",
+		"/:teamId/requests/:requestId/rescind",
 		zValidator("param", teamRequestSchema),
 		async (c) => {
 			const { teamId, requestId } = c.req.valid("param");
