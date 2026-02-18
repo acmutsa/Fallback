@@ -15,6 +15,7 @@ export const joinTeamSchema = z.object({
 	inviteId: z.string().min(1).max(30),
 });
 
+
 export const teamNameSchema = z.object({
 	name: z.string().min(1).max(255),
 });
