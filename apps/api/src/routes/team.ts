@@ -547,23 +547,7 @@ const teamHandler = HonoBetterAuth()
 				);
 			}
 
-			const teamInfo = await findTeamUserFacing(joinRequest.teamId);
-			if (!teamInfo) {
-				logError(
-					`Team with ID ${joinRequest.teamId} not found after accepting join request. This should not happen and indicates a critical issue. Please investigate immediately.`,
-					c,
-				);
-				return c.json(
-					{
-						message:
-							"Team not found after accepting join request. Please contact support.",
-						code: API_ERROR_MESSAGES.NOT_FOUND,
-					},
-					500,
-				);
-			}
-
-			return c.json({ data: teamInfo }, 200);
+			return c.json({ data: joinRequest }, 200);
 		},
 	)
 	.post(
