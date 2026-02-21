@@ -6,7 +6,11 @@ import type { ApiContext } from "../types";
 import { API_ERROR_MESSAGES } from "shared";
 
 export const MIDDLEWARE_PUBLIC_ROUTES = ["/health", "/api/auth"];
-
+/**
+ * Middleware to set user and session context for each request. This middleware checks the authentication status of the incoming request, retrieves the user session if it exists, and sets relevant information in the context for downstream handlers to use. It also logs the request path and authentication status for monitoring purposes.
+ * @param c - The Hono context object
+ * @param next - The next middleware function in the chain
+ */
 export async function setUserSessionContextMiddleware(c: Context, next: Next) {
 	const session = await auth.api.getSession({ headers: c.req.raw.headers });
 	const userString = session
@@ -30,6 +34,11 @@ export async function setUserSessionContextMiddleware(c: Context, next: Next) {
 	await next();
 }
 
+/**
+ * Middleware to enforce authentication on protected routes. This middleware checks if the incoming request is targeting a public route, and if not, it verifies that the user is authenticated by checking the context for user and session information. If the user is not authenticated, it logs an unauthorized access attempt and returns a 401 response. If the user is authenticated or if the route is public, it allows the request to proceed to the next handler.
+ * @param c - The Hono context object
+ * @param next - The next middleware function in the chain
+ */
 export async function authenticatedMiddleware(c: ApiContext, next: Next) {
 	// First check if it is a public route and if so we will return (make sure this works)
 	const isPublicRoute = MIDDLEWARE_PUBLIC_ROUTES.some((route) =>
@@ -53,8 +62,10 @@ export async function authenticatedMiddleware(c: ApiContext, next: Next) {
 	return next();
 }
 
-/*
- * Middleware to handle logging the request and results of request afterwards. Context object is apparently stateful
+/**
+ * Middleware to perform actions after the main route logic has executed. This can be used for logging, cleanup, or other post-processing tasks.
+ * @param c - The Hono context object
+ * @param next - The next middleware function in the chain
  */
 export async function afterRouteLogicMiddleware(c: ApiContext, next: Next) {
 	// TODO(https://github.com/acmutsa/Fallback/issues/26): Come back and finish logging function
