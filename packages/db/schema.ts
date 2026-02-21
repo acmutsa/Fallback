@@ -44,7 +44,7 @@ const siteRoleType = text({ enum: ["SUPER_ADMIN", "ADMIN", "USER"] });
 const teamJoinRequestStatusType = text({
 	enum: ["PENDING", "APPROVED", "REJECTED", "RESCINDED"],
 });
-const dbLoggingSourceType = text({
+const loggingSourceType = text({
 	enum: ["SERVER", "LAMBDA", "CLIENT"],
 });
 
@@ -198,7 +198,7 @@ export const log = sqliteTable("log", {
 	logType: logType.notNull(),
 	message: standardVarcharFactory(),
 	occurredAt: standardDateFactory(),
-	source:dbLoggingSourceType.notNull(),
+	source:loggingSourceType.notNull(),
 	// TODO(https://github.com/acmutsa/Fallback/issues/39): All of these fields are nullable because not all logs have the same info. There might be a better approach.
 	teamId: standardVarcharFactoryNullable(),
 	userId: standardVarcharFactoryNullable(),
