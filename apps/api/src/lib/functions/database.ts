@@ -100,8 +100,7 @@ export async function getJoinTeamRequestAdmin(
 /**
  * Checks if a user is a site admin OR if a provided query returns a truthy result.
  * Useful for authorization checks that can shortcut if the user is already a site admin.
- * 
- * @todo This function is pivotal so we should ensure it is working as intended.
+ *
  * @param userSiteRole - The site role of the user
  * @param query - Either a Promise that resolves to a permission check result, or a function that returns such a Promise
  * @returns True if the user is a site admin or if the query resolves to a truthy value, false otherwise
@@ -198,8 +197,7 @@ function getAllContextValues(c?: Context): LoggingOptions | undefined {
 /**
  * Safely extract an error code string from an unknown thrown value from a db error.
  * Returns the code as a string when present, otherwise null.
- *
- * This function can handle it being passed as either a number or string and will convert if need be
+ * @param e - The unknown error object thrown from a database operation
  */
 export function maybeGetDbErrorCode(e: unknown): string | null {
 	if (e == null) return null;
