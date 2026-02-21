@@ -632,16 +632,6 @@ const teamHandler = HonoBetterAuth()
 				.where(eq(teamJoinRequest.id, requestId))
 				.returning();
 
-			if (rejectedRequest.length === 0) {
-				return c.json(
-					{
-						message: "Join request not found.",
-						code: API_ERROR_MESSAGES.NOT_FOUND,
-					},
-					404,
-				);
-			}
-
 			return c.json(
 				{ data: { joinRequestId: rejectedRequest[0].id } },
 				200,
@@ -716,16 +706,6 @@ const teamHandler = HonoBetterAuth()
 				})
 				.where(eq(teamJoinRequest.id, requestId))
 				.returning();
-
-			if (rescindedRequest.length === 0) {
-				return c.json(
-					{
-						message: "Join request not found.",
-						code: API_ERROR_MESSAGES.NOT_FOUND,
-					},
-					404,
-				);
-			}
 
 			return c.json({ data: rescindedRequest[0].id }, 200);
 		},
