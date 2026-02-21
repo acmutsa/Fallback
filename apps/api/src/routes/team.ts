@@ -27,7 +27,6 @@ import {
 	logError,
 	logWarning,
 	maybeGetDbErrorCode,
-	findTeamUserFacing,
 	getJoinTeamRequest,
 	getJoinTeamRequestAdmin,
 	findTeam,

@@ -50,16 +50,6 @@ export async function findTeam(teamId: string) {
 	});
 }
 
-export async function findTeamUserFacing(teamId: string) {
-	return db.query.team.findFirst({
-		columns: {
-			id: true,
-			name: true,
-		},
-		where: eq(team.id, teamId),
-	});
-}
-
 export async function leaveTeam(userId: string, teamId: string) {
 	return db
 		.delete(userToTeam)
