@@ -14,7 +14,7 @@ export const MIDDLEWARE_PUBLIC_ROUTES = ["/health", "/api/auth"];
 export async function setUserSessionContextMiddleware(c: Context, next: Next) {
 	const session = await auth.api.getSession({ headers: c.req.raw.headers });
 	const userString = session
-		? `Authenticated user (id: ${session?.user.id})`
+		? `Authenticated user (id: ${session.user.id})`
 		: "Unauthenticated User";
 
 	const requestId = nanoid();
@@ -40,7 +40,6 @@ export async function setUserSessionContextMiddleware(c: Context, next: Next) {
  * @param next - The next middleware function in the chain
  */
 export async function authenticatedMiddleware(c: ApiContext, next: Next) {
-	// First check if it is a public route and if so we will return (make sure this works)
 	const isPublicRoute = MIDDLEWARE_PUBLIC_ROUTES.some((route) =>
 		c.req.path.startsWith(route),
 	);
