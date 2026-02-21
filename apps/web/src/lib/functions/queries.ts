@@ -1,7 +1,11 @@
 import { queryOptions, mutationOptions } from "@tanstack/react-query";
-import { apiClient } from "./api-client";
-import { authClient } from "./auth-client";
+import { apiClient } from "../api-client";
+import { authClient } from "../auth-client";
 
+/**
+ * A query client for pinging the server to check its health status.
+ * @returns An object containing the query key and query function for pinging the server.
+ */
 export const pingServerQueryClient = queryOptions({
 	queryKey: ["ping"],
 	queryFn: async () => {
@@ -16,6 +20,10 @@ export const pingServerQueryClient = queryOptions({
 	},
 });
 
+/**
+ * A query client for retrieving the current authenticated user's information.
+ * @returns An object containing the query key and query function for fetching the user data.
+ */
 export const getUserQueryClient = queryOptions({
 	queryKey: ["user"],
 	queryFn: async () => {
@@ -28,6 +36,10 @@ export const getUserQueryClient = queryOptions({
 	},
 });
 
+/**
+ * A query client for fetching the teams that the current user belongs to.
+ * @returns An object containing the query key and query function for retrieving the user's teams.
+ */
 export const getUserTeamsQueryClient = queryOptions({
 	queryKey: ["user", "teams"],
 	queryFn: async () => {
@@ -39,7 +51,11 @@ export const getUserTeamsQueryClient = queryOptions({
 		throw new Error("Something went wrong");
 	},
 });
-
+/**
+ * A mutation client for joining a team using an invite code.
+ * @param inviteCode - The invite code for the team to join
+ * @returns An object containing the mutation key and mutation function for joining a team.
+ */
 export const joinTeamMutationclient = (inviteCode: string) =>
 	mutationOptions({
 		mutationKey: ["team", inviteCode, "join"],
@@ -59,6 +75,12 @@ export const joinTeamMutationclient = (inviteCode: string) =>
 		},
 	});
 
+/**
+ * A mutation client for leaving a team.
+ * @param teamId - The ID of the team to leave
+ * @param userId - The ID of the user leaving the team
+ * @returns An object containing the mutation key and mutation function for leaving a team.
+ */
 export const leaveTeamMutationClient = (teamId: string, userId: string) =>
 	mutationOptions({
 		mutationKey: ["team", teamId, userId, "remove"],

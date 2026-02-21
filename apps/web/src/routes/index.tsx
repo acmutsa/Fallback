@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { APP_NAME } from "shared/constants";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { pingServerQueryClient } from "@/lib/queries";
+import { pingServerQueryClient } from "@/lib/functions/queries";
 import { useQuery } from "@tanstack/react-query";
 import { SignedIn, SignedOut } from "@daveyplate/better-auth-ui";
 import { Link } from "@tanstack/react-router";

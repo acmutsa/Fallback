@@ -6,7 +6,7 @@ import {
 	NavigationMenuItem,
 	NavigationMenuList,
 } from "@/components/ui/navigation-menu";
-import { shouldShowNavbar } from "@/lib/utils";
+import { shouldShowNavbar } from "@/lib/functions/utils";
 import { useLocation } from "@tanstack/react-router";
 import { SignedIn, SignedOut } from "@daveyplate/better-auth-ui";
 import { Button } from "@/components/ui/button";
