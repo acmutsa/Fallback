@@ -13,7 +13,10 @@ import {
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useQuery } from "@tanstack/react-query";
-import { getUserQueryClient, getUserTeamsQueryClient } from "@/lib/functions/queries";
+import {
+	getUserQueryClient,
+	getUserTeamsQueryClient,
+} from "@/lib/functions/queries";
 import { Skeleton } from "@/components/ui/skeleton";
 import { getInitials } from "@/lib/functions/utils";
 import { Plus, UserPlus } from "lucide-react";

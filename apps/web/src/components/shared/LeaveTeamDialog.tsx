@@ -17,7 +17,7 @@ import { useMutation as _unusedForNowuseMutation } from "@tanstack/react-query";
 /**
  * Dialog component that allows a user to leave a team. It prompts the user for confirmation before proceeding with the action. If the team is private, it warns the user that they will need a new invitation to rejoin. If the team is public, it informs the user that they can rejoin later but will lose access to team data.
  * @param param
- * @returns 
+ * @returns
  */
 export function LeaveTeamDialog({
 	teamId: _unusedForNowTeamId,
