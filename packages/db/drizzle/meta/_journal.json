@@ -85,6 +85,13 @@
       "when": 1771399307185,
       "tag": "0011_robust_sabretooth",
       "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "6",
+      "when": 1771710466128,
+      "tag": "0012_lumpy_the_anarchist",
+      "breakpoints": true
     }
   ]
 }
