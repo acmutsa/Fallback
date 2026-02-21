@@ -1,7 +1,9 @@
 import z from "zod";
 
+const teamId = z.string().min(1).max(30);
+
 export const teamIdSchema = z.object({
-	teamId: z.string().min(1).max(30),
+	teamId,
 });
 
 export const userTeamActionSchema = z.object({
@@ -10,9 +12,14 @@ export const userTeamActionSchema = z.object({
 });
 
 export const joinTeamSchema = z.object({
-	inv: z.string().min(1).max(30).optional(),
+	inviteId: z.string().min(1).max(30),
 });
 
 export const teamNameSchema = z.object({
 	name: z.string().min(1).max(255),
+});
+
+export const teamRequestSchema = z.object({
+	teamId,
+	requestId: z.string().min(1).max(50),
 });

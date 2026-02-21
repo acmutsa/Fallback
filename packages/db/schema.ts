@@ -41,7 +41,7 @@ const backupResult = text({ enum: ["SUCCESS", "FAILURE", "CANCELED"] });
 const memberRoleType = text({ enum: ["ADMIN", "MEMBER"] });
 const siteRoleType = text({ enum: ["SUPER_ADMIN", "ADMIN", "USER"] });
 const teamJoinRequestStatusType = text({
-	enum: ["PENDING", "APPROVED", "REJECTED"],
+	enum: ["PENDING", "APPROVED", "REJECTED", "RESCINDED"],
 });
 
 // User Table - Partially generated based on Better Auth requirements. Modify with extreme caution.
@@ -74,6 +74,7 @@ export const team = sqliteTable("team", {
 export const teamRelations = relations(team, ({ many }) => ({
 	members: many(userToTeam),
 	invites: many(teamInvite),
+	joinRequests: many(teamJoinRequest),
 	logs: many(log),
 	backupJobs: many(backupJob),
 }));
@@ -88,6 +89,7 @@ export const userToTeam = sqliteTable(
 			onDelete: "cascade",
 		}),
 		role: memberRoleType.notNull().default("MEMBER"),
+		joinedOn: standardDateFactory(),
 	},
 	(table) => [
 		primaryKey({ columns: [table.userId, table.teamId] }), // composite primary key
@@ -136,7 +138,19 @@ export const teamJoinRequest = sqliteTable("team_join_request", {
 	status: teamJoinRequestStatusType.notNull().default("PENDING"),
 });
 
-// TODO(https://github.com/acmutsa/Fallback/issues/35): Come back and add team join requests
+export const teamJoinRequestRelations = relations(
+	teamJoinRequest,
+	({ one }) => ({
+		team: one(team, {
+			fields: [teamJoinRequest.teamId],
+			references: [team.id],
+		}),
+		user: one(user, {
+			fields: [teamJoinRequest.userId],
+			references: [user.id],
+		}),
+	}),
+);
 
 export const backupJob = sqliteTable("backup_job", {
 	id: standardIdFactory("job_").primaryKey(),

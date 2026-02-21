@@ -44,9 +44,11 @@ export const joinTeamMutationclient = (inviteCode: string) =>
 	mutationOptions({
 		mutationKey: ["team", inviteCode, "join"],
 		mutationFn: async () => {
-			const response = await apiClient.team.join.$post({
-				query: {
-					inv: inviteCode,
+			const response = await apiClient.team.invites[
+				":inviteId"
+			].accept.$post({
+				param: {
+					inviteId: inviteCode,
 				},
 			});
 			if (response?.status === 200) {

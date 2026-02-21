@@ -1,4 +1,4 @@
-// TODO(https://github.com/acmutsa/Fallback/issues/35): Come back and finish team routes
+// TODO(https://github.com/acmutsa/Fallback/issues/45): Come back and make sure we only send the data the user needs
 import { zValidator } from "@hono/zod-validator";
 import { HonoBetterAuth } from "../lib/functions";
 import {
@@ -9,12 +9,15 @@ import {
 	userToTeam,
 	teamInvite,
 	team,
+	teamJoinRequest,
+	desc,
 } from "db";
 import {
 	joinTeamSchema,
 	userTeamActionSchema,
 	teamIdSchema,
 	teamNameSchema,
+	teamRequestSchema,
 } from "shared/zod";
 import { API_ERROR_MESSAGES } from "shared";
 import {
@@ -24,6 +27,9 @@ import {
 	logError,
 	logWarning,
 	maybeGetDbErrorCode,
+	getJoinTeamRequest,
+	getJoinTeamRequestAdmin,
+	findTeam,
 } from "../lib/functions/database";
 import { isSiteAdminUser } from "../lib/functions/database";
 import { isPast } from "date-fns";
@@ -53,18 +59,124 @@ const teamHandler = HonoBetterAuth()
 		if (!user || !isSiteAdminUser(user.siteRole)) {
 			return c.json(
 				{
-					message: "Please log in.",
-					code: API_ERROR_MESSAGES.NOT_AUTHENTICATED,
+					message:
+						"You do not have permission to access this resource.",
+					code: API_ERROR_MESSAGES.NOT_AUTHORIZED,
 				},
-				401,
+				403,
 			);
 		}
 
 		const allTeams = await db.query.team.findMany();
 		return c.json({ data: allTeams }, 200);
 	})
-	.post("/join", zValidator("query", joinTeamSchema), async (c) => {
-		const inv = c.req.valid("query").inv;
+	.post(
+		"/invites/:inviteId/accept",
+		zValidator("param", joinTeamSchema),
+		async (c) => {
+			const inv = c.req.valid("param").inviteId;
+			const user = c.get("user");
+
+			if (!user) {
+				return c.json(
+					{
+						message: "Please log in.",
+						code: API_ERROR_MESSAGES.NOT_AUTHENTICATED,
+					},
+					401,
+				);
+			}
+
+			const invite = await db.query.teamInvite.findFirst({
+				where: and(
+					eq(teamInvite.id, inv),
+					eq(teamInvite.email, user.email),
+				),
+			});
+
+			if (!invite) {
+				return c.json(
+					{
+						message: "Invite code not found for this email.",
+						code: API_ERROR_MESSAGES.CODE_NOT_FOUND,
+					},
+					400,
+				);
+			}
+
+			if (invite.acceptedAt) {
+				return c.json(
+					{
+						message: "Invite code has already been used.",
+						code: API_ERROR_MESSAGES.INVITE_CODE_USED,
+					},
+					400,
+				);
+			}
+			// Check if the invite has expired
+			if (invite.expiresAt && isPast(invite.expiresAt)) {
+				return c.json(
+					{
+						message: "Invite code has expired.",
+						code: API_ERROR_MESSAGES.CODE_EXPIRED,
+					},
+					400,
+				);
+			}
+
+			c.set("teamId", invite.teamId);
+
+			try {
+				await db.transaction(async (tx) => {
+					await tx.insert(userToTeam).values({
+						teamId: invite.teamId,
+						userId: user.id,
+						role: invite.role,
+					});
+
+					await tx
+						.update(teamInvite)
+						.set({
+							acceptedAt: new Date(),
+						})
+						.where(eq(teamInvite.id, inv));
+				});
+			} catch (e) {
+				const errorCode = maybeGetDbErrorCode(e);
+				if (errorCode === "SQLITE_CONSTRAINT") {
+					logWarning(
+						`User with ID ${user.id} is already a member of team with ID ${invite.teamId}. Transaction has been rolled back.`,
+						c,
+					);
+					return c.json(
+						{
+							message: "User is already a member of this team.",
+							code: API_ERROR_MESSAGES.ALREADY_MEMBER,
+						},
+						400,
+					);
+				}
+				logError(
+					`Error occurred while user with ID ${user.id} was attempting to join team with ID ${invite.teamId}. Transaction has been rolled back. Error details: ${e}`,
+					c,
+				);
+				return c.json(
+					{
+						message:
+							"An error occurred while attempting to join the team. Please try again later.",
+						code: API_ERROR_MESSAGES.GENERIC_ERROR,
+					},
+					500,
+				);
+			}
+
+			return c.json(
+				{ data: { teamId: invite.teamId, role: invite.role } },
+				200,
+			);
+		},
+	)
+	.get("/requests", async (c) => {
 		const user = c.get("user");
 
 		if (!user) {
@@ -77,117 +189,24 @@ const teamHandler = HonoBetterAuth()
 			);
 		}
 
-		if (!inv) {
-			return c.json(
-				{
-					message: "Invite code is required to join a team.",
-					code: API_ERROR_MESSAGES.NO_INVITE_CODE,
-				},
-				400,
-			);
-		}
-		const inviteRequest = await db.query.teamInvite.findFirst({
-			where: and(
-				eq(teamInvite.id, inv),
-				eq(teamInvite.email, user.email),
-			),
-		});
-
-		if (!inviteRequest) {
-			return c.json(
-				{
-					message: "Invite code not found for this email.",
-					code: API_ERROR_MESSAGES.CODE_NOT_FOUND,
-				},
-				400,
-			);
-		}
-
-		if (inviteRequest.acceptedAt) {
-			return c.json(
-				{
-					message: "User is already a member of this team.",
-					code: API_ERROR_MESSAGES.ALREADY_MEMBER,
-				},
-				400,
-			);
-		}
-		// Check if the invite has expired
-		if (inviteRequest.expiresAt && isPast(inviteRequest.expiresAt)) {
-			return c.json(
-				{
-					message: "Invite code has expired.",
-					code: API_ERROR_MESSAGES.CODE_EXPIRED,
-				},
-				400,
-			);
-		}
-
-		c.set("teamId", inviteRequest.teamId);
-
-		try {
-			await db.transaction(async (tx) => {
-				await tx.insert(userToTeam).values({
-					teamId: inviteRequest.teamId,
-					userId: user.id,
-					role: inviteRequest.role,
-				});
-
-				await tx
-					.update(teamInvite)
-					.set({
-						acceptedAt: new Date(),
-					})
-					.where(eq(teamInvite.id, inv));
-			});
-		} catch (e) {
-			const errorCode = maybeGetDbErrorCode(e);
-			if (errorCode === "SQLITE_CONSTRAINT") {
-				logWarning(
-					`User with ID ${user.id} is already a member of team with ID ${inviteRequest.teamId}. Transaction has been rolled back.`,
-					c,
-				);
-				return c.json(
-					{
-						message: "User is already a member of this team.",
-						code: API_ERROR_MESSAGES.ALREADY_MEMBER,
+		const teamJoinRequests = await db.query.teamJoinRequest.findMany({
+			columns: {
+				userId: false,
+				teamId: false,
+			},
+			where: eq(teamJoinRequest.userId, user.id),
+			with: {
+				team: {
+					columns: {
+						updatedAt: false,
+						createdAt: false,
 					},
-					400,
-				);
-			}
-			logError(
-				`Error occurred while user with ID ${user.id} was attempting to join team with ID ${inviteRequest.teamId}. Transaction has been rolled back. Error details: ${e}`,
-				c,
-			);
-			return c.json(
-				{
-					message:
-						"An error occurred while attempting to join the team. Please try again later.",
-					code: API_ERROR_MESSAGES.GENERIC_ERROR,
 				},
-				500,
-			);
-		}
-
-		const teamInfo = await db.query.team.findFirst({
-			where: eq(team.id, inviteRequest.teamId),
+			},
+			orderBy: desc(teamJoinRequest.createdAt),
 		});
-		if (!teamInfo) {
-			logError(
-				`Team with ID ${inviteRequest.teamId} not found after accepting invite. This should not happen and indicates a critical issue. Please investigate immediately.`,
-				c,
-			);
-			return c.json(
-				{
-					message:
-						"Team not found after accepting invite. Please contact support.",
-					code: API_ERROR_MESSAGES.NOT_FOUND,
-				},
-				500,
-			);
-		}
 
-		return c.json({ data: teamInfo }, 200);
+		return c.json({ data: teamJoinRequests }, 200);
 	})
 	.get("/:teamId", zValidator("param", teamIdSchema), async (c) => {
 		const teamId = c.req.valid("param").teamId;
@@ -290,6 +309,407 @@ const teamHandler = HonoBetterAuth()
 
 		return c.json({ data: deletedTeamData[0] }, 200);
 	})
+	.get("/:teamId/requests", zValidator("param", teamIdSchema), async (c) => {
+		const teamId = c.req.valid("param").teamId;
+		const user = c.get("user");
+
+		if (!user) {
+			return c.json(
+				{
+					message: "Please log in.",
+					code: API_ERROR_MESSAGES.NOT_AUTHENTICATED,
+				},
+				401,
+			);
+		}
+
+		const canUserView = await isUserSiteAdminOrQueryHasPermissions(
+			user.siteRole,
+			getAdminUserForTeam(user.id, teamId),
+		);
+
+		if (!canUserView) {
+			return c.json(
+				{
+					message:
+						"You cannot view this team's join requests. Please contact your administrator if you believe this is an error.",
+					code: API_ERROR_MESSAGES.NOT_AUTHORIZED,
+				},
+				403,
+			);
+		}
+
+		const joinRequests = await db.query.teamJoinRequest.findMany({
+			where: eq(teamJoinRequest.teamId, teamId),
+			with: {
+				user: {
+					columns: {
+						firstName: true,
+						lastName: true,
+						id: true,
+						image: true,
+					},
+				},
+			},
+			orderBy: desc(teamJoinRequest.createdAt),
+		});
+
+		return c.json({ data: joinRequests }, 200);
+	})
+	.post("/:teamId/requests", zValidator("param", teamIdSchema), async (c) => {
+		const teamId = c.req.valid("param").teamId;
+		const user = c.get("user");
+
+		if (!user) {
+			return c.json(
+				{
+					message: "Please log in.",
+					code: API_ERROR_MESSAGES.NOT_AUTHENTICATED,
+				},
+				401,
+			);
+		}
+
+		const doesTeamExist = await findTeam(teamId);
+
+		if (!doesTeamExist) {
+			return c.json(
+				{
+					message: "Team not found.",
+					code: API_ERROR_MESSAGES.NOT_FOUND,
+				},
+				404,
+			);
+		}
+
+		const existingRequest = await db.query.teamJoinRequest.findFirst({
+			where: and(
+				eq(teamJoinRequest.teamId, teamId),
+				eq(teamJoinRequest.userId, user.id),
+				eq(teamJoinRequest.status, "PENDING"),
+			),
+		});
+
+		if (existingRequest) {
+			return c.json(
+				{
+					message:
+						"You already have a pending join request for this team.",
+					code: API_ERROR_MESSAGES.JOIN_REQUEST_EXISTS,
+				},
+				400,
+			);
+		}
+
+		const isUserAlreadyMember = await db.query.userToTeam.findFirst({
+			where: and(
+				eq(userToTeam.teamId, teamId),
+				eq(userToTeam.userId, user.id),
+			),
+		});
+
+		if (isUserAlreadyMember) {
+			return c.json(
+				{
+					message: "You are already a member of this team.",
+					code: API_ERROR_MESSAGES.ALREADY_MEMBER,
+				},
+				400,
+			);
+		}
+
+		const newJoinRequest = await db
+			.insert(teamJoinRequest)
+			.values({
+				teamId,
+				userId: user.id,
+			})
+			.returning();
+
+		return c.json({ data: { requestId: newJoinRequest[0].id } }, 200);
+	})
+	.post(
+		"/:teamId/requests/:requestId/approve",
+		zValidator("param", teamRequestSchema),
+		async (c) => {
+			const { teamId, requestId } = c.req.valid("param");
+			const user = c.get("user");
+
+			if (!user) {
+				return c.json(
+					{
+						message: "Please log in.",
+						code: API_ERROR_MESSAGES.NOT_AUTHENTICATED,
+					},
+					401,
+				);
+			}
+
+			const canUserApprove = await isUserSiteAdminOrQueryHasPermissions(
+				user.siteRole,
+				getAdminUserForTeam(user.id, teamId),
+			);
+
+			if (!canUserApprove) {
+				return c.json(
+					{
+						message:
+							"You cannot approve join requests for this team. Please contact your administrator if you believe this is an error.",
+						code: API_ERROR_MESSAGES.NOT_AUTHORIZED,
+					},
+					403,
+				);
+			}
+
+			const joinRequest = await getJoinTeamRequestAdmin(
+				requestId,
+				teamId,
+			);
+
+			if (!joinRequest) {
+				return c.json(
+					{
+						message: "Join request not found.",
+						code: API_ERROR_MESSAGES.NOT_FOUND,
+					},
+					404,
+				);
+			}
+
+			if (joinRequest.status === "APPROVED") {
+				return c.json(
+					{
+						message: "Join request has already been approved.",
+						code: API_ERROR_MESSAGES.ALREADY_APPROVED,
+					},
+					400,
+				);
+			} else if (joinRequest.status === "REJECTED") {
+				return c.json(
+					{
+						message: "Join request has already been rejected.",
+						code: API_ERROR_MESSAGES.REJECTED,
+					},
+					400,
+				);
+			} else if (joinRequest.status === "RESCINDED") {
+				return c.json(
+					{
+						message: "Join request has been rescinded by the user.",
+						code: API_ERROR_MESSAGES.RESCINDED,
+					},
+					400,
+				);
+			}
+
+			try {
+				await db.transaction(async (tx) => {
+					await tx.insert(userToTeam).values({
+						teamId,
+						userId: joinRequest.userId,
+						role: "MEMBER",
+					});
+
+					await tx
+						.update(teamJoinRequest)
+						.set({
+							status: "APPROVED",
+						})
+						.where(eq(teamJoinRequest.id, requestId));
+				});
+			} catch (e) {
+				const errorCode = maybeGetDbErrorCode(e);
+				if (errorCode === "SQLITE_CONSTRAINT") {
+					logWarning(
+						`User with ID ${joinRequest.userId} is already a member of team with ID ${joinRequest.teamId}. Transaction has been rolled back.`,
+						c,
+					);
+					return c.json(
+						{
+							message: "User is already a member of this team.",
+							code: API_ERROR_MESSAGES.ALREADY_MEMBER,
+						},
+						400,
+					);
+				}
+				logError(
+					`Error occurred while user with ID ${joinRequest.userId} was attempting to accept join request for team with ID ${joinRequest.teamId}. Transaction has been rolled back. Error details: ${e}`,
+					c,
+				);
+				return c.json(
+					{
+						message:
+							"An error occurred while attempting to accept the join request for the team. Please try again later.",
+						code: API_ERROR_MESSAGES.GENERIC_ERROR,
+					},
+					500,
+				);
+			}
+
+			return c.json({ data: joinRequest }, 200);
+		},
+	)
+	.post(
+		"/:teamId/requests/:requestId/reject",
+		zValidator("param", teamRequestSchema),
+		async (c) => {
+			const { teamId, requestId } = c.req.valid("param");
+			const user = c.get("user");
+
+			if (!user) {
+				return c.json(
+					{
+						message: "Please log in.",
+						code: API_ERROR_MESSAGES.NOT_AUTHENTICATED,
+					},
+					401,
+				);
+			}
+
+			const canUserReject = await isUserSiteAdminOrQueryHasPermissions(
+				user.siteRole,
+				getAdminUserForTeam(user.id, teamId),
+			);
+
+			if (!canUserReject) {
+				return c.json(
+					{
+						message:
+							"You cannot reject join requests for this team. Please contact your administrator if you believe this is an error.",
+						code: API_ERROR_MESSAGES.NOT_AUTHORIZED,
+					},
+					403,
+				);
+			}
+
+			const joinRequest = await getJoinTeamRequestAdmin(
+				requestId,
+				teamId,
+			);
+
+			if (!joinRequest) {
+				return c.json(
+					{
+						message: "Join request not found.",
+						code: API_ERROR_MESSAGES.NOT_FOUND,
+					},
+					404,
+				);
+			}
+
+			if (joinRequest.status === "APPROVED") {
+				return c.json(
+					{
+						message: "Request has already been approved.",
+						code: API_ERROR_MESSAGES.ALREADY_MEMBER,
+					},
+					400,
+				);
+			} else if (joinRequest.status === "REJECTED") {
+				return c.json(
+					{
+						message: "Request has already been rejected.",
+						code: API_ERROR_MESSAGES.REJECTED,
+					},
+					400,
+				);
+			} else if (joinRequest.status === "RESCINDED") {
+				return c.json(
+					{
+						message: "Request has been rescinded by the user.",
+						code: API_ERROR_MESSAGES.REJECTED,
+					},
+					400,
+				);
+			}
+
+			const rejectedRequest = await db
+				.update(teamJoinRequest)
+				.set({
+					status: "REJECTED",
+				})
+				.where(eq(teamJoinRequest.id, requestId))
+				.returning();
+
+			return c.json(
+				{ data: { joinRequestId: rejectedRequest[0].id } },
+				200,
+			);
+		},
+	)
+	.post(
+		"/:teamId/requests/:requestId/rescind",
+		zValidator("param", teamRequestSchema),
+		async (c) => {
+			const { teamId, requestId } = c.req.valid("param");
+			const user = c.get("user");
+
+			if (!user) {
+				return c.json(
+					{
+						message: "Please log in.",
+						code: API_ERROR_MESSAGES.NOT_AUTHENTICATED,
+					},
+					401,
+				);
+			}
+
+			const joinRequest = await getJoinTeamRequest(
+				requestId,
+				user.id,
+				teamId,
+			);
+
+			if (!joinRequest) {
+				return c.json(
+					{
+						message: "Join request not found.",
+						code: API_ERROR_MESSAGES.NOT_FOUND,
+					},
+					404,
+				);
+			}
+
+			if (joinRequest.status === "APPROVED") {
+				return c.json(
+					{
+						message:
+							"Join request has already been approved and cannot be rescinded.",
+						code: API_ERROR_MESSAGES.ALREADY_MEMBER,
+					},
+					400,
+				);
+			} else if (joinRequest.status === "REJECTED") {
+				return c.json(
+					{
+						message:
+							"Join request has already been rejected and cannot be rescinded.",
+						code: API_ERROR_MESSAGES.REJECTED,
+					},
+					400,
+				);
+			} else if (joinRequest.status === "RESCINDED") {
+				return c.json(
+					{
+						message: "Join request has already been rescinded.",
+						code: API_ERROR_MESSAGES.REJECTED,
+					},
+					400,
+				);
+			}
+
+			const rescindedRequest = await db
+				.update(teamJoinRequest)
+				.set({
+					status: "RESCINDED",
+				})
+				.where(eq(teamJoinRequest.id, requestId))
+				.returning();
+
+			return c.json({ data: rescindedRequest[0].id }, 200);
+		},
+	)
+	// This route should return all of the information related to a team that an admin would need. We can break it down into multiple routes if it becomes too much but for now we will just return it all.
 	.get("/:teamId/admin", zValidator("param", teamIdSchema), async (c) => {
 		const teamId = c.req.valid("param").teamId;
 		const user = c.get("user");
