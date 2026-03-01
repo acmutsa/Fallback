@@ -54,6 +54,7 @@ export const AUTH_CONFIG = {
 		},
 	},
 };
+
 export const PUBLIC_ROUTES = ["/", "/sign-in", "/sign-up", "/forgot-password"];
 
 export const THEME_CONFIG = {
