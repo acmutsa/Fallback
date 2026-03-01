@@ -3,9 +3,7 @@ import { auth } from "../auth";
 import { logInfo } from "./database";
 import { nanoid } from "nanoid";
 import type { ApiContext } from "../types";
-import { API_ERROR_MESSAGES } from "shared";
-
-export const MIDDLEWARE_PUBLIC_ROUTES = ["/health", "/api/auth"];
+import { API_ERROR_MESSAGES, MIDDLEWARE_PUBLIC_ROUTES } from "shared";
 
 export async function setUserSessionContextMiddleware(c: Context, next: Next) {
 	const session = await auth.api.getSession({ headers: c.req.raw.headers });

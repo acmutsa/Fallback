@@ -1,6 +1,6 @@
 import { userToTeam, db, and, eq, log, team, teamJoinRequest } from "db";
 import type { UserType, SiteRoleType } from "db/types";
-import type { LoggingOptions, LoggingType } from "../types";
+import type { LoggingOptions, LoggingType, LoggingSource } from "../types";
 import { type Context } from "hono";
 import { isInDevMode } from ".";
 
@@ -111,33 +111,38 @@ export async function isUserSiteAdminOrQueryHasPermissions<T = unknown>(
 
 export async function logError(message: string, c?: Context) {
 	const options = getAllContextValues(c);
-	await logToDb("ERROR", message, options);
+	const source = getLoggingSourceFromContext(c);
+	await logToDb("ERROR", message, source, options);
 }
 
 export async function logInfo(message: string, c?: Context) {
 	const options = getAllContextValues(c);
-	await logToDb("INFO", message, options);
+	const source = getLoggingSourceFromContext(c);
+	await logToDb("INFO", message, source, options);
 }
 
 export async function logWarning(message: string, c?: Context) {
 	const options = getAllContextValues(c);
-	await logToDb("WARNING", message, options);
+	const source = getLoggingSourceFromContext(c);
+	await logToDb("WARNING", message, source, options);
 }
 
 export async function logToDb(
-	loggingType: LoggingType,
+	logType: LoggingType,
 	message: string,
+	source: LoggingSource,
 	options?: LoggingOptions,
 ) {
 	if (isInDevMode()) {
-		console.log(`[${loggingType}] - ${message} - Options: `, options);
+		console.log(`[${logType}] - ${message} - Options: `, options);
 		return;
 	}
 	try {
 		await db.insert(log).values({
 			...options,
-			logType: loggingType,
+			logType,
 			message,
+			source,
 		});
 	} catch (e) {
 		// Silently fail if logging to the db fails.
@@ -156,6 +161,14 @@ function getAllContextValues(c?: Context): LoggingOptions | undefined {
 		teamId: c.get("teamId"),
 		requestId: c.get("requestId"),
 	};
+}
+
+function getLoggingSourceFromContext(c?: Context): LoggingSource {
+	if (!c){
+		return "SERVER"
+	}
+
+	return "SERVER"
 }
 
 /**

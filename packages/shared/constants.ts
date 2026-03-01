@@ -55,7 +55,8 @@ export const AUTH_CONFIG = {
 	},
 };
 
-export const PUBLIC_ROUTES = ["/", "/sign-in", "/sign-up", "/forgot-password"];
+export const WEB_PUBLIC_ROUTES = ["/", "/sign-in", "/sign-up", "/forgot-password", "/api/auth"];
+export const MIDDLEWARE_PUBLIC_ROUTES = ["/health", "/api/auth"];
 
 export const THEME_CONFIG = {
 	accessKey: "fallback-theme",

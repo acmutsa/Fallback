@@ -1,10 +1,11 @@
 import { authClient } from "../auth-client";
-import { PUBLIC_ROUTES } from "shared/constants";
+import { WEB_PUBLIC_ROUTES } from "shared/constants";
 import type { RouterContext } from "../types";
 import { redirect } from "@tanstack/react-router";
 
 export function isPublicRoute(pathname: string) {
-	return PUBLIC_ROUTES.includes(pathname);
+	console.log("checking if public route for pathname: ", pathname);
+	return WEB_PUBLIC_ROUTES.includes(pathname);
 }
 
 export function isProtectedRoute(pathname: string) {
