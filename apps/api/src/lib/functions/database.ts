@@ -165,7 +165,7 @@ export async function logToDb(
 	options?: LoggingOptions,
 ) {
 	if (isInDevMode()) {
-		console.log(`[${logType}] - ${message} - Options: `, options);
+		console.log(`[${logType}] from ${source} - ${message} - Options: `, options);
 		return;
 	}
 	try {

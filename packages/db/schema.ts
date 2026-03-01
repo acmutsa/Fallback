@@ -45,7 +45,7 @@ const teamJoinRequestStatusType = text({
 	enum: ["PENDING", "APPROVED", "REJECTED", "RESCINDED"],
 });
 const loggingSourceType = text({
-	enum: ["SERVER", "LAMBDA", "CLIENT"],
+	enum: ["SERVER", "BACKUP_SERVICE", "CLIENT"],
 });
 
 // User Table - Partially generated based on Better Auth requirements. Modify with extreme caution.

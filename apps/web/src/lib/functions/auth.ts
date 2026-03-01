@@ -1,5 +1,5 @@
 import { authClient } from "../auth-client";
-import { WEB_PUBLIC_ROUTES } from "shared/constants";
+import { PUBLIC_ROUTES } from "shared/constants";
 import type { RouterContext } from "../types";
 import { redirect } from "@tanstack/react-router";
 /**
@@ -8,8 +8,7 @@ import { redirect } from "@tanstack/react-router";
  * @returns True if the pathname is a public route, false otherwise
  */
 export function isPublicRoute(pathname: string) {
-	console.log("checking if public route for pathname: ", pathname);
-	return WEB_PUBLIC_ROUTES.includes(pathname);
+	return PUBLIC_ROUTES.includes(pathname);
 }
 
 /**
