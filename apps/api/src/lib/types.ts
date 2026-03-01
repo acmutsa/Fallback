@@ -15,7 +15,9 @@ export type ApiContext = Context<{
 
 export type LoggingOptions = Omit<
 	typeof log.$inferInsert,
-	"id" | "occurredAt" | "logType" | "message"
+	"id" | "occurredAt" | "logType" | "message" | "source"
 >;
 // Single type representing the logType value (e.g. "INFO" | "WARNING" | "ERROR")
 export type LoggingType = (typeof log.$inferSelect)["logType"];
+
+export type LoggingSource = (typeof log.$inferSelect)["source"];

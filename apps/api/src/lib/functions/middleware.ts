@@ -6,6 +6,7 @@ import type { ApiContext } from "../types";
 import { API_ERROR_MESSAGES } from "shared";
 
 export const MIDDLEWARE_PUBLIC_ROUTES = ["/health", "/api/auth"];
+
 /**
  * Middleware to set user and session context for each request. This middleware checks the authentication status of the incoming request, retrieves the user session if it exists, and sets relevant information in the context for downstream handlers to use. It also logs the request path and authentication status for monitoring purposes.
  * @param c - The Hono context object
