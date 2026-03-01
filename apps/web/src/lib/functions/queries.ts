@@ -56,7 +56,7 @@ export const getUserTeamsQueryClient = queryOptions({
  * @param inviteCode - The invite code for the team to join
  * @returns An object containing the mutation key and mutation function for joining a team.
  */
-export const joinTeamMutationclient = (inviteCode: string) =>
+export const joinTeamMutationClient = (inviteCode: string) =>
 	mutationOptions({
 		mutationKey: ["team", inviteCode, "join"],
 		mutationFn: async () => {
