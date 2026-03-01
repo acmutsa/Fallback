@@ -165,7 +165,10 @@ export async function logToDb(
 	options?: LoggingOptions,
 ) {
 	if (isInDevMode()) {
-		console.log(`[${logType}] from ${source} - ${message} - Options: `, options);
+		console.log(
+			`[${logType}] from ${source} - ${message} - Options: `,
+			options,
+		);
 		return;
 	}
 	try {
@@ -200,11 +203,11 @@ function getAllContextValues(c?: Context): LoggingOptions | undefined {
 }
 
 function getLoggingSourceFromContext(c?: Context): LoggingSource {
-	if (!c){
-		return "SERVER"
+	if (!c) {
+		return "SERVER";
 	}
 
-	return "SERVER"
+	return "SERVER";
 }
 
 /**
