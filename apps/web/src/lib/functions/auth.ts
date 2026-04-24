@@ -8,7 +8,12 @@ import { redirect } from "@tanstack/react-router";
  * @returns True if the pathname is a public route, false otherwise
  */
 export function isPublicRoute(pathname: string) {
-	return PUBLIC_ROUTES.includes(pathname);
+	return PUBLIC_ROUTES.some((route) => {
+		if (route instanceof RegExp) {
+			return route.test(pathname);
+		}
+		return pathname === route;
+	});
 }
 
 /**
