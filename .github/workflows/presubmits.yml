@@ -7,6 +7,7 @@ on: [pull_request]
 jobs:
     prettier-check:
         runs-on: ubuntu-latest
+        if: ${{ !github.event.pull_request.draft }}
 
         steps:
             - name: Checkout code
@@ -28,6 +29,7 @@ jobs:
               run: pnpm run format-check
     builder:
         runs-on: ubuntu-latest
+        if: ${{ !github.event.pull_request.draft }}
 
         steps:
             - name: Checkout code

@@ -1,0 +1,1 @@
+ALTER TABLE `log` ADD `source` text NOT NULL;
