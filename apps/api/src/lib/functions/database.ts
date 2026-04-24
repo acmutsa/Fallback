@@ -1,7 +1,6 @@
 import { userToTeam, db, and, eq, log, team, teamJoinRequest } from "db";
 import type { UserType, SiteRoleType } from "db/types";
 import type { LoggingOptions, LoggingType, LoggingSource } from "../types";
-import { type Context } from "hono";
 import { isInDevMode } from ".";
 
 /**

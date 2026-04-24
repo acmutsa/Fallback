@@ -1,6 +1,7 @@
 import { log } from "db";
 import type { SessionType, UserType } from "db/types";
-import type { Context } from "hono";
+import type { Context as HonoContext } from "hono";
+import { LambdaContext } from "hono/aws-lambda";
 
 // Match the Variables shape declared in HonoBetterAuth
 export type ApiContextVariables = {
@@ -9,7 +10,7 @@ export type ApiContextVariables = {
 	teamId: string | null;
 	requestId: string | null;
 };
-export type ApiContext = Context<{
+export type ApiContext = HonoContext<{
 	Variables: ApiContextVariables;
 }>;
 
@@ -21,3 +22,5 @@ export type LoggingOptions = Omit<
 export type LoggingType = (typeof log.$inferSelect)["logType"];
 
 export type LoggingSource = (typeof log.$inferSelect)["source"];
+
+export type FallbackContext = {honoContext?: HonoContext; lambdaContext?: LambdaContext };
